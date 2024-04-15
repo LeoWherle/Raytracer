@@ -1,0 +1,4 @@
+{
+    "plantuml.exportOutDir": ".",
+    "plantuml.exportSubFolder": false,
+}

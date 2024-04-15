@@ -1,0 +1,49 @@
+name: Clang Analysis
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Install dependencies
+      run: sudo apt update && sudo apt-get install -y clang-tidy libsdl2-dev libsdl2-image-dev libsdl2-ttf-dev
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Get CMake
+      uses: lukka/get-cmake@latest
+    - name: Build
+      run: |
+        ./build.sh
+    - name: Run clang-tidy
+      id: clang-tidy
+      run: |
+        OUTPUT=$(find . -name '*.cpp' -or -name '*.hpp' | xargs clang-tidy -checks=-*,readability-*)
+        echo "::set-output name=clang-tidy-output::$OUTPUT"
+    - name: Comment PR
+      uses: actions/github-script@v5
+      with:
+        script: |
+          const output = `${{ steps.clang-tidy.outputs.clang-tidy-output }}`
+          const warnings = output.split('\n').map(line => {
+            const [filepath, lineStart, lineEnd ,...warningParts] = line.split(':');
+            const dirs = filepath.split('/');
+            const newPath = dirs.slice(5).join('/');
+            const warning = warningParts.join(':').trim();
+            return `${newPath}:${lineStart}:${lineEnd}:\n  ${warning}`;
+          }).join('\n');
+          const body = `
+          **Clang-Tidy Output:**
+          \`\`\`
+          ${warnings}
+          \`\`\`
+          Please review the warnings and make necessary changes.
+          `;
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: body
+          })

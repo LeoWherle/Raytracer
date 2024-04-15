@@ -1,0 +1,35 @@
+@startuml
+
+
+
+
+
+/' Objects '/
+
+class Main {
+	+Main()
+	+~Main()
+	#arg_parse(int ac, char** av) : auto
+	+run(int ac, char** av) : auto
+}
+
+
+
+
+
+/' Inheritance relationships '/
+
+
+
+
+/' Aggregation relationships '/
+
+
+
+
+
+/' Nested objects '/
+
+
+
+@enduml

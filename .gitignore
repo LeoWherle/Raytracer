@@ -1,0 +1,71 @@
+# Project
+log.bin
+lib
+arcade
+build*
+!build.sh
+
+# CMake
+CMakeFiles
+CMakeCache.txt
+CMakeScripts
+CMakeSettings.json
+CMakeSettings.json
+
+
+# Prerequisites
+*.d
+
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Fortran module files
+*.mod
+*.smod
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app
+
+# VS Code
+.vscode/*
+!.vscode/launch.json
+!.vscode/settings.json
+
+cmake-build-debug
+cmake-build-release
+*.log
+config.yml
+.cache
+debug
+
+
+# Symbolic link
+compile_commands.json
+
+# CLion
+cmake-build-*
+.idea
+
+test.nts
+
+*logs.txt
