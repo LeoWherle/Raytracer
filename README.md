@@ -2,6 +2,8 @@
 - **Contributors:**
   - [Léo Wehrle - Rentmeister](https://github.com/leoWherle)
   - [Théodore Magna](https://github.com/TheodoreEpitech)
+  - [Yanis Moyon](https://github.com/Kl0ups)
+  - [Alberic Flour De Saegher](https://github.com/Albe2)
 
 ## Description
 
