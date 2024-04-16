@@ -1,7 +1,7 @@
 # Project
 log.bin
 lib
-arcade
+raytracer
 build*
 !build.sh
 
@@ -65,7 +65,3 @@ compile_commands.json
 # CLion
 cmake-build-*
 .idea
-
-test.nts
-
-*logs.txt

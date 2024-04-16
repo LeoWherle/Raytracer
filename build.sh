@@ -8,7 +8,7 @@ if [ "$1" = "release" ] || [ -z "$DISPLAY" ]; then
     cmake  -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release ..
 else
     echo "Building as debug"
-    cmake  -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release ..
+    cmake  -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Debug ..
 fi
 
 # Generate compile_commands.json symlink if it doesn't exist (for clangd)

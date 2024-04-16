@@ -18,6 +18,11 @@ file(GLOB_RECURSE SRC "./src/*.cpp")
 find_package(SFML 2.5.1 COMPONENTS graphics audio REQUIRED)
 add_executable(${PROJECT_NAME} ${SRC})
 
+# Make executable in root directory
+set_target_properties(${PROJECT_NAME} PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
+)
+
 set_target_properties(${PROJECT_NAME} PROPERTIES
     OUTPUT_NAME "raytracer"
     CXX_STANDARD 20
