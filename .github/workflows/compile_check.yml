@@ -12,22 +12,17 @@ on:
       - dev
 
 env:
-  EXECUTABLES: "raytracer"
+  EXECUTABLES: raytracer
 
 jobs:
-  compile_and_run_tests:
+  compile:
     runs-on: ubuntu-latest
+    container: epitechcontent/epitest-docker:latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
-      - name: Get CMake
-        uses: lukka/get-cmake@latest
-      - name: Compile program
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y libsdl2-dev libsdl2-image-dev libsdl2-ttf-dev libncurses5-dev libncursesw5-dev
-          sudo apt-get upgrade cmake -y
-          ./build.sh
+        uses: actions/checkout@v4
+      - name: Build
+        run: ./build.sh >> $GITHUB_STEP_SUMMARY
 
       # fail if executable is not found
       - name: Check executables
@@ -41,19 +36,3 @@ jobs:
               exit 1
             fi
           done
-
-      # - name: Run tests and generate coverage reports
-      #   run: |
-      #       echo "## Unit Tests" >> $GITHUB_STEP_SUMMARY
-      #       echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
-      #       make tests_run 2>> $GITHUB_STEP_SUMMARY
-      #       echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
-      #       echo "## Coverage" >> $GITHUB_STEP_SUMMARY
-      #       echo "### Lines" >> $GITHUB_STEP_SUMMARY
-      #       echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
-      #       gcovr --txt --exclude tests/ --exclude src/main.c >> $GITHUB_STEP_SUMMARY
-      #       echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
-      #       echo "### Branches" >> $GITHUB_STEP_SUMMARY
-      #       echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
-      #       gcovr --txt --exclude tests/ --exclude src/main.c --branches >> $GITHUB_STEP_SUMMARY
-      #       echo "\`\`\`" >> $GITHUB_STEP_SUMMARY

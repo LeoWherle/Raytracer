@@ -15,9 +15,7 @@ set(CMAKE_SHARED_LIBRARY_PREFIX "")
 file(GLOB_RECURSE SRC "./src/*.cpp")
 
 # add SFML
-if (LINUX)
-    find_package(SFML 2.5.1 COMPONENTS graphics audio REQUIRED)
-elseif (APPLE)
+if (APPLE)
     set(SFML_INCLUDE_DIRS /opt/homebrew/include)
     set(SFML_LIBRARIES
         /opt/homebrew/lib/libsfml-system.dylib
@@ -26,6 +24,8 @@ elseif (APPLE)
 endif()
 
 add_executable(${PROJECT_NAME} ${SRC})
+
+target_link_libraries(${PROJECT_NAME} ${SFML_LIBRARIES})
 
 # Make executable in root directory
 set_target_properties(${PROJECT_NAME} PROPERTIES
