@@ -84,8 +84,8 @@ auto Main::run(int ac, char *av[]) -> int
     constexpr auto movespeed = 0.01;
     while (window.isOpen()) {
         while (window.pollEvent(event)) {
-            #pragma GCC diagnostic push
-            #pragma GCC diagnostic ignored "-Wswitch"
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wswitch"
             switch (event.type) {
 
             case sf::Event::Closed:
@@ -104,11 +104,11 @@ auto Main::run(int ac, char *av[]) -> int
                 case sf::Keyboard::Key::Z:
                     cam.move(Vector3D(0, 0, -movespeed));
                     break;
-                case sf::Keyboard::Key::Left:
+                case sf::Keyboard::Key::Right:
                 case sf::Keyboard::Key::D:
                     cam.move(Vector3D(-movespeed, 0, 0));
                     break;
-                case sf::Keyboard::Key::Right:
+                case sf::Keyboard::Key::Left:
                 case sf::Keyboard::Key::Q:
                     cam.move(Vector3D(movespeed, 0, 0));
                     break;
@@ -121,8 +121,11 @@ auto Main::run(int ac, char *av[]) -> int
                 default:
                     break;
                 }
+            default:
+                break;
             }
         }
+#pragma GCC diagnostic pop
         render(pixels, image_width, image_height, cam);
         window.clear();
         texture.update(pixels);
