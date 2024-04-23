@@ -21,7 +21,7 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-      - name: Get CMake
+      - name: Build
         run: ./build.sh >> $GITHUB_STEP_SUMMARY
 
       # fail if executable is not found
