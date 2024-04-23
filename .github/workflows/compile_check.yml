@@ -22,11 +22,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
       - name: Get CMake
-        run: |
-          sudo dnf update
-          sudo dnf install -y cmake
-          sudo dnf upgrade cmake -y
-          ./build.sh >> $GITHUB_STEP_SUMMARY
+        run: ./build.sh >> $GITHUB_STEP_SUMMARY
 
       # fail if executable is not found
       - name: Check executables
