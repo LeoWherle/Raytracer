@@ -23,9 +23,9 @@ jobs:
         uses: actions/checkout@v4
       - name: Get CMake
         run: |
-          sudo apt-get update
-          sudo apt-get install -y cmake
-          sudo apt-get upgrade cmake -y
+          sudo apt update
+          sudo apt install -y cmake
+          sudo apt upgrade cmake -y
           ./build.sh >> $GITHUB_STEP_SUMMARY
 
       # fail if executable is not found
