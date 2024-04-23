@@ -22,10 +22,9 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
       - name: Get CMake
-        uses: lukka/get-cmake@latest
-      - name: Compile program
         run: |
           sudo apt-get update
+          sudo apt-get install -y cmake
           sudo apt-get upgrade cmake -y
           ./build.sh >> $GITHUB_STEP_SUMMARY
 
