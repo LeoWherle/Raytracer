@@ -5,8 +5,10 @@
 ** Main
 */
 
-#include "Main.hpp"
 #include <iostream>
+
+#include "Main.hpp"
+#include "Math.hpp"
 
 auto Main::arg_parse(int ac, char **av) -> bool
 {
@@ -21,6 +23,25 @@ auto Main::run(int ac, char **av) -> int
 {
     if (!arg_parse(ac, av))
         return 84;
+
+    Camera cam;
+    Sphere s(Point3D(1, 1, -1), 0.5);
+
+    std::cout << "P3" << std::endl << 1 / 0.01 << " " << 1 / 0.01 << std::endl;
+    std::cout << 255 << std::endl;
+    for (double i = 0; i < 2; i += 0.01) {
+        for (double j = 0; j < 2; j += 0.01) {
+            double u = i;
+            double v = j;
+            Ray r = cam.ray(u, v);
+            if (s.hits(r)) {
+                // red
+                std::cout << 255 << 0 << 0 << std::endl;
+            } else {
+                std::cout << 0 << 0 << 0 << std::endl;
+            }
+        }
+    }
     return 0;
 }
 
