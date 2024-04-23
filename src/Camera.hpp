@@ -31,6 +31,11 @@ public:
         return Ray(_origin, direction);
     }
 
+    void move(const Vector3D &direction)
+    {
+        _origin = _origin + direction;
+    }
+
 private:
     Point3D _origin;
     Rectangle3D _screen;

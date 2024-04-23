@@ -27,6 +27,10 @@ endif()
 
 add_executable(${PROJECT_NAME} ${SRC})
 
+target_link_libraries(${PROJECT_NAME} PRIVATE
+    sfml-graphics sfml-audio sfml-window sfml-system
+)
+
 # Make executable in root directory
 set_target_properties(${PROJECT_NAME} PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
