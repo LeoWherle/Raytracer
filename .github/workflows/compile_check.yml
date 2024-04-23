@@ -15,7 +15,7 @@ env:
   EXECUTABLES: raytracer
 
 jobs:
-  compile_and_run_tests:
+  compile:
     runs-on: ubuntu-latest
     container: epitechcontent/epitest-docker:latest
     steps:
