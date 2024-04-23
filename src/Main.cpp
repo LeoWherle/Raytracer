@@ -9,7 +9,9 @@
 #include <iostream>
 
 #include "Main.hpp"
-#include "Math.hpp"
+#include "Camera.hpp"
+#include "Rectangle3D.hpp"
+#include "Sphere.hpp"
 
 auto Main::arg_parse(int ac, char **av) -> bool
 {
