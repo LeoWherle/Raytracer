@@ -17,7 +17,7 @@ env:
 jobs:
   compile_and_run_tests:
     runs-on: ubuntu-latest
-    container: ghcr.io/epitechcontent/epitest-docker:latest
+    container: epitechcontent/epitest-docker:latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
