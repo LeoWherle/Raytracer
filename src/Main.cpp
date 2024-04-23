@@ -5,6 +5,7 @@
 ** Main
 */
 
+#include <fstream>
 #include <iostream>
 
 #include "Main.hpp"
@@ -19,29 +20,42 @@ auto Main::arg_parse(int ac, char **av) -> bool
     return true;
 }
 
+void write_color(std::ofstream &out, const Vector3D &color)
+{
+    out << static_cast<int>(color._x) << ' ' << static_cast<int>(color._y) << ' '
+        << static_cast<int>(color._z) << '\n';
+}
+
 auto Main::run(int ac, char **av) -> int
 {
     if (!arg_parse(ac, av))
         return 84;
 
-    Camera cam;
-    Sphere s(Point3D(1, 1, -1), 0.5);
+    const int image_width = 400;
+    const int image_height = 400;
 
-    std::cout << "P3" << std::endl << 1 / 0.01 << " " << 1 / 0.01 << std::endl;
-    std::cout << 255 << std::endl;
-    for (double i = 0; i < 2; i += 0.01) {
-        for (double j = 0; j < 2; j += 0.01) {
-            double u = i;
-            double v = j;
-            Ray r = cam.ray(u, v);
-            if (s.hits(r)) {
-                // red
-                std::cout << 255 << 0 << 0 << std::endl;
+    std::ofstream out("output.ppm");
+    out << "P3\n" << image_width << ' ' << image_height << "\n255\n";
+
+    Camera cam;
+    Sphere sphere(Point3D(0, -0.5, -1), 0.2);
+
+    for (int j = image_height - 1; j >= 0; --j) {
+        for (int i = 0; i < image_width; ++i) {
+            double u = double(i) / (image_width - 1);
+            double v = double(j) / (image_height - 1);
+            Ray ray = cam.ray(u, v);
+            Vector3D color(0.0, 0.0, 0.0);
+
+            if (sphere.hits(ray)) {
+                color = Vector3D(200, 0, 0);
             } else {
-                std::cout << 0 << 0 << 0 << std::endl;
+                color = Vector3D(29, 32, 39);
             }
+            write_color(out, color);
         }
     }
+    out.close();
     return 0;
 }
 
