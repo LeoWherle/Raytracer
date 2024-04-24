@@ -5,6 +5,8 @@ raytracer
 build*
 !build.sh
 
+*.ppm
+
 # CMake
 CMakeFiles
 CMakeCache.txt

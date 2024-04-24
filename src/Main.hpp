@@ -8,16 +8,29 @@
 #ifndef MAIN_HPP_
 #define MAIN_HPP_
 
+#include "Camera.hpp"
+#include "Parameters.hpp"
+#include "Sphere.hpp"
+
 class Main {
 public:
-    Main() = default;
+    Main(int ac, char *av[]):
+        _ac(ac),
+        _av(av)
+    {
+    }
     ~Main() = default;
 
-    auto run(int ac, char **av) -> int;
+    int _ac;
+    char **_av;
+    Parameters _params;
+    auto run() -> int;
+
+    auto render_image(uint32_t image_width, uint32_t image_height, Camera &cam, Sphere &sphere) -> void;
+
+    auto arg_parse() -> bool;
 
 protected:
-    auto arg_parse(int ac, char **av) -> bool;
-
 private:
 };
 
