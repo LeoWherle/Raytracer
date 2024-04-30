@@ -18,7 +18,7 @@
 #include "Main.hpp"
 #include "Math/Rectangle3D.hpp"
 #include "Parameters.hpp"
-#include "Sphere.hpp"
+#include "Primitives/Sphere.hpp"
 #include "LightPoint.hpp"
 
 #include <SFML/Graphics.hpp>
@@ -71,7 +71,7 @@ auto render_frame(sf::Uint8 *pixels, uint32_t image_width, uint32_t image_height
     }
 }
 
-auto handle_events(sf::RenderWindow &window, Camera &cam) -> void
+auto handle_events(sf::RenderWindow &window, Camera &cam, ILight &light) -> void
 {
     sf::Event event;
     constexpr auto movespeed = 0.01;
@@ -110,6 +110,24 @@ auto handle_events(sf::RenderWindow &window, Camera &cam) -> void
             case sf::Keyboard::Key::LShift:
                 cam.move(Vector3D(0, -movespeed, 0));
                 break;
+            case sf::Keyboard::Key::L:
+                light.move(Vector3D(movespeed, 0, 0));
+                break;
+            case sf::Keyboard::Key::J:
+                light.move(Vector3D(-movespeed, 0, 0));
+                break;
+            case sf::Keyboard::Key::K:
+                light.move(Vector3D(0, 0, -movespeed));
+                break;
+            case sf::Keyboard::Key::I:
+                light.move(Vector3D(0, 0, movespeed));
+                break;
+            case sf::Keyboard::Key::U:
+                light.move(Vector3D(0, -movespeed, 0));
+                break;
+            case sf::Keyboard::Key::P:
+                light.move(Vector3D(0, movespeed, 0));
+                break;
             default:
                 break;
             }
@@ -131,7 +149,7 @@ auto render_real_time(uint32_t image_width, uint32_t image_height, Camera &cam, 
     sf::Sprite sprite(texture);
 
     while (window.isOpen()) {
-        handle_events(window, cam);
+        handle_events(window, cam, light);
         render_frame(pixels, image_width, image_height, cam, sphere, light);
         window.clear();
         texture.update(pixels);
