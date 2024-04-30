@@ -7,11 +7,10 @@
 
 #pragma once
 
+#include "IPrimitive.hpp"
 #include "Math/Point3D.hpp"
-#include "Ray.hpp"
-#include "Color.hpp"
 
-class Sphere {
+class Sphere : public IPrimitive {
 public:
     Point3D _center;
     double _radius;
@@ -24,7 +23,7 @@ public:
     {
     }
 
-    double hits(const Ray &ray) const
+    double hits(const Ray &ray) const override
     {
         Vector3D oc = ray._origin - _center;
         double a = ray._direction.dot(ray._direction);
