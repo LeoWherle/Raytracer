@@ -28,6 +28,11 @@ public:
 
     virtual ~ILight() = default;
 
+    inline void move(const Vector3D &direction)
+    {
+        _origin = _origin + direction;
+    }
+
     Point3D _origin = Point3D(0, 0, 0);
     double _intensity = 1;
     Color _color = Color(255, 255, 255);
