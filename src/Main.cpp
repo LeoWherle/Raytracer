@@ -19,6 +19,7 @@
 #include "Math/Rectangle3D.hpp"
 #include "Parameters.hpp"
 #include "Sphere.hpp"
+#include "ILight.hpp"
 
 #include <SFML/Graphics.hpp>
 #include <ostream>
@@ -36,7 +37,7 @@ auto Main::arg_parse() -> bool
     return true;
 }
 
-static Vector3D add_light_to_sphere(const Ray &ray, const Sphere &sphere, const Point3D &light)
+static Vector3D add_light_to_sphere(const Ray &ray, const Sphere &sphere, ILight &light)
 {
     Vector3D result = Vector3D(0, 0, 0);
     Point3D hit_point = sphere.get_hitPoint(ray);
@@ -44,7 +45,7 @@ static Vector3D add_light_to_sphere(const Ray &ray, const Sphere &sphere, const 
         return result;
     }
     Vector3D normal = (hit_point - sphere._center).normalize();
-    Vector3D light_direction = (hit_point - light).normalize();
+    Vector3D light_direction = (hit_point - light._origin).normalize();
     double light_intensity = normal.dot(light_direction);
     if (light_intensity > 0) {
         result = sphere._color * light_intensity;
@@ -52,7 +53,7 @@ static Vector3D add_light_to_sphere(const Ray &ray, const Sphere &sphere, const 
     return result;
 }
 
-auto render_frame(sf::Uint8 *pixels, uint32_t image_width, uint32_t image_height, Camera &cam, Sphere &sphere, const Point3D &light)
+auto render_frame(sf::Uint8 *pixels, uint32_t image_width, uint32_t image_height, Camera &cam, Sphere &sphere, ILight &light)
     -> void
 {
     for (uint32_t j = 0; j < image_height; ++j) {
@@ -119,7 +120,7 @@ auto handle_events(sf::RenderWindow &window, Camera &cam) -> void
     }
 }
 
-auto render_real_time(uint32_t image_width, uint32_t image_height, Camera &cam, Sphere &sphere, const Point3D &light) -> void
+auto render_real_time(uint32_t image_width, uint32_t image_height, Camera &cam, Sphere &sphere, ILight &light) -> void
 {
 
     sf::RenderWindow window(sf::VideoMode(image_width, image_height), "Raytracer");
@@ -147,7 +148,7 @@ void write_color(std::ofstream &out, const Vector3D &color)
         << static_cast<int>(color._z) << '\n';
 }
 
-auto Main::render_image(uint32_t image_width, uint32_t image_height, Camera &cam, Sphere &sphere, const Point3D &light) -> void
+auto Main::render_image(uint32_t image_width, uint32_t image_height, Camera &cam, Sphere &sphere, ILight &light) -> void
 {
     std::string file_name = _params._output_file;
     if (file_name.empty()) {
@@ -175,7 +176,7 @@ auto Main::run() -> int
     const uint32_t image_width = 400;
     const uint32_t image_height = 400;
     Sphere sphere(Point3D(0, -0.5, -1), 0.2, Vector3D(255, 0, 0));
-    Point3D light = Point3D(1, -0.8, -1.5);
+    ILight light = ILight(Point3D(1, -0.8, -1.5), 1);
     Camera cam;
 
     if (_params._gui) {
