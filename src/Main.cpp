@@ -40,15 +40,15 @@ auto Main::arg_parse() -> bool
 static Vector3D add_light_to_sphere(const Ray &ray, const Sphere &sphere, ILight &light)
 {
     Vector3D result = Vector3D(0, 0, 0);
-    Point3D hit_point = sphere.get_hitPoint(ray);
-    if (hit_point._x == 0 && hit_point._y == 0 && hit_point._z == 0) {
+    double t = sphere.hits(ray);
+    if (t == -1)
         return result;
-    }
+    Point3D hit_point = ray.at(t);
     Vector3D normal = (hit_point - sphere._center).normalize();
     Vector3D light_direction = (hit_point - light._origin).normalize();
     double light_intensity = normal.dot(light_direction);
     if (light_intensity > 0) {
-        result = sphere._color * light_intensity;
+        result = sphere._color * light_intensity * light._intensity;
     }
     return result;
 }
