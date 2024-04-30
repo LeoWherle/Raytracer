@@ -19,6 +19,7 @@
 #include "Math/Rectangle3D.hpp"
 #include "Parameters.hpp"
 #include "Sphere.hpp"
+#include "LightPoint.hpp"
 
 #include <SFML/Graphics.hpp>
 #include <ostream>
@@ -36,23 +37,35 @@ auto Main::arg_parse() -> bool
     return true;
 }
 
-auto render_frame(sf::Uint8 *pixels, uint32_t image_width, uint32_t image_height, Camera &cam, Sphere &sphere)
+static Color add_light_to_sphere(const Ray &ray, const Sphere &sphere, ILight &light)
+{
+    Color result = Color(0, 0, 0);
+    double t = sphere.hits(ray);
+    if (t == -1)
+        return result;
+    Point3D hit_point = ray.at(t);
+    Vector3D normal = (hit_point - sphere._center).normalize();
+    Vector3D light_direction = (hit_point - light._origin).normalize();
+    double light_intensity = normal.dot(light_direction);
+    if (light_intensity > 0) {
+        result = sphere._color * light_intensity * light._intensity;
+    }
+    return result;
+}
+
+auto render_frame(sf::Uint8 *pixels, uint32_t image_width, uint32_t image_height, Camera &cam, Sphere &sphere, ILight &light)
     -> void
 {
     for (uint32_t j = 0; j < image_height; ++j) {
         for (uint32_t i = 0; i < image_width; ++i) {
             double u = double(i) / (image_width - 1);
             double v = double(j) / (image_height - 1);
-            Vector3D color(0.0, 0.0, 0.0);
+            Color color(0.0, 0.0, 0.0);
 
-            if (sphere.hits(cam.ray(u, v))) {
-                color = Vector3D(200, 0, 0);
-            } else {
-                color = Vector3D(29, 32, 39);
-            }
-            pixels[(j * image_width + i) * 4 + 0] = static_cast<sf::Uint8>(color._x);
-            pixels[(j * image_width + i) * 4 + 1] = static_cast<sf::Uint8>(color._y);
-            pixels[(j * image_width + i) * 4 + 2] = static_cast<sf::Uint8>(color._z);
+            color = add_light_to_sphere(cam.ray(u, v), sphere, light);
+            pixels[(j * image_width + i) * 4 + 0] = static_cast<sf::Uint8>(color._r);
+            pixels[(j * image_width + i) * 4 + 1] = static_cast<sf::Uint8>(color._g);
+            pixels[(j * image_width + i) * 4 + 2] = static_cast<sf::Uint8>(color._b);
             pixels[(j * image_width + i) * 4 + 3] = 255;
         }
     }
@@ -107,7 +120,7 @@ auto handle_events(sf::RenderWindow &window, Camera &cam) -> void
     }
 }
 
-auto render_real_time(uint32_t image_width, uint32_t image_height, Camera &cam, Sphere &sphere) -> void
+auto render_real_time(uint32_t image_width, uint32_t image_height, Camera &cam, Sphere &sphere, ILight &light) -> void
 {
 
     sf::RenderWindow window(sf::VideoMode(image_width, image_height), "Raytracer");
@@ -119,7 +132,7 @@ auto render_real_time(uint32_t image_width, uint32_t image_height, Camera &cam, 
 
     while (window.isOpen()) {
         handle_events(window, cam);
-        render_frame(pixels, image_width, image_height, cam, sphere);
+        render_frame(pixels, image_width, image_height, cam, sphere, light);
         window.clear();
         texture.update(pixels);
         window.draw(sprite);
@@ -129,13 +142,13 @@ auto render_real_time(uint32_t image_width, uint32_t image_height, Camera &cam, 
 }
 
 
-void write_color(std::ofstream &out, const Vector3D &color)
+void write_color(std::ofstream &out, const Color &color)
 {
-    out << static_cast<int>(color._x) << ' ' << static_cast<int>(color._y) << ' '
-        << static_cast<int>(color._z) << '\n';
+    out << static_cast<int>(color._r) << ' ' << static_cast<int>(color._g) << ' '
+        << static_cast<int>(color._b) << '\n';
 }
 
-auto Main::render_image(uint32_t image_width, uint32_t image_height, Camera &cam, Sphere &sphere) -> void
+auto Main::render_image(uint32_t image_width, uint32_t image_height, Camera &cam, Sphere &sphere, ILight &light) -> void
 {
     std::string file_name = _params._output_file;
     if (file_name.empty()) {
@@ -148,13 +161,9 @@ auto Main::render_image(uint32_t image_width, uint32_t image_height, Camera &cam
         for (uint32_t i = 0; i < image_width; ++i) {
             double u = double(i) / (image_width - 1);
             double v = double(j) / (image_height - 1);
-            Vector3D color(0.0, 0.0, 0.0);
+            Color color(0.0, 0.0, 0.0);
 
-            if (sphere.hits(cam.ray(u, v))) {
-                color = Vector3D(200, 0, 0);
-            } else {
-                color = Vector3D(29, 32, 39);
-            }
+            color = add_light_to_sphere(cam.ray(u, v), sphere, light);
             write_color(out, color);
         }
     }
@@ -166,14 +175,15 @@ auto Main::run() -> int
 {
     const uint32_t image_width = 400;
     const uint32_t image_height = 400;
-    Sphere sphere(Point3D(0, -0.5, -1), 0.2);
+    Sphere sphere(Point3D(0, -0.5, -1), 0.2, Color(255, 0, 0));
+    LightPoint light = LightPoint(Point3D(1, -0.8, -1.5), 1);
     Camera cam;
 
     if (_params._gui) {
-        render_real_time(image_width, image_height, cam, sphere);
+        render_real_time(image_width, image_height, cam, sphere, light);
     }
     if (!_params._scene_file.empty()) {
-        render_image(image_width, image_height, cam, sphere);
+        render_image(image_width, image_height, cam, sphere, light);
     }
     return 0;
 }
