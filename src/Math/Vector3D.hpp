@@ -23,6 +23,7 @@ public:
 
     inline double length() const { return std::sqrt(_x * _x + _y * _y + _z * _z); }
     inline double length_squared() const { return _x * _x + _y * _y + _z * _z; }
+    inline Vector3D &normalize() { return *this /= length(); }
 
     inline double dot(const Vector3D &other) const { return _x * other._x + _y * other._y + _z * other._z; }
 
