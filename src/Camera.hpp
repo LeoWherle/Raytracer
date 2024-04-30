@@ -15,7 +15,7 @@ class Camera {
 public:
     Camera():
         _origin(Point3D(0, 0, 0)),
-        _screen(Rectangle3D(Point3D(0, 0, 1), Vector3D(1, 0, 0), Vector3D(0, 1, 0)))
+        _screen(Rectangle3D(Point3D(-0.5, 0, 1), Vector3D(1, 0, 0), Vector3D(0, 1, 0)))
     {
     }
     Camera(const Point3D &origin, const Rectangle3D &screen):
