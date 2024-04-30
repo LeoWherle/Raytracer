@@ -7,6 +7,7 @@
 
 #pragma once
 #include <cmath>
+#include "Vector3D.hpp"
 
 class Vector2D {
     public:
@@ -34,6 +35,13 @@ class Vector2D {
 
         inline double dot(const Vector2D &other) const { return _x * other._x + _y * other._y; };
         inline Vector2D cross(const Vector2D &other) const
+        {
+            return Vector2D(
+                _x * other._y - _y * other._x, _y * other._x - _x * other._y
+            );
+        };
+
+        inline Vector2D normal(const Vector3D &other) const
         {
             return Vector2D(
                 _x * other._y - _y * other._x, _y * other._x - _x * other._y
