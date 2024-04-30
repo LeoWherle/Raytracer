@@ -9,14 +9,15 @@
 
 #include "Math/Point3D.hpp"
 #include "Ray.hpp"
+#include "Color.hpp"
 
 class Sphere {
 public:
     Point3D _center;
     double _radius;
-    Vector3D _color;
+    Color _color;
 
-    Sphere(const Point3D &center, double radius, const Vector3D &color):
+    Sphere(const Point3D &center, double radius, const Color &color):
         _center(center),
         _radius(radius),
         _color(color)

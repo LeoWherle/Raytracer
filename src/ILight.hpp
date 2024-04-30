@@ -8,6 +8,7 @@
 #pragma once
 
 #include "Math/Point3D.hpp"
+#include "Color.hpp"
 
 class ILight {
 public:
@@ -19,9 +20,15 @@ public:
         _origin(origin),
         _intensity(intensity)
     {}
+    ILight(const Point3D &origin, double intensity, const Color &color):
+        _origin(origin),
+        _intensity(intensity),
+        _color(color)
+    {}
 
     virtual ~ILight() = default;
 
     Point3D _origin = Point3D(0, 0, 0);
     double _intensity = 1;
+    Color _color = Color(255, 255, 255);
 };
