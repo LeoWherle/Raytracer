@@ -36,7 +36,23 @@ auto Main::arg_parse() -> bool
     return true;
 }
 
-auto render_frame(sf::Uint8 *pixels, uint32_t image_width, uint32_t image_height, Camera &cam, Sphere &sphere)
+static Vector3D add_light_to_sphere(const Ray &ray, const Sphere &sphere, const Point3D &light)
+{
+    Vector3D result = Vector3D(0, 0, 0);
+    Point3D hit_point = sphere.get_hitPoint(ray);
+    if (hit_point._x == 0 && hit_point._y == 0 && hit_point._z == 0) {
+        return result;
+    }
+    Vector3D normal = (hit_point - sphere._center).normalize();
+    Vector3D light_direction = (hit_point - light).normalize();
+    double light_intensity = normal.dot(light_direction);
+    if (light_intensity > 0) {
+        result = Vector3D(255, 0, 0) * light_intensity;
+    }
+    return result;
+}
+
+auto render_frame(sf::Uint8 *pixels, uint32_t image_width, uint32_t image_height, Camera &cam, Sphere &sphere, const Point3D &light)
     -> void
 {
     for (uint32_t j = 0; j < image_height; ++j) {
@@ -45,11 +61,7 @@ auto render_frame(sf::Uint8 *pixels, uint32_t image_width, uint32_t image_height
             double v = double(j) / (image_height - 1);
             Vector3D color(0.0, 0.0, 0.0);
 
-            if (sphere.hits(cam.ray(u, v))) {
-                color = Vector3D(200, 0, 0);
-            } else {
-                color = Vector3D(29, 32, 39);
-            }
+            color = add_light_to_sphere(cam.ray(u, v), sphere, light);
             pixels[(j * image_width + i) * 4 + 0] = static_cast<sf::Uint8>(color._x);
             pixels[(j * image_width + i) * 4 + 1] = static_cast<sf::Uint8>(color._y);
             pixels[(j * image_width + i) * 4 + 2] = static_cast<sf::Uint8>(color._z);
@@ -107,7 +119,7 @@ auto handle_events(sf::RenderWindow &window, Camera &cam) -> void
     }
 }
 
-auto render_real_time(uint32_t image_width, uint32_t image_height, Camera &cam, Sphere &sphere) -> void
+auto render_real_time(uint32_t image_width, uint32_t image_height, Camera &cam, Sphere &sphere, const Point3D &light) -> void
 {
 
     sf::RenderWindow window(sf::VideoMode(image_width, image_height), "Raytracer");
@@ -119,7 +131,7 @@ auto render_real_time(uint32_t image_width, uint32_t image_height, Camera &cam, 
 
     while (window.isOpen()) {
         handle_events(window, cam);
-        render_frame(pixels, image_width, image_height, cam, sphere);
+        render_frame(pixels, image_width, image_height, cam, sphere, light);
         window.clear();
         texture.update(pixels);
         window.draw(sprite);
@@ -135,7 +147,7 @@ void write_color(std::ofstream &out, const Vector3D &color)
         << static_cast<int>(color._z) << '\n';
 }
 
-auto Main::render_image(uint32_t image_width, uint32_t image_height, Camera &cam, Sphere &sphere) -> void
+auto Main::render_image(uint32_t image_width, uint32_t image_height, Camera &cam, Sphere &sphere, const Point3D &light) -> void
 {
     std::string file_name = _params._output_file;
     if (file_name.empty()) {
@@ -150,11 +162,7 @@ auto Main::render_image(uint32_t image_width, uint32_t image_height, Camera &cam
             double v = double(j) / (image_height - 1);
             Vector3D color(0.0, 0.0, 0.0);
 
-            if (sphere.hits(cam.ray(u, v))) {
-                color = Vector3D(200, 0, 0);
-            } else {
-                color = Vector3D(29, 32, 39);
-            }
+            color = add_light_to_sphere(cam.ray(u, v), sphere, light);
             write_color(out, color);
         }
     }
@@ -167,13 +175,14 @@ auto Main::run() -> int
     const uint32_t image_width = 400;
     const uint32_t image_height = 400;
     Sphere sphere(Point3D(0, -0.5, -1), 0.2);
+    Point3D light = Point3D(1, -0.8, -1.5);
     Camera cam;
 
     if (_params._gui) {
-        render_real_time(image_width, image_height, cam, sphere);
+        render_real_time(image_width, image_height, cam, sphere, light);
     }
     if (!_params._scene_file.empty()) {
-        render_image(image_width, image_height, cam, sphere);
+        render_image(image_width, image_height, cam, sphere, light);
     }
     return 0;
 }

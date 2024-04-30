@@ -1,4 +1,10 @@
 {
     "plantuml.exportOutDir": ".",
     "plantuml.exportSubFolder": false,
+    "files.associations": {
+        "iostream": "cpp",
+        "random": "cpp",
+        "vector": "cpp",
+        "functional": "cpp"
+    },
 }

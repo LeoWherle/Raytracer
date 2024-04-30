@@ -26,7 +26,7 @@ public:
     Parameters _params;
     auto run() -> int;
 
-    auto render_image(uint32_t image_width, uint32_t image_height, Camera &cam, Sphere &sphere) -> void;
+    auto render_image(uint32_t image_width, uint32_t image_height, Camera &cam, Sphere &sphere, const Point3D &light) -> void;
 
     auto arg_parse() -> bool;
 
