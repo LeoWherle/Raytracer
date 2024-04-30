@@ -7,21 +7,22 @@
 
 #include "Plane.hpp"
 
-Plane::Plane(const Point3D &origin, const Vector3D &thickness, const Vector3D &width, const Vector3D &height, const Vector3D &size):
-    _origin(origin),
-    _thickness(thickness),
-    _width(width),
-    _height(height),
-    _size(size)
+static Point2D random_point(const Point2D &origin, const Vector2D &plane)
 {
+    return Point2D(
+        origin._x + (rand() % static_cast<int>(plane._x)),
+        origin._y + (rand() % static_cast<int>(plane._y))
+    );
 }
 
 bool Plane::hits(const Ray &ray) const
 {
-    //i have a Point3d that is the origin and a Vector3d that is the plane, do a fucntion to check if the ray hits the plane
+    Vector2D normal = _plane.normal(ray._direction);
+    double numerator = (random_point(_origin, _plane) - _origin).dot(normal);
+    double denominator = ray._direction.dot(Vector3D(normal._x, normal._y, 0));
+    double t = numerator / denominator;
 
-    Vector3D normal = _plane.normalize();
-    float denom = normal.dot(ray._direction);
-
+    if (t > 0)
+        return true;
     return false;
 }
