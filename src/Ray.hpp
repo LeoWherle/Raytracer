@@ -7,8 +7,8 @@
 
 #pragma once
 
-#include "Point3D.hpp"
-#include "Vector3D.hpp"
+#include "Math/Point3D.hpp"
+#include "Math/Vector3D.hpp"
 
 class Ray {
 public:
@@ -22,4 +22,6 @@ public:
         _direction(direction)
     {
     }
+
+    Point3D at(double t) const { return _origin + _direction * t; }
 };

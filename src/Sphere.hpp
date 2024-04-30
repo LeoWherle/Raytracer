@@ -7,7 +7,7 @@
 
 #pragma once
 
-#include "Point3D.hpp"
+#include "Math/Point3D.hpp"
 #include "Ray.hpp"
 
 class Sphere {

@@ -7,9 +7,9 @@
 
 #pragma once
 
-#include "Point3D.hpp"
+#include "Math/Point3D.hpp"
 #include "Ray.hpp"
-#include "Rectangle3D.hpp"
+#include "Math/Rectangle3D.hpp"
 
 class Camera {
 public:
@@ -29,6 +29,11 @@ public:
         Point3D point = _screen.pointAt(u, v);
         Vector3D direction = point - _origin;
         return Ray(_origin, direction);
+    }
+
+    void move(const Vector3D &direction)
+    {
+        _origin = _origin + direction;
     }
 
 private:
