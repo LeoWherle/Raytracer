@@ -18,7 +18,7 @@
 #include "Main.hpp"
 #include "Math/Rectangle3D.hpp"
 #include "Parameters.hpp"
-#include "Sphere.hpp"
+#include "Primitives/Sphere.hpp"
 #include "LightPoint.hpp"
 
 #include <SFML/Graphics.hpp>
