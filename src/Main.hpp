@@ -10,7 +10,7 @@
 
 #include "Camera.hpp"
 #include "Parameters.hpp"
-#include "Sphere.hpp"
+#include "Primitives/Sphere.hpp"
 #include "ILight.hpp"
 
 class Main {
