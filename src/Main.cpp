@@ -19,7 +19,7 @@
 #include "Math/Rectangle3D.hpp"
 #include "Parameters.hpp"
 #include "Sphere.hpp"
-#include "ILight.hpp"
+#include "LightPoint.hpp"
 
 #include <SFML/Graphics.hpp>
 #include <ostream>
@@ -176,7 +176,7 @@ auto Main::run() -> int
     const uint32_t image_width = 400;
     const uint32_t image_height = 400;
     Sphere sphere(Point3D(0, -0.5, -1), 0.2, Vector3D(255, 0, 0));
-    ILight light = ILight(Point3D(1, -0.8, -1.5), 1);
+    LightPoint light = LightPoint(Point3D(1, -0.8, -1.5), 1);
     Camera cam;
 
     if (_params._gui) {
