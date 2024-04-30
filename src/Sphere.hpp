@@ -14,10 +14,12 @@ class Sphere {
 public:
     Point3D _center;
     double _radius;
+    Vector3D _color;
 
-    Sphere(const Point3D &center, double radius):
+    Sphere(const Point3D &center, double radius, const Vector3D &color):
         _center(center),
-        _radius(radius)
+        _radius(radius),
+        _color(color)
     {
     }
 

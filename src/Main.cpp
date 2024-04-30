@@ -47,7 +47,7 @@ static Vector3D add_light_to_sphere(const Ray &ray, const Sphere &sphere, const 
     Vector3D light_direction = (hit_point - light).normalize();
     double light_intensity = normal.dot(light_direction);
     if (light_intensity > 0) {
-        result = Vector3D(255, 0, 0) * light_intensity;
+        result = sphere._color * light_intensity;
     }
     return result;
 }
@@ -174,7 +174,7 @@ auto Main::run() -> int
 {
     const uint32_t image_width = 400;
     const uint32_t image_height = 400;
-    Sphere sphere(Point3D(0, -0.5, -1), 0.2);
+    Sphere sphere(Point3D(0, -0.5, -1), 0.2, Vector3D(255, 0, 0));
     Point3D light = Point3D(1, -0.8, -1.5);
     Camera cam;
 
