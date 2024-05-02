@@ -21,13 +21,13 @@ if (APPLE)
         /opt/homebrew/lib/libsfml-system.dylib
         /opt/homebrew/lib/libsfml-window.dylib
         /opt/homebrew/lib/libsfml-graphics.dylib)
+else()
+    set(SFML_LIBRARIES sfml-graphics sfml-audio sfml-window sfml-system)
 endif()
 
 add_executable(${PROJECT_NAME} ${SRC})
 
-target_link_libraries(${PROJECT_NAME} PRIVATE
-    sfml-graphics sfml-audio sfml-window sfml-system
-)
+target_link_libraries(${PROJECT_NAME} PRIVATE ${SFML_LIBRARIES})
 
 # Make executable in root directory
 set_target_properties(${PROJECT_NAME} PROPERTIES
@@ -40,7 +40,8 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
     CXX_STANDARD_REQUIRED ON
     LIBRARY_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
 )
-target_include_directories(${PROJECT_NAME} PRIVATE "./src")
+
+target_include_directories(${PROJECT_NAME} PRIVATE "./src" ${SFML_INCLUDE_DIRS})
 
 target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra -Wformat=2
     -Wswitch-default -Wcast-align -Wpointer-arith -Wundef -Wcast-qual
