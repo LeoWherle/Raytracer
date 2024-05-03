@@ -7,9 +7,7 @@
 
 #pragma once
 
-#include "Math/Point2D.hpp"
 #include "Math/Vector3D.hpp"
-#include "Math/Rectangle3D.hpp"
 #include "IPrimitive.hpp"
 #include "Ray.hpp"
 
