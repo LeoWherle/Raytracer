@@ -7,6 +7,7 @@
 
 #pragma once
 
+#include <cstdint>
 #include "Math/Vector3D.hpp"
 
 class Color {
