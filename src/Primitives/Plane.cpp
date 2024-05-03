@@ -9,12 +9,12 @@
 
 double Plane::hits(const Ray &ray) const
 {
-    float denom = _normal.dot(ray._direction);
+    double denom = _normal.dot(ray._direction);
 
     if (denom == 0.0)
         return -1;
 
-    float t = (_origin - ray._origin).dot(_normal) / denom;
+    double t = (_origin - ray._origin).dot(_normal) / denom;
 
     if (t < 0.0)
         return -1;

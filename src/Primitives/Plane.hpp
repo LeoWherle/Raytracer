@@ -14,12 +14,12 @@
 class Plane : public IPrimitive{
     public:
 
-        Vector3D _normal;
-        Point3D _origin;
-
         Plane(Point3D origin, Vector3D normal) :_origin(origin), _normal(normal)
         {
         };
+
+        Point3D _origin;
+        Vector3D _normal;
 
         double hits(const Ray &ray) const override;
 };
