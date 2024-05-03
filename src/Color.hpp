@@ -37,4 +37,19 @@ public:
     {
         return Color(_r + color._r, _g + color._g, _b + color._b);
     }
+
+    inline uint8_t getR() const
+    {
+        return static_cast<uint8_t>(_r);
+    }
+
+    inline uint8_t getG() const
+    {
+        return static_cast<uint8_t>(_g);
+    }
+
+    inline uint8_t getB() const
+    {
+        return static_cast<uint8_t>(_b);
+    }
 };

@@ -9,9 +9,10 @@
 #define MAIN_HPP_
 
 #include "Camera.hpp"
+#include "Lights/ILight.hpp"
 #include "Parameters.hpp"
 #include "Primitives/Sphere.hpp"
-#include "ILight.hpp"
+#include "Scene/World.hpp"
 
 class Main {
 public:
@@ -25,10 +26,11 @@ public:
     int _ac;
     char **_av;
     Parameters _params;
+    World _world;
     auto run() -> int;
 
-    auto render_image(uint32_t image_width, uint32_t image_height, Camera &cam, Sphere &sphere, ILight &light) -> void;
-
+    auto render_image(sf::Uint8 *pixels, uint32_t image_width, uint32_t image_height) -> void;
+    auto render_real_time(sf::Uint8 *pixels, uint32_t image_width, uint32_t image_height) -> void;
     auto arg_parse() -> bool;
 
 protected:
