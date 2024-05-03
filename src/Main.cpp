@@ -142,6 +142,14 @@ auto Main::render_real_time(sf::Uint8 *pixels, uint32_t image_width, uint32_t im
     }
 }
 
+static void
+writePixelInPPM(std::ofstream &out, sf::Uint8 *pixels, uint32_t i, uint32_t j, uint32_t image_width)
+{
+    out << static_cast<int>(pixels[(j * image_width + i) * 4 + 0]) << ' '
+        << static_cast<int>(pixels[(j * image_width + i) * 4 + 1]) << ' '
+        << static_cast<int>(pixels[(j * image_width + i) * 4 + 2]) << '\n';
+}
+
 auto Main::render_image(sf::Uint8 *pixels, uint32_t image_width, uint32_t image_height) -> void
 {
     std::string file_name = _params._output_file.empty() ? "output.ppm" : _params._output_file;
@@ -150,8 +158,7 @@ auto Main::render_image(sf::Uint8 *pixels, uint32_t image_width, uint32_t image_
 
     for (uint32_t j = 0; j < image_height; ++j) {
         for (uint32_t i = 0; i < image_width; ++i) {
-            out << pixels[(j * image_width + i) * 4 + 0] << ' ' << pixels[(j * image_width + i) * 4 + 1]
-                << ' ' << pixels[(j * image_width + i) * 4 + 2] << '\n';
+            writePixelInPPM(out, pixels, i, j, image_width);
         }
     }
     std::cout << "Image saved to " << file_name << std::endl;
