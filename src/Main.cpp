@@ -37,35 +37,35 @@ auto Main::arg_parse() -> bool
     return true;
 }
 
-static Color add_light_to_sphere(const Ray &ray, Sphere &sphere, ILight &light)
+static Color add_light_to_sphere(const Ray &ray, std::shared_ptr<Sphere> sphere, std::shared_ptr<ILight> light)
 {
     Color result = Color(0, 0, 0);
-    double t = sphere.hits(ray);
+    double t = sphere->hits(ray);
     if (t == -1)
         return result;
     Point3D hit_point = ray.at(t);
-    Vector3D normal = (hit_point - sphere._center).normalize();
-    Vector3D light_direction = (hit_point - light._origin).normalize();
+    Vector3D normal = (hit_point - sphere->_center).normalize();
+    Vector3D light_direction = (hit_point - light->_origin).normalize();
     double light_intensity = normal.dot(light_direction);
     if (light_intensity > 0) {
-        result = sphere._color * light_intensity * light._intensity;
+        result = sphere->_color * light_intensity * light->_intensity;
     }
     return result;
 }
 
 auto render_frame(
-    sf::Uint8 *pixels, uint32_t image_width, uint32_t image_height, Camera &cam,
-    std::shared_ptr<IPrimitive> primitive, std::shared_ptr<ILight> light
-) -> void
+    sf::Uint8 *pixels, uint32_t image_width, uint32_t image_height, World &world) -> void
 {
-    auto sphere = Sphere(Point3D(0, -0.5, -1), 0.2, Color(255, 0, 0));
-    auto light_point = LightPoint(Point3D(1, -0.8, -1.5), 1);
     for (uint32_t j = 0; j < image_height; ++j) {
         for (uint32_t i = 0; i < image_width; ++i) {
             double u = double(i) / (image_width - 1);
             double v = double(j) / (image_height - 1);
+            Color color = Color(0, 0, 0);
 
-            Color color = add_light_to_sphere(cam.ray(u, v), sphere, light_point);
+            // if (world.hits(world.camera.ray(u, v)) != -1) {
+            //     color = Color(255, 0, 0);
+            // }
+            color = add_light_to_sphere(world.camera.ray(u, v), std::dynamic_pointer_cast<Sphere>(world.primitives[0]), world.lights[0]);
             pixels[(j * image_width + i) * 4 + 0] = color.getR();
             pixels[(j * image_width + i) * 4 + 1] = color.getG();
             pixels[(j * image_width + i) * 4 + 2] = color.getB();
@@ -132,9 +132,7 @@ auto Main::render_real_time(sf::Uint8 *pixels, uint32_t image_width, uint32_t im
 
     while (window.isOpen()) {
         handle_events(window, _world.camera);
-        for (auto &primitive : _world.primitives) {
-            render_frame(pixels, image_width, image_height, _world.camera, primitive, _world.lights[0]);
-        }
+        render_frame(pixels, image_width, image_height, _world);
         window.clear();
         texture.update(pixels);
         window.draw(sprite);
@@ -169,7 +167,6 @@ auto Main::run() -> int
 {
     const uint32_t image_width = 400;
     const uint32_t image_height = 400;
-    LightPoint light = LightPoint(Point3D(1, -0.8, -1.5), 1);
     Camera cam;
 
     _world.addPrimitive(std::make_shared<Sphere>(Point3D(0, -0.5, -1), 0.2, Color(255, 0, 0)));
@@ -180,7 +177,7 @@ auto Main::run() -> int
         render_real_time(pixels, image_width, image_height);
     }
     if (!_params._scene_file.empty()) {
-        render_frame(pixels, image_width, image_height, cam, _world.primitives[0], _world.lights[0]);
+        render_frame(pixels, image_width, image_height, _world);
         render_image(pixels, image_width, image_height);
     }
     delete[] pixels;
