@@ -84,14 +84,7 @@ public:
         defocus_disk_v = v * defocus_radius;
     }
 
-    Ray ray(double u, double v) const
-    {
-        Point3D point = _screen.pointAt(u, v);
-        Vector3D direction = point - _origin;
-        return Ray(_origin, direction);
-    }
-
-    void move(const Vector3D &direction) { _origin = _origin + direction; }
+    void move(const Vector3D &direction) { origin = origin + direction; }
 
     Ray get_ray(double u, double v) const
     {
@@ -107,7 +100,8 @@ public:
         return Ray(ray_origin, ray_direction, ray_time);
     }
 
-    color ray_color(const Ray &r, int depth, const World &world) const
+
+    Color ray_color(const Ray& r, int depth, const World& world) const
     {
         // If we've exceeded the ray bounce limit, no more light is gathered.
         if (depth <= 0)

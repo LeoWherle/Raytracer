@@ -1,4 +1,5 @@
 
+#pragma once
 #include <limits>
 
 class Interval {

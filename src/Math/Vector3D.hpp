@@ -53,6 +53,10 @@ public:
         return (fabs(_x) < s) && (fabs(_y) < s) && (fabs(_z) < s);
     }
 
+    static inline Vector3D reflect(const Vector3D& v, const Vector3D& n) {
+        return v - (n * (v.dot(n) * 2));
+    }
+
     inline Vector3D operator-() const { return Vector3D(-_x, -_y, -_z); }
 
     inline Vector3D operator+(const Vector3D &other) const

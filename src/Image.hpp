@@ -34,17 +34,17 @@ public:
         _pixels.resize(width * height * 4);
     }
 
-    void setPixel(int x, int y, sf::Color pixel_color)
+    void set_pixel(int x, int y, Color pixel_color)
     {
         auto color = pixel_color.to_gamma().clamp(256);
         auto index = (x + y * _width) * 4;
-        _pixels[index] = color.r;
-        _pixels[index + 1] = color.g;
-        _pixels[index + 2] = color.b;
+        _pixels[index] = color._r;
+        _pixels[index + 1] = color._g;
+        _pixels[index + 2] = color._b;
     }
 
 private:
-    static void writePixelInPPM(std::ofstream &out, uint32_t i, uint32_t j)
+    void writePixelInPPM(std::ofstream &out, uint32_t i, uint32_t j)
     {
         out << static_cast<int>(_pixels[(j * _width + i) * 4 + 0]) << ' '
             << static_cast<int>(_pixels[(j * _width + i) * 4 + 1]) << ' '
