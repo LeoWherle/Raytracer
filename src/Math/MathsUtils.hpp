@@ -8,6 +8,7 @@
 #pragma once
 
 #include <cmath>
+#include "Vector3D.hpp"
 
 namespace mathsUtils {
 
@@ -33,5 +34,17 @@ namespace mathsUtils {
         if (x > max)
             return max;
         return x;
+    }
+
+    inline Vector3D random_in_unit_sphere() {
+    while (true) {
+        auto p = Vector3D::random(-1,1);
+        if (p.length_squared() < 1)
+            return p;
+    }
+    }
+
+    inline Vector3D random_unit_vector() {
+        return Vector3D::unit(random_in_unit_sphere());
     }
 };

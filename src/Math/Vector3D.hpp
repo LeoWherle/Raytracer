@@ -38,6 +38,21 @@ public:
     inline Vector3D unit() const { return *this / length(); }
     static inline Vector3D unit(const Vector3D &v) { return v / v.length(); }
 
+    static inline Vector3D random(double min, double max)
+    {
+        return Vector3D(
+            min + (max - min) * rand() / (RAND_MAX + 1.0),
+            min + (max - min) * rand() / (RAND_MAX + 1.0),
+            min + (max - min) * rand() / (RAND_MAX + 1.0)
+        );
+    }
+
+    bool near_zero() const {
+        // Return true if the vector is close to zero in all dimensions.
+        auto s = 1e-8;
+        return (fabs(_x) < s) && (fabs(_y) < s) && (fabs(_z) < s);
+    }
+
     inline Vector3D operator-() const { return Vector3D(-_x, -_y, -_z); }
 
     inline Vector3D operator+(const Vector3D &other) const
