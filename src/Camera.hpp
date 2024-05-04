@@ -9,6 +9,7 @@
 
 #include "Math/Point3D.hpp"
 #include "Math/Rectangle3D.hpp"
+#include "Math/MathsUtils.hpp"
 #include "Ray.hpp"
 #include "math.h"
 
@@ -48,7 +49,7 @@ private:
         center = origin;
 
         // Determine viewport dimensions.
-        auto theta = degrees_to_radians(vfov);
+        auto theta = mathsUtils::degrees_to_radians(vfov);
         auto h = tan(theta / 2);
         auto viewport_height = 2 * h * focus_dist;
         auto viewport_width = viewport_height * (float(image_width) / image_height);
@@ -72,7 +73,7 @@ private:
         pixel00_loc = viewport_upper_left + (pixel_delta_u + pixel_delta_v) * 0.5;
 
         // Calculate the camera defocus disk basis vectors.
-        auto defocus_radius = focus_dist * tan(degrees_to_radians(defocus_angle / 2));
+        auto defocus_radius = focus_dist * tan(mathsUtils::degrees_to_radians(defocus_angle / 2));
         defocus_disk_u = u * defocus_radius;
         defocus_disk_v = v * defocus_radius;
     }
