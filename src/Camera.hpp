@@ -47,7 +47,9 @@ private:
     Vector3D defocus_disk_v;
 
 public:
-    Camera()
+    Camera() = default;
+
+    void update()
     {
         image_height = int(image_width / aspect_ratio);
         image_height = (image_height < 1) ? 1 : image_height;
@@ -135,6 +137,7 @@ public:
 
     void render(World &world, Image &image)
     {
+        update();
         image.resize(image_width, image_height);
         for (int j = 0; j < image_height; j++) {
             for (int i = 0; i < image_width; i++) {
