@@ -12,6 +12,7 @@
 #include "Math/MathsUtils.hpp"
 #include "Ray.hpp"
 #include "math.h"
+#include "Color.hpp"
 
 class Camera {
 public:
@@ -39,6 +40,7 @@ private:
     Vector3D defocus_disk_u;
     Vector3D defocus_disk_v;
 
+public:
     Camera()
     {
         image_height = int(image_width / aspect_ratio);
