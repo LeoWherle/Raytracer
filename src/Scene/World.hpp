@@ -10,9 +10,11 @@
 #include <memory>
 #include <vector>
 
-#include "Camera.hpp"
 #include "Lights/ILight.hpp"
 #include "Primitives/IPrimitive.hpp"
+#include "Ray.hpp"
+#include "Interval.hpp"
+#include "HitRecord.hpp"
 
 class World : public IPrimitive {
 public:
@@ -20,23 +22,26 @@ public:
     ~World() = default;
 
     std::vector<std::shared_ptr<IPrimitive>> primitives;
-    std::vector<std::shared_ptr<ILight>> lights;
-    Camera camera;
 
     void addPrimitive(std::shared_ptr<IPrimitive> primitive) { primitives.push_back(move(primitive)); }
-    void addLight(std::shared_ptr<ILight> light) { lights.push_back(move(light)); }
 
-    double hits(const Ray &ray) const override
+    bool hit(const Ray& r, Interval ray_d, HitRecord& rec) const override
     {
-        double closest = -1;
-        for (const auto &primitive : primitives) {
-            double t = primitive->hits(ray);
-            if (t > 0 && (t < closest || closest == -1)) {
-                closest = t;
+        HitRecord temp_rec;
+        bool hit_anything = false;
+        auto closest_so_far = ray_d.max;
+
+        for (const auto& object : objects) {
+            if (object->hit(r, interval(ray_d.min, closest_so_far), temp_rec)) {
+                hit_anything = true;
+                closest_so_far = temp_rec.t;
+                rec = temp_rec;
             }
         }
-        return closest;
+
+        return hit_anything;
     }
+
 
 protected:
 private:
