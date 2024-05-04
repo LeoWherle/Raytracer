@@ -8,6 +8,7 @@
 #pragma once
 
 #include <cmath>
+
 class Vector3D {
 public:
     Vector3D() = default;
@@ -98,11 +99,6 @@ public:
         _y /= scalar;
         _z /= scalar;
         return *this;
-    }
-
-    Vector3D operator-(const Point3D &point) const
-    {
-        return Vector3D(_x - point._x, _y - point._y, _z - point._z);
     }
 
 protected:

@@ -12,28 +12,30 @@
 #include "Math/Point3D.hpp"
 #include "Math/Rectangle3D.hpp"
 #include "Ray.hpp"
+#include "math.h"
+#include "Color.hpp"
 #include "Interval.hpp"
 #include "HitRecord.hpp"
 
 class Camera {
 public:
-    float aspect_ratio = 1.0; // Can be 16:9, 4:3, etc.
+    double aspect_ratio = 1.0; // Can be 16:9, 4:3, etc.
     int image_width = 100;
     int samples_per_pixel = 10;
     int max_depth = 10;
     Color background;
 
-    float vfov = 90;
+    double vfov = 90;
     Point3D origin = Point3D(0, 0, 0);
     Point3D lookat = Point3D(0, 0, -1);
     Vector3D vup = Vector3D(0, 1, 0);
 
-    float defocus_angle = 0; // Variation angle of rays through each pixel
-    float focus_dist = 10; // Distance from camera lookfrom point to plane of perfect focus
+    double defocus_angle = 0; // Variation angle of rays through each pixel
+    double focus_dist = 10; // Distance from camera lookfrom point to plane of perfect focus
 
 private:
     int image_height;
-    float pixel_samples_scale;
+    double pixel_samples_scale;
     Point3D center;
     Vector3D pixel_delta_u;
     Vector3D pixel_delta_v;
@@ -41,6 +43,7 @@ private:
     Vector3D defocus_disk_u;
     Vector3D defocus_disk_v;
 
+public:
     Camera()
     {
         image_height = int(image_width / aspect_ratio);
@@ -54,7 +57,7 @@ private:
         auto theta = mathsUtils::degrees_to_radians(vfov);
         auto h = tan(theta / 2);
         auto viewport_height = 2 * h * focus_dist;
-        auto viewport_width = viewport_height * (float(image_width) / image_height);
+        auto viewport_width = viewport_height * (double(image_width) / image_height);
 
         // Calculate the u,v,w unit basis vectors for the camera coordinate frame.
         auto w = Vector3D::unit(origin - lookat);
