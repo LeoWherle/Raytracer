@@ -10,14 +10,14 @@
 #include "Ray.hpp"
 #include "Color.hpp"
 #include "Point3D.hpp"
-#include "IMaterial.hpp"
+#include "AMaterial.hpp"
 #include "HitRecord.hpp"
 #include "MathsUtils.hpp"
 #include "Textures/ITexture.hpp"
 #include "Textures/SolidColorTexture.hpp"
 #include <memory>
 
-class MetalMaterial : public IMaterial {
+class MetalMaterial : public AMaterial {
   public:
     // Constructor that takes a Color and a fuzz factor for the material
     // If the fuzz factor is greater than 1, it is clamped to 1

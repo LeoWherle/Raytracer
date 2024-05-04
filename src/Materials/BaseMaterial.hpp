@@ -10,14 +10,14 @@
 #include "Ray.hpp"
 #include "Color.hpp"
 #include "Math/Point3D.hpp"
-#include "IMaterial.hpp"
+#include "AMaterial.hpp"
 #include "HitRecord.hpp"
 #include "Math/MathsUtils.hpp"
 #include "Textures/ITexture.hpp"
 #include "Textures/SolidColorTexture.hpp"
 #include <memory>
 
-class BaseMaterial : public IMaterial {
+class BaseMaterial : public AMaterial {
   public:
     // Constructor that takes a Color and creates a SolidColorTexture from it
     BaseMaterial(const Color& color) : texture(std::make_shared<SolidColorTexture>(color)) {}
