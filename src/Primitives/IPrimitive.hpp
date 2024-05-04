@@ -8,10 +8,11 @@
 #pragma once
 #include "Color.hpp"
 #include "Ray.hpp"
+#include "Interval.hpp"
 
 class IPrimitive {
-    public:
-        virtual ~IPrimitive() = default;
+public:
+    virtual ~IPrimitive() = default;
 
-        virtual double hits(const Ray &) const = 0;
+    virtual bool hits(const Ray &r, Interval ray_max, HitRecord &rec) const = 0;
 };
