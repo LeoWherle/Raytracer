@@ -7,11 +7,13 @@
 
 #pragma once
 
+#include <math.h>
+#include "Math/MathsUtils.hpp"
 #include "Math/Point3D.hpp"
 #include "Math/Rectangle3D.hpp"
-#include "Math/MathsUtils.hpp"
 #include "Ray.hpp"
-#include "math.h"
+#include "Interval.hpp"
+#include "HitRecord.hpp"
 
 class Camera {
 public:
@@ -86,6 +88,60 @@ private:
     }
 
     void move(const Vector3D &direction) { _origin = _origin + direction; }
+
+    Ray get_ray(double u, double v) const
+    {
+
+        auto offset = Vector3D(mathsUtils::random_double() - 0.5, mathsUtils::random_double() - 0.5, 0);
+        auto pixel_sample =
+            pixel00_loc + (pixel_delta_u * (u + offset._x)) + (pixel_delta_v * (v + offset._y));
+
+        auto ray_origin = (defocus_angle <= 0) ? center : defocus_disk_sample();
+        auto ray_direction = pixel_sample - ray_origin;
+        auto ray_time = mathsUtils::random_double();
+
+        return Ray(ray_origin, ray_direction, ray_time);
+    }
+
+
+    color ray_color(const Ray& r, int depth, const World& world) const
+    {
+        // If we've exceeded the ray bounce limit, no more light is gathered.
+        if (depth <= 0)
+            return Color(0, 0, 0);
+
+        HitRecord rec;
+
+        // If the ray hits nothing, return the background color.
+        if (!world.hits(r, Interval(0.001, std::numeric_limits<double>::infinity()), rec))
+            return background;
+
+        Ray scattered;
+        Color attenuation;
+        Color color_from_emission = rec.mat->emitted(rec.u, rec.v, rec.p);
+
+        if (!rec.mat->scatter(r, rec, attenuation, scattered))
+            return color_from_emission;
+
+        Color color_from_scatter = attenuation * ray_color(scattered, depth - 1, world);
+
+        return color_from_emission + color_from_scatter;
+    }
+
+    std::vector<sf::Uint8> render_frame(World &world)
+    {
+        // allocate memory for the image
+        std::vector<sf::Uint8> pixels(image_width * image_height * 4);
+        for (int j = 0; j < image_height; j++) {
+            for (int i = 0; i < image_width; i++) {
+                Color pixel_color(0, 0, 0);
+                for (int sample = 0; sample < samples_per_pixel; sample++) {
+                    Ray r = get_ray(i, j);
+                    pixel_color += ray_color(r, max_depth, world);
+                }
+            }
+        }
+    }
 
 private:
     Point3D _origin;
