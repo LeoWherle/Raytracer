@@ -35,6 +35,9 @@ public:
     }
 
     inline Vector3D unit() const { return *this / length(); }
+    static inline Vector3D unit(const Vector3D &v) { return v / v.length(); }
+
+    inline Vector3D operator-() const { return Vector3D(-_x, -_y, -_z); }
 
     inline Vector3D operator+(const Vector3D &other) const
     {
@@ -95,6 +98,11 @@ public:
         _y /= scalar;
         _z /= scalar;
         return *this;
+    }
+
+    Vector3D operator-(const Point3D &point) const
+    {
+        return Vector3D(_x - point._x, _y - point._y, _z - point._z);
     }
 
 protected:
