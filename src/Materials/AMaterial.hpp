@@ -2,7 +2,7 @@
 ** EPITECH PROJECT, 2024
 ** Raytracer
 ** File description:
-** IMarterial
+** AMarterial
 */
 
 #pragma once
