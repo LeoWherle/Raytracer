@@ -37,7 +37,8 @@ auto Main::arg_parse() -> bool
     return true;
 }
 
-static Color add_light_to_sphere(const Ray &ray, std::shared_ptr<Sphere> sphere, std::shared_ptr<ILight> light)
+static Color
+add_light_to_sphere(const Ray &ray, std::shared_ptr<Sphere> sphere, std::shared_ptr<ILight> light)
 {
     Color result = Color(0, 0, 0);
     double t = sphere->hits(ray);
@@ -51,27 +52,6 @@ static Color add_light_to_sphere(const Ray &ray, std::shared_ptr<Sphere> sphere,
         result = sphere->_color * light_intensity * light->_intensity;
     }
     return result;
-}
-
-auto render_frame(
-    sf::Uint8 *pixels, uint32_t image_width, uint32_t image_height, World &world) -> void
-{
-    for (uint32_t j = 0; j < image_height; ++j) {
-        for (uint32_t i = 0; i < image_width; ++i) {
-            double u = double(i) / (image_width - 1);
-            double v = double(j) / (image_height - 1);
-            Color color = Color(0, 0, 0);
-
-            // if (world.hits(world.camera.ray(u, v)) != -1) {
-            //     color = Color(255, 0, 0);
-            // }
-            color = add_light_to_sphere(world.camera.ray(u, v), std::dynamic_pointer_cast<Sphere>(world.primitives[0]), world.lights[0]);
-            pixels[(j * image_width + i) * 4 + 0] = color.getR();
-            pixels[(j * image_width + i) * 4 + 1] = color.getG();
-            pixels[(j * image_width + i) * 4 + 2] = color.getB();
-            pixels[(j * image_width + i) * 4 + 3] = 255;
-        }
-    }
 }
 
 auto handle_events(sf::RenderWindow &window, Camera &cam) -> void
@@ -123,7 +103,7 @@ auto handle_events(sf::RenderWindow &window, Camera &cam) -> void
     }
 }
 
-auto Main::render_real_time(sf::Uint8 *pixels, uint32_t image_width, uint32_t image_height) -> void
+auto Main::render_real_time() -> void
 {
     sf::RenderWindow window(sf::VideoMode(image_width, image_height), "Raytracer", sf::Style::Close);
     sf::Texture texture;
@@ -131,8 +111,8 @@ auto Main::render_real_time(sf::Uint8 *pixels, uint32_t image_width, uint32_t im
     sf::Sprite sprite(texture);
 
     while (window.isOpen()) {
-        handle_events(window, _world.camera);
-        render_frame(pixels, image_width, image_height, _world);
+        handle_events(window, _camera);
+        _camera.render(_image, _world);
         window.clear();
         texture.update(pixels);
         window.draw(sprite);
@@ -140,47 +120,21 @@ auto Main::render_real_time(sf::Uint8 *pixels, uint32_t image_width, uint32_t im
     }
 }
 
-static void
-writePixelInPPM(std::ofstream &out, sf::Uint8 *pixels, uint32_t i, uint32_t j, uint32_t image_width)
-{
-    out << static_cast<int>(pixels[(j * image_width + i) * 4 + 0]) << ' '
-        << static_cast<int>(pixels[(j * image_width + i) * 4 + 1]) << ' '
-        << static_cast<int>(pixels[(j * image_width + i) * 4 + 2]) << '\n';
-}
-
-auto Main::render_image(sf::Uint8 *pixels, uint32_t image_width, uint32_t image_height) -> void
-{
-    std::string file_name = _params._output_file.empty() ? "output.ppm" : _params._output_file;
-    std::ofstream out(file_name);
-    out << "P3\n" << image_width << ' ' << image_height << "\n255\n";
-
-    for (uint32_t j = 0; j < image_height; ++j) {
-        for (uint32_t i = 0; i < image_width; ++i) {
-            writePixelInPPM(out, pixels, i, j, image_width);
-        }
-    }
-    std::cout << "Image saved to " << file_name << std::endl;
-    out.close();
-}
-
 auto Main::run() -> int
 {
     const uint32_t image_width = 400;
     const uint32_t image_height = 400;
-    Camera cam;
 
     _world.addPrimitive(std::make_shared<Sphere>(Point3D(0, -0.5, -1), 0.2, Color(255, 0, 0)));
     _world.addLight(std::make_shared<LightPoint>(Point3D(1, -0.8, -1.5), 1));
-    sf::Uint8 *pixels = new sf::Uint8[image_width * image_height * 4];
 
     if (_params._gui) {
         render_real_time(pixels, image_width, image_height);
     }
     if (!_params._scene_file.empty()) {
-        render_frame(pixels, image_width, image_height, _world);
-        render_image(pixels, image_width, image_height);
+        _camera.render_image(_world, _image);
+        _image.writePPM(_params._scene_file);
     }
-    delete[] pixels;
     return 0;
 }
 

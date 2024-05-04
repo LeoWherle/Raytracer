@@ -7,15 +7,16 @@
 
 #pragma once
 
-#include <math.h>
+#include "Color.hpp"
+#include "HitRecord.hpp"
+#include "Image.hpp"
+#include "Interval.hpp"
 #include "Math/MathsUtils.hpp"
 #include "Math/Point3D.hpp"
 #include "Math/Rectangle3D.hpp"
 #include "Ray.hpp"
 #include "math.h"
-#include "Color.hpp"
-#include "Interval.hpp"
-#include "HitRecord.hpp"
+#include <math.h>
 
 class Camera {
 public:
@@ -106,8 +107,7 @@ public:
         return Ray(ray_origin, ray_direction, ray_time);
     }
 
-
-    color ray_color(const Ray& r, int depth, const World& world) const
+    color ray_color(const Ray &r, int depth, const World &world) const
     {
         // If we've exceeded the ray bounce limit, no more light is gathered.
         if (depth <= 0)
@@ -131,10 +131,9 @@ public:
         return color_from_emission + color_from_scatter;
     }
 
-    std::vector<sf::Uint8> render_frame(World &world)
+    void render_image(World &world, Image &image)
     {
-        // allocate memory for the image
-        std::vector<sf::Uint8> pixels(image_width * image_height * 4);
+        image.resize(image_width, image_height);
         for (int j = 0; j < image_height; j++) {
             for (int i = 0; i < image_width; i++) {
                 Color pixel_color(0, 0, 0);
@@ -142,11 +141,8 @@ public:
                     Ray r = get_ray(i, j);
                     pixel_color += ray_color(r, max_depth, world);
                 }
+                image.set_pixel(i, j, pixel_color * samples_per_pixel);
             }
         }
     }
-
-private:
-    Point3D _origin;
-    Rectangle3D _screen;
 };

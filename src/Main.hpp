@@ -27,6 +27,8 @@ public:
     char **_av;
     Parameters _params;
     World _world;
+    Camera _camera;
+    Image _image;
     auto run() -> int;
 
     auto render_image(sf::Uint8 *pixels, uint32_t image_width, uint32_t image_height) -> void;
