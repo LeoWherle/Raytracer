@@ -107,7 +107,7 @@ public:
     }
 
 
-    color ray_color(const Ray& r, int depth, const World& world) const
+    Color ray_color(const Ray& r, int depth, const World& world) const
     {
         // If we've exceeded the ray bounce limit, no more light is gathered.
         if (depth <= 0)
