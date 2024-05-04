@@ -30,9 +30,7 @@ public:
     Camera _camera;
     Image _image;
     auto run() -> int;
-
-    auto render_image(sf::Uint8 *pixels, uint32_t image_width, uint32_t image_height) -> void;
-    auto render_real_time(sf::Uint8 *pixels, uint32_t image_width, uint32_t image_height) -> void;
+    auto render_real_time() -> void;
     auto arg_parse() -> bool;
 
 protected:

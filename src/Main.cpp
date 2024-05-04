@@ -23,6 +23,7 @@
 
 #include <SFML/Graphics.hpp>
 #include <ostream>
+#include "Materials/BaseMaterial.hpp"
 #include <string>
 
 auto Main::arg_parse() -> bool
@@ -35,23 +36,6 @@ auto Main::arg_parse() -> bool
         return false;
     }
     return true;
-}
-
-static Color
-add_light_to_sphere(const Ray &ray, std::shared_ptr<Sphere> sphere, std::shared_ptr<ILight> light)
-{
-    Color result = Color(0, 0, 0);
-    double t = sphere->hits(ray);
-    if (t == -1)
-        return result;
-    Point3D hit_point = ray.at(t);
-    Vector3D normal = (hit_point - sphere->_center).normalize();
-    Vector3D light_direction = (hit_point - light->_origin).normalize();
-    double light_intensity = normal.dot(light_direction);
-    if (light_intensity > 0) {
-        result = sphere->_color * light_intensity * light->_intensity;
-    }
-    return result;
 }
 
 auto handle_events(sf::RenderWindow &window, Camera &cam) -> void
@@ -105,16 +89,18 @@ auto handle_events(sf::RenderWindow &window, Camera &cam) -> void
 
 auto Main::render_real_time() -> void
 {
-    sf::RenderWindow window(sf::VideoMode(image_width, image_height), "Raytracer", sf::Style::Close);
+    sf::RenderWindow window(
+        sf::VideoMode(_camera.image_width, _camera.image_height), "Raytracer", sf::Style::Close
+    );
     sf::Texture texture;
-    texture.create(image_width, image_height);
+    texture.create(_camera.image_width, _camera.image_height);
     sf::Sprite sprite(texture);
 
     while (window.isOpen()) {
         handle_events(window, _camera);
-        _camera.render(_image, _world);
+        _camera.render(_world, _image);
         window.clear();
-        texture.update(pixels);
+        texture.update(_image.get_stream());
         window.draw(sprite);
         window.display();
     }
@@ -122,17 +108,15 @@ auto Main::render_real_time() -> void
 
 auto Main::run() -> int
 {
-    const uint32_t image_width = 400;
-    const uint32_t image_height = 400;
-
-    _world.addPrimitive(std::make_shared<Sphere>(Point3D(0, -0.5, -1), 0.2, Color(255, 0, 0)));
-    _world.addLight(std::make_shared<LightPoint>(Point3D(1, -0.8, -1.5), 1));
+    _world.addPrimitive(
+        std::make_shared<Sphere>(Point3D(0, -0.5, -1), 0.2, std::make_shared<BaseMaterial>(Color(255, 0, 0)))
+    );
 
     if (_params._gui) {
-        render_real_time(pixels, image_width, image_height);
+        render_real_time();
     }
     if (!_params._scene_file.empty()) {
-        _camera.render_image(_world, _image);
+        _camera.render(_world, _image);
         _image.writePPM(_params._scene_file);
     }
     return 0;

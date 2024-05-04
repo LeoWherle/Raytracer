@@ -9,10 +9,10 @@
 
 #include "Ray.hpp"
 #include "Color.hpp"
-#include "Point3D.hpp"
+#include "Math/Point3D.hpp"
 #include "IMaterial.hpp"
 #include "HitRecord.hpp"
-#include "MathsUtils.hpp"
+#include "Math/MathsUtils.hpp"
 #include "Textures/ITexture.hpp"
 #include "Textures/SolidColorTexture.hpp"
 #include <memory>

@@ -8,6 +8,7 @@
 #pragma once
 
 #include "Math/Vector3D.hpp"
+#include "Interval.hpp"
 #include <cstdint>
 
 class Color {
@@ -40,6 +41,11 @@ public:
         _g += color._g;
         _b += color._b;
         return *this;
+    }
+
+    inline Color operator*(const Color &color) const
+    {
+        return Color(_r * color._r, _g * color._g, _b * color._b);
     }
 
     inline uint8_t getR() const

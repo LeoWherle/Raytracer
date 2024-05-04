@@ -38,9 +38,9 @@ public:
     {
         auto color = pixel_color.to_gamma().clamp(256);
         auto index = (x + y * _width) * 4;
-        _pixels[index] = color._r;
-        _pixels[index + 1] = color._g;
-        _pixels[index + 2] = color._b;
+        _pixels[index] = color.getR();
+        _pixels[index + 1] = color.getG();
+        _pixels[index + 2] = color.getB();
     }
 
 private:
@@ -52,15 +52,16 @@ private:
     }
 
 public:
-    
+
+    auto get_stream() -> sf::Uint8 * { return _pixels.data(); }
 
 public:
     void writePPM(const std::string &filename)
     {
         std::ofstream out(filename);
         out << "P3\n" << _width << ' ' << _height << "\n255\n";
-        for (uint32_t j = 0; j < _height; j++) {
-            for (uint32_t i = 0; i < _width; i++) {
+        for (int j = 0; j < _height; j++) {
+            for (int i = 0; i < _width; i++) {
                 writePixelInPPM(out, i, j);
             }
         }
@@ -72,6 +73,7 @@ public:
         image.create(_width, _height, _pixels.data());
         image.saveToFile(filename);
     }
+
 
 protected:
 private:

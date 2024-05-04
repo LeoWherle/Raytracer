@@ -10,11 +10,11 @@
 #include <memory>
 #include <vector>
 
+#include "HitRecord.hpp"
+#include "Interval.hpp"
 #include "Lights/ILight.hpp"
 #include "Primitives/IPrimitive.hpp"
 #include "Ray.hpp"
-#include "Interval.hpp"
-#include "HitRecord.hpp"
 
 class World : public IPrimitive {
 public:
@@ -25,14 +25,14 @@ public:
 
     void addPrimitive(std::shared_ptr<IPrimitive> primitive) { primitives.push_back(move(primitive)); }
 
-    bool hit(const Ray& r, Interval ray_d, HitRecord& rec) const override
+    bool hits(const Ray &r, Interval ray_d, HitRecord &rec) const override
     {
         HitRecord temp_rec;
         bool hit_anything = false;
         auto closest_so_far = ray_d.max;
 
-        for (const auto& object : objects) {
-            if (object->hit(r, interval(ray_d.min, closest_so_far), temp_rec)) {
+        for (const auto &object : primitives) {
+            if (object->hits(r, Interval(ray_d.min, closest_so_far), temp_rec)) {
                 hit_anything = true;
                 closest_so_far = temp_rec.t;
                 rec = temp_rec;
@@ -41,7 +41,6 @@ public:
 
         return hit_anything;
     }
-
 
 protected:
 private:

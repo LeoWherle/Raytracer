@@ -16,6 +16,7 @@
 #include "Math/Rectangle3D.hpp"
 #include "Ray.hpp"
 #include "math.h"
+#include "Scene/World.hpp"
 #include <math.h>
 
 class Camera {
@@ -34,8 +35,8 @@ public:
     double defocus_angle = 0; // Variation angle of rays through each pixel
     double focus_dist = 10; // Distance from camera lookfrom point to plane of perfect focus
 
-private:
     int image_height;
+private:
     double pixel_samples_scale;
     Point3D center;
     Vector3D pixel_delta_u;
@@ -100,8 +101,14 @@ public:
         return Ray(ray_origin, ray_direction, ray_time);
     }
 
+    Point3D defocus_disk_sample() const
+    {
+        // Returns a random point in the camera defocus disk.
+        auto point = mathsUtils::random_in_unit_disks();
+        return center + (defocus_disk_u * point._x) + (defocus_disk_v * point._y);
+    }
 
-    Color ray_color(const Ray& r, int depth, const World& world) const
+    Color ray_color(const Ray &r, int depth, const World &world) const
     {
         // If we've exceeded the ray bounce limit, no more light is gathered.
         if (depth <= 0)
@@ -115,17 +122,17 @@ public:
 
         Ray scattered;
         Color attenuation;
-        Color color_from_emission = rec.mat->emitted(rec.u, rec.v, rec.p);
+        Color color_from_emission = rec.material->emitted(rec.u, rec.v, rec.p);
 
-        if (!rec.mat->scatter(r, rec, attenuation, scattered))
+        if (!rec.material->scatter(r, rec, attenuation, scattered))
             return color_from_emission;
 
-        Color color_from_scatter = attenuation * ray_color(scattered, depth - 1, world);
+        Color color_from_scatter = ray_color(scattered, depth - 1, world) * attenuation;
 
         return color_from_emission + color_from_scatter;
     }
 
-    void render_image(World &world, Image &image)
+    void render(World &world, Image &image)
     {
         image.resize(image_width, image_height);
         for (int j = 0; j < image_height; j++) {

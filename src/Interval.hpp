@@ -4,7 +4,7 @@
 
 class Interval {
 public:
-    float min, max;
+    double min, max;
 
     Interval():
         min(+std::numeric_limits<double>::infinity()),
@@ -12,9 +12,9 @@ public:
     {
     } // Default interval is empty
 
-    Interval(float min, float max):
-        min(min),
-        max(max)
+    Interval(double min_, double max_):
+        min(min_),
+        max(max_)
     {
     }
 
@@ -25,13 +25,13 @@ public:
         max = a.max >= b.max ? a.max : b.max;
     }
 
-    float size() const { return max - min; }
+    double size() const { return max - min; }
 
-    bool contains(float x) const { return min <= x && x <= max; }
+    bool contains(double x) const { return min <= x && x <= max; }
 
-    bool surrounds(float x) const { return min < x && x < max; }
+    bool surrounds(double x) const { return min < x && x < max; }
 
-    float clamp(float x) const
+    double clamp(double x) const
     {
         if (x < min)
             return min;
@@ -40,7 +40,7 @@ public:
         return x;
     }
 
-    Interval expand(float delta) const
+    Interval expand(double delta) const
     {
         auto padding = delta / 2;
         return Interval(min - padding, max + padding);
@@ -54,9 +54,9 @@ const Interval Interval::empty =
 const Interval Interval::universe =
     Interval(-std::numeric_limits<double>::infinity(), +std::numeric_limits<double>::infinity());
 
-Interval operator+(const Interval &ival, float displacement)
+Interval operator+(const Interval &ival, double displacement)
 {
     return Interval(ival.min + displacement, ival.max + displacement);
 }
 
-Interval operator+(float displacement, const Interval &ival) { return ival + displacement; }
+Interval operator+(double displacement, const Interval &ival) { return ival + displacement; }

@@ -17,13 +17,13 @@ class Sphere : public IPrimitive {
 private:
     Point3D origin;
     float radius;
-    std::shared_ptr<IMaterial> mat;
+    std::shared_ptr<IMaterial> material;
     Vector3D origin_vec;
 
-    Sphere(const Point3D &origin, double radius, const Color &color):
-        _origin(origin),
-        _radius(radius),
-        _color(color)
+    Sphere(const Point3D &center, const Point3D &center2, float radius, std::shared_ptr<IMaterial> mat):
+        origin(center),
+        radius(fmax(0, radius)),
+        material(mat)
     {
     }
 
@@ -31,7 +31,7 @@ private:
     {
         Vector3D oc = origin - r.origin();
         auto a = r.direction().length_squared();
-        auto h = dot(r.direction(), oc);
+        auto h = r.direction().dot(oc);
         auto c = oc.length_squared() - radius * radius;
 
         auto discriminant = h * h - a * c;
@@ -54,15 +54,15 @@ private:
         Vector3D outward_normal = (hitrec.p - origin) / radius;
         hitrec.set_face_normal(r, outward_normal);
         get_sphere_uv(outward_normal, hitrec.u, hitrec.v);
-        hitrec.mat = mat;
+        hitrec.material = material;
 
         return true;
     }
 
-    void get_sphere_uv(const Point3D &p, double &u, double &v) const
+    void get_sphere_uv(const Vector3D &p, double &u, double &v) const
     {
-        auto theta = acos(-p.y);
-        auto phi = atan2(-p.z, p.x) + M_PI;
+        auto theta = acos(-p._y);
+        auto phi = atan2(-p._z, p._x) + M_PI;
 
         u = phi / (2 * M_PI);
         v = theta / M_PI;

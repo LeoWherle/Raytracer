@@ -9,6 +9,7 @@
 #include "Color.hpp"
 #include "Ray.hpp"
 #include "Interval.hpp"
+#include "HitRecord.hpp"
 
 class IPrimitive {
 public:
