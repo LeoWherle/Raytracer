@@ -7,13 +7,13 @@
 
 #pragma once
 
-#include "Ray.hpp"
 #include "Color.hpp"
 #include "Math/Point3D.hpp"
+#include "Ray.hpp"
 
 class ITexture {
-  public:
+public:
     virtual ~ITexture() = default;
 
-    virtual Color value(double u, double v, const Point3D& point) const = 0;
+    virtual Color value(double u, double v, const Point3D &point) const = 0;
 };

@@ -22,7 +22,7 @@ public:
     {
     }
 
-    Ray(const Point3D &origin, const Vector3D &direction, float time):
+    Ray(const Point3D &origin, const Vector3D &direction, double time):
         _origin(origin),
         _direction(direction),
         _tm(time)
@@ -32,12 +32,12 @@ public:
     const Point3D &origin() const { return _origin; }
     const Vector3D &direction() const { return _direction; }
 
-    float time() const { return _tm; }
+    double time() const { return _tm; }
 
     Point3D at(double t) const { return _origin + _direction * t; }
 
 private:
     Point3D _origin;
     Vector3D _direction;
-    float _tm;
+    double _tm;
 };

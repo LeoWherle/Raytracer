@@ -7,24 +7,18 @@
 
 #pragma once
 
-#include "Ray.hpp"
 #include "Color.hpp"
-#include "Math/Point3D.hpp"
 #include "IMaterial.hpp"
+#include "Math/Point3D.hpp"
+#include "Ray.hpp"
 
 class HitRecord;
 
 class AMaterial : public IMaterial {
-  public:
+public:
     virtual ~AMaterial() = default;
 
-    virtual Color emitted(double u, double v, const Point3D& point) const {
-        return Color(0,0,0);
-    }
+    virtual Color emitted(double, double, const Point3D &) const { return Color(0, 0, 0); }
 
-    virtual bool scatter(
-        const Ray& r_in, const HitRecord& rec, Color& attenuation, Ray& scattered
-    ) const {
-        return false;
-    }
+    virtual bool scatter(const Ray &, const HitRecord &, Color &, Ray &) const { return false; }
 };

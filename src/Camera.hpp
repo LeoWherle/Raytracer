@@ -15,8 +15,8 @@
 #include "Math/Point3D.hpp"
 #include "Math/Rectangle3D.hpp"
 #include "Ray.hpp"
-#include "math.h"
 #include "Scene/World.hpp"
+#include "math.h"
 #include <math.h>
 
 class Camera {
@@ -36,6 +36,7 @@ public:
     double focus_dist = 10; // Distance from camera lookfrom point to plane of perfect focus
 
     int image_height;
+
 private:
     double pixel_samples_scale;
     Point3D center;

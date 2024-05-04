@@ -5,11 +5,8 @@
 ** Main
 */
 
-#ifndef MAIN_HPP_
-#define MAIN_HPP_
-
+#pragma once
 #include "Camera.hpp"
-#include "Lights/ILight.hpp"
 #include "Parameters.hpp"
 #include "Primitives/Sphere.hpp"
 #include "Scene/World.hpp"
@@ -26,9 +23,10 @@ public:
     int _ac;
     char **_av;
     Parameters _params;
-    World _world;
     Camera _camera;
+    World _world;
     Image _image;
+
     auto run() -> int;
     auto render_real_time() -> void;
     auto arg_parse() -> bool;
@@ -36,5 +34,3 @@ public:
 protected:
 private:
 };
-
-#endif /* !MAIN_HPP_ */

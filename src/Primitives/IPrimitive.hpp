@@ -7,9 +7,9 @@
 
 #pragma once
 #include "Color.hpp"
-#include "Ray.hpp"
-#include "Interval.hpp"
 #include "HitRecord.hpp"
+#include "Interval.hpp"
+#include "Ray.hpp"
 
 class IPrimitive {
 public:

@@ -41,21 +41,19 @@ public:
     static inline Vector3D random(double min, double max)
     {
         return Vector3D(
-            min + (max - min) * rand() / (RAND_MAX + 1.0),
-            min + (max - min) * rand() / (RAND_MAX + 1.0),
+            min + (max - min) * rand() / (RAND_MAX + 1.0), min + (max - min) * rand() / (RAND_MAX + 1.0),
             min + (max - min) * rand() / (RAND_MAX + 1.0)
         );
     }
 
-    bool near_zero() const {
+    bool near_zero() const
+    {
         // Return true if the vector is close to zero in all dimensions.
         auto s = 1e-8;
         return (fabs(_x) < s) && (fabs(_y) < s) && (fabs(_z) < s);
     }
 
-    static inline Vector3D reflect(const Vector3D& v, const Vector3D& n) {
-        return v - (n * (v.dot(n) * 2));
-    }
+    static inline Vector3D reflect(const Vector3D &v, const Vector3D &n) { return v - (n * (v.dot(n) * 2)); }
 
     inline Vector3D operator-() const { return Vector3D(-_x, -_y, -_z); }
 

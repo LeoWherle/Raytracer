@@ -16,23 +16,24 @@
 class Sphere : public IPrimitive {
 private:
     Point3D origin;
-    float radius;
+    double _radius;
     std::shared_ptr<IMaterial> material;
     Vector3D origin_vec;
 
-    Sphere(const Point3D &center, const Point3D &center2, float radius, std::shared_ptr<IMaterial> mat):
+public:
+    Sphere(const Point3D &center, double radius, std::shared_ptr<IMaterial> mat):
         origin(center),
-        radius(fmax(0, radius)),
+        _radius(fmax(0, radius)),
         material(mat)
     {
     }
 
-    bool hits(const Ray &r, Interval ray_d, HitRecord &hitrec) const override
+    bool hits(const Ray &ray, Interval ray_d, HitRecord &hitrec) const override
     {
-        Vector3D oc = origin - r.origin();
-        auto a = r.direction().length_squared();
-        auto h = r.direction().dot(oc);
-        auto c = oc.length_squared() - radius * radius;
+        Vector3D oc = origin - ray.origin();
+        auto a = ray.direction().length_squared();
+        auto h = ray.direction().dot(oc);
+        auto c = oc.length_squared() - _radius * _radius;
 
         auto discriminant = h * h - a * c;
         if (discriminant < 0) {
@@ -50,9 +51,9 @@ private:
         }
 
         hitrec.t = root;
-        hitrec.p = r.at(hitrec.t);
-        Vector3D outward_normal = (hitrec.p - origin) / radius;
-        hitrec.set_face_normal(r, outward_normal);
+        hitrec.p = ray.at(hitrec.t);
+        Vector3D outward_normal = (hitrec.p - origin) / _radius;
+        hitrec.set_face_normal(ray, outward_normal);
         get_sphere_uv(outward_normal, hitrec.u, hitrec.v);
         hitrec.material = material;
 

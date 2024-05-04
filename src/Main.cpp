@@ -5,26 +5,12 @@
 ** Main
 */
 
-#include <SFML/Config.hpp>
-#include <SFML/Graphics/RenderWindow.hpp>
-#include <SFML/Window/Keyboard.hpp>
-#include <SFML/Window/Window.hpp>
-#include <cstdint>
-#include <exception>
-#include <fstream>
-#include <iostream>
-
-#include "Camera.hpp"
-#include "Lights/LightPoint.hpp"
 #include "Main.hpp"
-#include "Math/Rectangle3D.hpp"
-#include "Parameters.hpp"
-#include "Primitives/Sphere.hpp"
-
-#include <SFML/Graphics.hpp>
-#include <ostream>
+#include "Camera.hpp"
 #include "Materials/BaseMaterial.hpp"
-#include <string>
+#include "Materials/LightMaterial.hpp"
+#include "Primitives/Sphere.hpp"
+#include "Scene/World.hpp"
 
 auto Main::arg_parse() -> bool
 {
@@ -108,17 +94,37 @@ auto Main::render_real_time() -> void
 
 auto Main::run() -> int
 {
+    auto green = Color(0.1, 0.8, 0.1);
     _world.addPrimitive(
-        std::make_shared<Sphere>(Point3D(0, -0.5, -1), 0.2, std::make_shared<BaseMaterial>(Color(255, 0, 0)))
+        std::make_shared<Sphere>(Point3D(0, -1000, 0), 1000, std::make_shared<BaseMaterial>(green))
     );
+    _world.addPrimitive(std::make_shared<Sphere>(Point3D(0, 2, 0), 2, std::make_shared<BaseMaterial>(green)));
 
-    if (_params._gui) {
-        render_real_time();
-    }
-    if (!_params._scene_file.empty()) {
-        _camera.render(_world, _image);
-        _image.writePPM(_params._scene_file);
-    }
+    auto difflight = std::make_shared<LightMaterial>(Color(4, 4, 4));
+    _world.addPrimitive(std::make_shared<Sphere>(Point3D(0, 7, 0), 2, difflight));
+
+    _camera.aspect_ratio = 16.0 / 9.0;
+    _camera.image_width = 400;
+    _camera.samples_per_pixel = 100;
+    _camera.max_depth = 50;
+    _camera.background = Color(0, 0, 0);
+
+    _camera.vfov = 20;
+    _camera.origin = Point3D(26, 3, 6);
+    _camera.lookat = Point3D(0, 2, 0);
+    _camera.vup = Vector3D(0, 1, 0);
+
+    _camera.defocus_angle = 0;
+
+    _camera.render(_world, _image);
+    _image.writePPM("image.ppm");
+    // if (_params._gui) {
+    //     render_real_time();
+    // }
+    // if (!_params._scene_file.empty()) {
+    //     _camera.render(_world, _image);
+    //     _image.writePPM(_params._scene_file);
+    // }
     return 0;
 }
 
@@ -133,7 +139,7 @@ auto main(int ac, char *argv[]) -> int
         }
         exitCode = main.run();
     } catch (const std::exception &e) {
-        std::cerr << e.what() << std::endl;
+        // std::cerr << e.what() << std::endl;
         exitCode = 84;
     }
     return exitCode;

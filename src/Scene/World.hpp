@@ -12,7 +12,6 @@
 
 #include "HitRecord.hpp"
 #include "Interval.hpp"
-#include "Lights/ILight.hpp"
 #include "Primitives/IPrimitive.hpp"
 #include "Ray.hpp"
 

@@ -7,26 +7,30 @@
 
 #pragma once
 
-#include "Ray.hpp"
-#include "Color.hpp"
-#include "Point3D.hpp"
 #include "AMaterial.hpp"
+#include "Color.hpp"
 #include "HitRecord.hpp"
 #include "MathsUtils.hpp"
+#include "Point3D.hpp"
+#include "Ray.hpp"
 #include "Textures/ITexture.hpp"
 #include "Textures/SolidColorTexture.hpp"
 #include <memory>
 
 class MetalMaterial : public AMaterial {
-  public:
+public:
     // Constructor that takes a Color and a fuzz factor for the material
     // If the fuzz factor is greater than 1, it is clamped to 1
-    MetalMaterial(const Color& color, double fuzz) : color(color), fuzz(fuzz < 1 ? fuzz : 1) {}
+    MetalMaterial(const Color &color, double fuzz):
+        color(color),
+        fuzz(fuzz < 1 ? fuzz : 1)
+    {
+    }
 
     // Method to scatter a ray. Takes in a Ray, a HitRecord, a Color for attenuation, and a Ray for scattered
     // Returns a boolean indicating if the scatter was successful
-    bool scatter(const Ray& r_in, const HitRecord& rec, Color& attenuation, Ray& scattered)
-    const override {
+    bool scatter(const Ray &r_in, const HitRecord &rec, Color &attenuation, Ray &scattered) const override
+    {
         // Calculate the reflected direction of the incoming ray
         Vector3D reflected = Vector3D::reflect(r_in.direction(), rec.normal);
 
@@ -44,7 +48,7 @@ class MetalMaterial : public AMaterial {
         return (scattered.direction().dot(rec.normal) > 0);
     }
 
-  private:
+private:
     Color color;
     // Fuzz factor of the material
     double fuzz;

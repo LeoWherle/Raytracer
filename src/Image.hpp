@@ -8,6 +8,7 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
+#include <fstream>
 #include <vector>
 
 class Image {
@@ -52,7 +53,6 @@ private:
     }
 
 public:
-
     auto get_stream() -> sf::Uint8 * { return _pixels.data(); }
 
 public:
@@ -73,7 +73,6 @@ public:
         image.create(_width, _height, _pixels.data());
         image.saveToFile(filename);
     }
-
 
 protected:
 private:
