@@ -29,6 +29,12 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
     sfml-graphics sfml-audio sfml-window sfml-system
 )
 
+set(CMAKE_THREAD_PREFER_PTHREAD TRUE)
+set(THREADS_PREFER_PTHREAD_FLAG TRUE)
+find_package(Threads REQUIRED)
+
+target_link_libraries(${PROJECT_NAME} PRIVATE Threads::Threads)
+
 # add gprof
 target_link_libraries(${PROJECT_NAME} PRIVATE "-pg")
 
@@ -50,6 +56,11 @@ target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra -Wformat=2
     -Wshadow -Wwrite-strings -Wconversion -Wunreachable-code -Wstrict-aliasing=2
     -fno-common -fstrict-aliasing -Wunused-macros -fno-gnu-unique
 )
+
+if (CMAKE_BUILD_TYPE MATCHES RelWithDebInfo)
+    target_compile_options(${PROJECT_NAME} PRIVATE -O2)
+    set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-g3")
+endif()
 
 if(CMAKE_BUILD_TYPE MATCHES Release)
     target_compile_options(${PROJECT_NAME} PRIVATE -O2)

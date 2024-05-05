@@ -6,6 +6,9 @@ cd build/
 if [ "$1" = "release" ] || [ -z "$DISPLAY" ]; then
     echo "Building as release"
     cmake  -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release ..
+elif [ "$1" = "profile" ]; then
+    echo "Building as profile"
+    cmake  -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=RelWithDebInfo ..
 else
     echo "Building as debug"
     cmake  -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Debug ..
