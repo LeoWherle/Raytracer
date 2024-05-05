@@ -22,7 +22,7 @@ public:
 
     std::vector<std::shared_ptr<IPrimitive>> primitives;
 
-    void addPrimitive(std::shared_ptr<IPrimitive> primitive) { primitives.push_back(move(primitive)); }
+    void addPrimitive(std::shared_ptr<IPrimitive> primitive) { primitives.push_back(std::move(primitive)); }
 
     bool hits(const Ray &r, Interval ray_d, HitRecord &rec) const override
     {
