@@ -17,6 +17,7 @@
 #include "Ray.hpp"
 #include "Scene/World.hpp"
 #include "math.h"
+#include <iomanip>
 #include <iostream>
 #include <math.h>
 
@@ -84,7 +85,8 @@ public:
         pixel00_loc = viewport_upper_left + (pixel_delta_u + pixel_delta_v) * 0.5;
 
         // Calculate the camera defocus disk basis vectors.
-        // from https://www.scratchapixel.com/lessons/3d-basic-rendering/introduction-to-shading/reflection-refraction-fresnel
+        // from
+        // https://www.scratchapixel.com/lessons/3d-basic-rendering/introduction-to-shading/reflection-refraction-fresnel
         auto defocus_radius = focus_dist * tan(mathsUtils::degrees_to_radians(defocus_angle / 2));
         defocus_disk_u = u * defocus_radius;
         defocus_disk_v = v * defocus_radius;
@@ -133,6 +135,7 @@ public:
     {
         update();
         image.resize(image_width, image_height);
+        std::clog << "\rRendering: 0.00%" << std::flush;
         for (uint32_t j = 0; j < image_height; j++) {
             for (uint32_t i = 0; i < image_width; i++) {
                 Color pixel_color(0, 0, 0);
@@ -142,6 +145,8 @@ public:
                 }
                 image.set_pixel(i, j, pixel_color * pixel_samples_scale);
             }
+            std::clog << "\rRendering: " << std::fixed << std::setprecision(2)
+                      << (100.0 * j / (image_height - 1)) << "%" << std::flush;
         }
     }
 };
