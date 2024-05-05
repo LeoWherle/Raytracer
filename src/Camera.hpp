@@ -9,12 +9,12 @@
 
 #include "Color.hpp"
 #include "HitRecord.hpp"
-#include "Image.hpp"
 #include "Interval.hpp"
 #include "Math/MathsUtils.hpp"
 #include "Math/Point3D.hpp"
 #include "Math/Rectangle3D.hpp"
 #include "Ray.hpp"
+#include "Scene/IImage.hpp"
 #include "Scene/World.hpp"
 #include "math.h"
 #include <iomanip>
@@ -131,7 +131,7 @@ public:
         return color_from_emission + color_from_scatter;
     }
 
-    void render(World &world, Image &image)
+    void render(World &world, IImage &image)
     {
         update();
         image.resize(image_width, image_height);
