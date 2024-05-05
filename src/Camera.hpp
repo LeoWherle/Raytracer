@@ -148,5 +148,6 @@ public:
             std::clog << "\rRendering: " << std::fixed << std::setprecision(2)
                       << (100.0 * j / (image_height - 1)) << "%" << std::flush;
         }
+        std::clog << std::endl;
     }
 };
