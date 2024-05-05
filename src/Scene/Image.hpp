@@ -7,14 +7,15 @@
 
 #pragma once
 
-#include "Color.hpp"
 #include <SFML/Graphics.hpp>
 #include <fstream>
+#include <iostream>
 #include <vector>
 
-#include <iostream>
+#include "Color.hpp"
+#include "IImage.hpp"
 
-class Image : public sf::Drawable {
+class Image : public sf::Drawable, public IImage {
 public:
     Image() = default;
     Image(uint32_t width, uint32_t height):
@@ -53,8 +54,14 @@ public:
         _pixels[index + 2] = color.getB();
     }
 
+    Color get_pixel(uint32_t x, uint32_t y) const
+    {
+        auto index = (x + y * _width) * 4;
+        return Color(_pixels[index], _pixels[index + 1], _pixels[index + 2]);
+    }
+
 private:
-    void writePixelInPPM(std::ofstream &out, uint32_t i, uint32_t j)
+    void writePixelInPPM(std::ofstream &out, uint32_t i, uint32_t j) const
     {
         out << static_cast<uint32_t>(_pixels[(j * _width + i) * 4 + 0]) << ' '
             << static_cast<uint32_t>(_pixels[(j * _width + i) * 4 + 1]) << ' '
@@ -68,7 +75,7 @@ public:
     auto height() -> uint32_t { return _height; }
 
 public:
-    void writePPM(const std::string &filename)
+    void writePPM(const std::string &filename) const
     {
         std::ofstream out(filename);
         out << "P3\n" << _width << ' ' << _height << "\n255\n";
@@ -103,7 +110,7 @@ public:
      * @brief https://en.wikipedia.org/wiki/BMP_file_format
      * @param filename the name of the file to write
      */
-    void writeBMP(const std::string &filename)
+    void writeBMP(const std::string &filename) const
     {
         std::ofstream out(filename, std::ios::binary);
         BMPHeader header;
@@ -121,7 +128,7 @@ public:
         }
     }
 
-    void writePNG(const std::string &filename)
+    void writePNG(const std::string &filename) const
     {
         sf::Image image;
         image.create(_width, _height, _pixels.data());
