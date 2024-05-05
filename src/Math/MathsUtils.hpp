@@ -27,14 +27,5 @@ inline Vector3D random_in_unit_sphere()
     }
 }
 
-inline Vector3D random_in_unit_disks()
-{
-    while (true) {
-        auto p = Vector3D(random_double(-1, 1), random_double(-1, 1), 0);
-        if (p.length_squared() < 1)
-            return p;
-    }
-}
-
 inline Vector3D random_unit_vector() { return Vector3D::unit(random_in_unit_sphere()); }
 };
