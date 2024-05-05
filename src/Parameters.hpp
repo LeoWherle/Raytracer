@@ -32,11 +32,8 @@ public:
         if (_loader.has("o")) {
             _output_file = _loader.get("o");
         }
-        if (_gui && _output_file.empty()) {
-            _output_file = "output.png";
-        }
-        if (_output_file.empty()) {
-            _output_file = "output.ppm";
+        if (!_gui && _output_file.empty()) {
+            _output_file = "output.bmp";
         }
         if (_loader.has(0)) {
             _scene_file = _loader.get(0);
