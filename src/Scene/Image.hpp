@@ -10,6 +10,7 @@
 #include <SFML/Graphics.hpp>
 #include <fstream>
 #include <iostream>
+#include <numeric>
 #include <vector>
 
 #include "Color.hpp"
@@ -26,12 +27,19 @@ public:
         for (size_t i = 0; i < _pixels.size(); i += 4) {
             _pixels[i + 3] = 255;
         }
+        _row_iterator.resize(height);
+        _row_iterator.resize(height);
+        std::iota(_row_iterator.begin(), _row_iterator.end(), 0);
     }
     ~Image() = default;
 
 protected:
 private:
 public:
+    // Iterators for the image (returns an iterator the index of the row)
+    auto row_begin() -> std::vector<uint32_t>::iterator { return _row_iterator.begin(); }
+    auto row_end() -> std::vector<uint32_t>::iterator { return _row_iterator.end(); }
+
     void resize(uint32_t width, uint32_t height)
     {
         if (width == _width && height == _height) {
@@ -43,6 +51,8 @@ public:
         for (size_t i = 0; i < _pixels.size(); i += 4) {
             _pixels[i + 3] = 255;
         }
+        _row_iterator.resize(height);
+        std::iota(_row_iterator.begin(), _row_iterator.end(), 0);
     }
 
     void set_pixel(uint32_t x, uint32_t y, Color pixel_color)
@@ -71,8 +81,8 @@ private:
 public:
     auto get_stream() -> uint8_t * { return _pixels.data(); }
 
-    auto width() -> uint32_t { return _width; }
-    auto height() -> uint32_t { return _height; }
+    uint32_t get_width() const { return _width; }
+    uint32_t get_height() const { return _height; }
 
 public:
     void writePPM(const std::string &filename) const
@@ -148,4 +158,5 @@ private:
     std::vector<uint8_t> _pixels;
     uint32_t _width;
     uint32_t _height;
+    std::vector<uint32_t> _row_iterator;
 };
