@@ -10,12 +10,11 @@
 #include "Color.hpp"
 #include <SFML/Graphics.hpp>
 #include <fstream>
-#include <omp.h>
 #include <vector>
 
 #include <iostream>
 
-class Image {
+class Image : public sf::Drawable {
 public:
     Image() = default;
     Image(uint32_t width, uint32_t height):
@@ -23,6 +22,9 @@ public:
         _height(height)
     {
         _pixels.resize(width * height * 4);
+        for (size_t i = 0; i < _pixels.size(); i += 4) {
+            _pixels[i + 3] = 255;
+        }
     }
     ~Image() = default;
 
@@ -37,6 +39,9 @@ public:
         _width = width;
         _height = height;
         _pixels.resize(width * height * 4);
+        for (size_t i = 0; i < _pixels.size(); i += 4) {
+            _pixels[i + 3] = 255;
+        }
     }
 
     void set_pixel(uint32_t x, uint32_t y, Color pixel_color)
@@ -57,7 +62,10 @@ private:
     }
 
 public:
-    auto get_stream() -> sf::Uint8 * { return _pixels.data(); }
+    auto get_stream() -> uint8_t * { return _pixels.data(); }
+
+    auto width() -> uint32_t { return _width; }
+    auto height() -> uint32_t { return _height; }
 
 public:
     void writePPM(const std::string &filename)
@@ -104,11 +112,11 @@ public:
         header.height = _height;
         header.imageSize = 3 * _width * _height;
         out.write(reinterpret_cast<char *>(&header), sizeof(header));
-        for (uint32_t j = _height; j > 0; j--) {
+        for (uint32_t j = _height; j != 0; j--) {
             for (uint32_t i = 0; i < _width; i++) {
-                out.write((char *) &_pixels[(j * _width + i) * 4 + 2], 1);
-                out.write((char *) &_pixels[(j * _width + i) * 4 + 1], 1);
-                out.write((char *) &_pixels[(j * _width + i) * 4 + 0], 1);
+                out.put(_pixels[((j - 1) * _width + i) * 4 + 2]);
+                out.put(_pixels[((j - 1) * _width + i) * 4 + 1]);
+                out.put(_pixels[((j - 1) * _width + i) * 4 + 0]);
             }
         }
     }
@@ -116,16 +124,21 @@ public:
     void writePNG(const std::string &filename)
     {
         sf::Image image;
-        for (size_t i = 0; i < _pixels.size(); i += 4) {
-            _pixels[i + 3] = 255;
-        }
         image.create(_width, _height, _pixels.data());
         image.saveToFile(filename);
     }
 
+    void draw(sf::RenderTarget &target, sf::RenderStates states) const override
+    {
+        sf::Texture texture;
+        texture.create(_width, _height);
+        texture.update(_pixels.data());
+        target.draw(sf::Sprite(texture), states);
+    }
+
 protected:
 private:
-    std::vector<sf::Uint8> _pixels;
+    std::vector<uint8_t> _pixels;
     uint32_t _width;
     uint32_t _height;
 };
