@@ -21,6 +21,9 @@ auto Main::arg_parse() -> bool
     } catch (std::exception &e) {
         std::cerr << e.what() << std::endl;
         std::cerr << "Usage: " << _av[0] << " [scene file]" << std::endl;
+        std::cerr << "Options:" << std::endl;
+        std::cerr << "  -gui: Open a window to render the scene in real time" << std::endl;
+        std::cerr << "  -o [outputfile]: Save the rendered image to the specified file" << std::endl;
         return false;
     }
     return true;

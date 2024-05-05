@@ -35,6 +35,9 @@ public:
         if (!_gui && _output_file.empty()) {
             _output_file = "output.bmp";
         }
+        if (_help) {
+            throw ArgumentsLoader::HelpArgument("Help:");
+        }
         if (_loader.has(0)) {
             _scene_file = _loader.get(0);
         } else {
