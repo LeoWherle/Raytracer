@@ -10,9 +10,9 @@
 #include "Materials/BaseMaterial.hpp"
 #include "Materials/LightMaterial.hpp"
 #include "Materials/MetalMaterial.hpp"
+#include "Primitives/Plane.hpp"
 #include "Primitives/Sphere.hpp"
 #include "Scene/World.hpp"
-
 
 auto Main::arg_parse() -> bool
 {
@@ -104,14 +104,16 @@ auto Main::run() -> int
         std::make_shared<Sphere>(Point3D(0, -1000, 0), 1000, std::make_shared<BaseMaterial>(purple))
     );
     _world.addPrimitive(std::make_shared<Sphere>(Point3D(0, 2, 0), 2, std::make_shared<BaseMaterial>(green)));
-    _world.addPrimitive(std::make_shared<Sphere>(Point3D(2, 2, -4), 2, std::make_shared<MetalMaterial>(Color(0.8, 0.8, 0.8), 0.1)));
+    _world.addPrimitive(std::make_shared<Sphere>(
+        Point3D(2, 2, -4), 2, std::make_shared<MetalMaterial>(Color(0.8, 0.8, 0.8), 0.1)
+    ));
     auto difflight = std::make_shared<LightMaterial>(Color(4, 4, 4));
     _world.addPrimitive(std::make_shared<Sphere>(Point3D(0, 7, 0), 2, difflight));
 
     _camera.aspect_ratio = 16.0 / 9.0;
     _camera.image_width = 400;
-    _camera.samples_per_pixel = 10000;
-    _camera.max_depth = 100;
+    _camera.samples_per_pixel = 1000;
+    _camera.max_depth = 50;
     _camera.background = Color(0, 0, 0);
 
     _camera.vfov = 20;
