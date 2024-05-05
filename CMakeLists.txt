@@ -29,6 +29,9 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
     sfml-graphics sfml-audio sfml-window sfml-system
 )
 
+# add gprof
+target_link_libraries(${PROJECT_NAME} PRIVATE "-pg")
+
 # Make executable in root directory
 set_target_properties(${PROJECT_NAME} PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
@@ -50,6 +53,7 @@ target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra -Wformat=2
 
 if(CMAKE_BUILD_TYPE MATCHES Release)
     target_compile_options(${PROJECT_NAME} PRIVATE -O2)
+    set(CMAKE_CXX_FLAGS_RELEASE "-g3")
 else()
     target_compile_options(${PROJECT_NAME} PRIVATE -O0)
     set(CMAKE_CXX_FLAGS_DEBUG "-g3")

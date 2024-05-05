@@ -17,6 +17,7 @@ public:
     Vector3D _bottom_side;
     Vector3D _left_side;
 
+    Rectangle3D() = default;
     Rectangle3D(const Point3D &origin, const Vector3D &bottom_side, const Vector3D &left_side):
         _origin(origin),
         _bottom_side(bottom_side),
@@ -24,7 +25,7 @@ public:
     {
     }
 
-    Point3D pointAt(double u, double v) const
+    Point3D pointAt(float u, float v) const
     {
         if (u < 0 || u > 1 || v < 0 || v > 1) {
             throw std::runtime_error(
