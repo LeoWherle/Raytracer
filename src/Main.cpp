@@ -23,7 +23,7 @@ auto Main::arg_parse() -> bool
         std::cerr << "Usage: " << _av[0] << " [scene file]" << std::endl;
         std::cerr << "Options:" << std::endl;
         std::cerr << "  -gui: Open a window to render the scene in real time" << std::endl;
-        std::cerr << "  -o [outputfile]: Save the rendered image to the specified file" << std::endl;
+        std::cerr << "  -o [outputfile]: Save the rendered image to the specified file (BMP, PPM or PNG)" << std::endl;
         return false;
     }
     return true;
