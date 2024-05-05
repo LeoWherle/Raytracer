@@ -10,8 +10,8 @@
 #include "AMaterial.hpp"
 #include "Color.hpp"
 #include "HitRecord.hpp"
-#include "MathsUtils.hpp"
-#include "Point3D.hpp"
+#include "Math/MathsUtils.hpp"
+#include "Math/Point3D.hpp"
 #include "Ray.hpp"
 #include "Textures/ITexture.hpp"
 #include "Textures/SolidColorTexture.hpp"
@@ -22,8 +22,8 @@ public:
     // Constructor that takes a Color and a fuzz factor for the material
     // If the fuzz factor is greater than 1, it is clamped to 1
     MetalMaterial(const Color &color, double fuzz):
-        color(color),
-        fuzz(fuzz < 1 ? fuzz : 1)
+        _color(color),
+        _fuzz(fuzz < 1 ? fuzz : 1)
     {
     }
 
@@ -35,13 +35,13 @@ public:
         Vector3D reflected = Vector3D::reflect(r_in.direction(), rec.normal);
 
         // Add a random unit vector scaled by the fuzz factor to the reflected direction
-        reflected = Vector3D::unit(reflected) + (mathsUtils::random_unit_vector() * fuzz);
+        reflected = Vector3D::unit(reflected) + (mathsUtils::random_unit_vector() * _fuzz);
 
         // Set scattered to a new Ray with the reflected direction
-        scattered = Ray(rec.p, reflected, r_in.time());
+        scattered = Ray(rec.p, reflected);
 
         // Set attenuation to the color of the material
-        attenuation = color;
+        attenuation = _color;
 
         // Return true if the dot product of the scattered direction and the normal is greater than 0
         // This indicates that the ray was scattered in the same hemisphere as the normal
@@ -49,7 +49,7 @@ public:
     }
 
 private:
-    Color color;
+    Color _color;
     // Fuzz factor of the material
-    double fuzz;
+    double _fuzz;
 };

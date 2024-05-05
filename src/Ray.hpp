@@ -17,27 +17,17 @@ public:
 
     Ray(const Point3D &origin, const Vector3D &direction):
         _origin(origin),
-        _direction(direction),
-        _tm(0)
-    {
-    }
-
-    Ray(const Point3D &origin, const Vector3D &direction, double time):
-        _origin(origin),
-        _direction(direction),
-        _tm(time)
+        _direction(direction)
     {
     }
 
     const Point3D &origin() const { return _origin; }
     const Vector3D &direction() const { return _direction; }
 
-    double time() const { return _tm; }
 
     Point3D at(double t) const { return _origin + _direction * t; }
 
 private:
     Point3D _origin;
     Vector3D _direction;
-    double _tm;
 };

@@ -84,6 +84,7 @@ public:
         pixel00_loc = viewport_upper_left + (pixel_delta_u + pixel_delta_v) * 0.5;
 
         // Calculate the camera defocus disk basis vectors.
+        // from https://www.scratchapixel.com/lessons/3d-basic-rendering/introduction-to-shading/reflection-refraction-fresnel
         auto defocus_radius = focus_dist * tan(mathsUtils::degrees_to_radians(defocus_angle / 2));
         defocus_disk_u = u * defocus_radius;
         defocus_disk_v = v * defocus_radius;
@@ -91,25 +92,15 @@ public:
 
     void move(const Vector3D &direction) { origin = origin + direction; }
 
-    Ray get_ray(double u, double v) const
+    Ray new_ray(double u, double v) const
     {
 
         auto offset = Vector3D(mathsUtils::random_double() - 0.5, mathsUtils::random_double() - 0.5, 0);
         auto pixel_sample =
             pixel00_loc + (pixel_delta_u * (u + offset._x)) + (pixel_delta_v * (v + offset._y));
+        auto ray_direction = pixel_sample - center;
 
-        auto ray_origin = (defocus_angle <= 0) ? center : defocus_disk_sample();
-        auto ray_direction = pixel_sample - ray_origin;
-        auto ray_time = mathsUtils::random_double();
-
-        return Ray(ray_origin, ray_direction, ray_time);
-    }
-
-    Point3D defocus_disk_sample() const
-    {
-        // Returns a random point in the camera defocus disk.
-        auto point = mathsUtils::random_in_unit_disks();
-        return center + (defocus_disk_u * point._x) + (defocus_disk_v * point._y);
+        return Ray(center, ray_direction);
     }
 
     Color ray_color(const Ray &r, int depth, const World &world) const
@@ -128,9 +119,11 @@ public:
         Color attenuation;
         Color color_from_emission = rec.material->emitted(rec.u, rec.v, rec.p);
 
+        // If the ray is scattered, modify the color by the attenuation and recurse.
         if (!rec.material->scatter(r, rec, attenuation, scattered))
             return color_from_emission;
 
+        // Recurse with the new scattered ray, and multiply the result by the attenuation.
         Color color_from_scatter = ray_color(scattered, depth - 1, world) * attenuation;
 
         return color_from_emission + color_from_scatter;
@@ -144,7 +137,7 @@ public:
             for (uint32_t i = 0; i < image_width; i++) {
                 Color pixel_color(0, 0, 0);
                 for (uint32_t sample = 0; sample < samples_per_pixel; sample++) {
-                    Ray r = get_ray(i, j);
+                    Ray r = new_ray(i, j);
                     pixel_color += ray_color(r, max_depth, world);
                 }
                 image.set_pixel(i, j, pixel_color * pixel_samples_scale);

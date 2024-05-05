@@ -33,7 +33,7 @@ public:
 
     // Method to scatter a ray. Takes in a Ray, a HitRecord, a Color for attenuation, and a Ray for scattered
     // Returns a boolean indicating if the scatter was successful
-    bool scatter(const Ray &r_in, const HitRecord &rec, Color &attenuation, Ray &scattered) const override
+    bool scatter(const Ray &, const HitRecord &rec, Color &attenuation, Ray &scattered) const override
     {
         // Calculate scatter direction
         auto scatter_direction = rec.normal + mathsUtils::random_unit_vector();
@@ -43,7 +43,7 @@ public:
             scatter_direction = rec.normal;
 
         // Set scattered to a new Ray with the scatter direction
-        scattered = Ray(rec.p, scatter_direction, r_in.time());
+        scattered = Ray(rec.p, scatter_direction);
 
         // Set attenuation to the value of the texture at the hit point
         attenuation = _texture->value(rec.u, rec.v, rec.p);

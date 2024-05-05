@@ -9,8 +9,10 @@
 #include "Camera.hpp"
 #include "Materials/BaseMaterial.hpp"
 #include "Materials/LightMaterial.hpp"
+#include "Materials/MetalMaterial.hpp"
 #include "Primitives/Sphere.hpp"
 #include "Scene/World.hpp"
+
 
 auto Main::arg_parse() -> bool
 {
@@ -97,23 +99,24 @@ auto Main::render_real_time() -> void
 auto Main::run() -> int
 {
     auto green = Color(0.1, 0.8, 0.3);
+    auto purple = Color(0.8, 0.1, 0.8);
     _world.addPrimitive(
-        std::make_shared<Sphere>(Point3D(0, -1000, 0), 1000, std::make_shared<BaseMaterial>(green))
+        std::make_shared<Sphere>(Point3D(0, -1000, 0), 1000, std::make_shared<BaseMaterial>(purple))
     );
     _world.addPrimitive(std::make_shared<Sphere>(Point3D(0, 2, 0), 2, std::make_shared<BaseMaterial>(green)));
-
+    _world.addPrimitive(std::make_shared<Sphere>(Point3D(2, 2, -4), 2, std::make_shared<MetalMaterial>(Color(0.8, 0.8, 0.8), 0.1)));
     auto difflight = std::make_shared<LightMaterial>(Color(4, 4, 4));
     _world.addPrimitive(std::make_shared<Sphere>(Point3D(0, 7, 0), 2, difflight));
 
     _camera.aspect_ratio = 16.0 / 9.0;
     _camera.image_width = 400;
-    _camera.samples_per_pixel = 100;
-    _camera.max_depth = 50;
+    _camera.samples_per_pixel = 10000;
+    _camera.max_depth = 100;
     _camera.background = Color(0, 0, 0);
 
     _camera.vfov = 20;
-    _camera.origin = Point3D(26, 3, 6);
-    _camera.lookat = Point3D(0, 2, 0);
+    _camera.origin = Point3D(14, 3, 22);
+    _camera.lookat = Point3D(1, 2, -2);
     _camera.vup = Vector3D(0, 1, 0);
 
     _camera.defocus_angle = 0;
