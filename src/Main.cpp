@@ -75,19 +75,21 @@ auto handle_events(sf::RenderWindow &window, Camera &cam) -> void
 
 auto Main::render_real_time() -> void
 {
+    _camera.update();
     sf::RenderWindow window(
         sf::VideoMode(_camera.image_width, _camera.image_height), "Raytracer", sf::Style::Close
     );
-    sf::Texture texture;
-    texture.create(_camera.image_width, _camera.image_height);
-    sf::Sprite sprite(texture);
 
+    // check the time for rendering a frame
+    sf::Clock clock;
     while (window.isOpen()) {
         handle_events(window, _camera);
+        clock.restart();
         _camera.render(_world, _image);
+        auto stop = clock.getElapsedTime();
+        std::cout << "Rendering time: " << stop.asMilliseconds() << "ms" << std::endl;
         window.clear();
-        texture.update(_image.get_stream());
-        window.draw(sprite);
+        window.draw(_image);
         window.display();
     }
 }
@@ -116,15 +118,13 @@ auto Main::run() -> int
 
     _camera.defocus_angle = 0;
 
-    _camera.render(_world, _image);
-    _image.writePPM("image.ppm");
-    // if (_params._gui) {
-    //     render_real_time();
-    // }
-    // if (!_params._scene_file.empty()) {
-    //     _camera.render(_world, _image);
-    //     _image.writePPM(_params._scene_file);
-    // }
+    if (_params._gui) {
+        render_real_time();
+    }
+    if (!_params._output_file.empty()) {
+        _camera.render(_world, _image);
+        _image.writeBMP(_params._output_file);
+    }
     return 0;
 }
 
