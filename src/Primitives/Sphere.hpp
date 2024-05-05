@@ -30,12 +30,26 @@ public:
 
     bool hits(const Ray &ray, Interval ray_d, HitRecord &hitrec) const override
     {
+        /* formula:
+        * ray = origin + t * direction
+        * sphere = (x - center)^2 + (y - center)^2 + (z - center)^2 = radius^2
+        * substitute ray into sphere equation
+        * (origin + t * direction - center)^2 = radius^2
+        * a = direction * direction
+        * b = 2 * direction * (origin - center)
+        * c = (origin - center) * (origin - center) - radius^2
+        * discriminant = b^2 - 4ac
+        * if discriminant < 0, no real roots
+        * if discriminant = 0, one real root
+        * if discriminant > 0, two real roots
+        * roots = (-b +- sqrt(discriminant)) / 2a
+        */
         Vector3D oc = origin - ray.origin();
         auto a = ray.direction().length_squared();
-        auto h = ray.direction().dot(oc);
+        auto b = ray.direction().dot(oc);
         auto c = oc.length_squared() - _radius * _radius;
 
-        auto discriminant = h * h - a * c;
+        auto discriminant = b * b - a * c;
         if (discriminant < 0) {
             return false;
         }
@@ -43,9 +57,9 @@ public:
         auto sqrtd = sqrt(discriminant);
 
         // Find the nearest root that lies in the acceptable range.
-        auto root = (h - sqrtd) / a;
+        auto root = (b - sqrtd) / a;
         if (!ray_d.surrounds(root)) {
-            root = (h + sqrtd) / a;
+            root = (b + sqrtd) / a;
             if (!ray_d.surrounds(root))
                 return false;
         }
