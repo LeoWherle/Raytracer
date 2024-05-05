@@ -7,8 +7,10 @@
 
 #pragma once
 
+#include "Color.hpp"
 #include <SFML/Graphics.hpp>
 #include <fstream>
+#include <omp.h>
 #include <vector>
 
 class Image {
@@ -67,9 +69,54 @@ public:
         }
     }
 
+#pragma pack(push, 1)
+    struct BMPHeader {
+        char signature[2] = {'B', 'M'};
+        uint32_t fileSize;
+        uint32_t reserved = 0;
+        uint32_t dataOffset = 54;
+        uint32_t headerSize = 40;
+        int32_t width;
+        int32_t height;
+        uint16_t planes = 1;
+        uint16_t bitsPerPixel = 24;
+        uint32_t compression = 0;
+        uint32_t imageSize;
+        int32_t xPixelsPerMeter = 0;
+        int32_t yPixelsPerMeter = 0;
+        uint32_t totalColors = 0;
+        uint32_t importantColors = 0;
+    };
+#pragma pack(pop)
+
+    /**
+     * @brief https://en.wikipedia.org/wiki/BMP_file_format
+     * @param filename the name of the file to write
+     */
+    void writeBMP(const std::string &filename)
+    {
+        std::ofstream out(filename, std::ios::binary);
+        BMPHeader header;
+        header.fileSize = 54 + 3 * _width * _height;
+        header.width = _width;
+        header.height = _height;
+        header.imageSize = 3 * _width * _height;
+        out.write(reinterpret_cast<char *>(&header), sizeof(header));
+        for (int j = _height - 1; j >= 0; j--) {
+            for (int i = 0; i < _width; i++) {
+                out.write((char *) &_pixels[(j * _width + i) * 4 + 2], 1);
+                out.write((char *) &_pixels[(j * _width + i) * 4 + 1], 1);
+                out.write((char *) &_pixels[(j * _width + i) * 4 + 0], 1);
+            }
+        }
+    }
+
     void writePNG(const std::string &filename)
     {
         sf::Image image;
+        for (size_t i = 0; i < _pixels.size(); i += 4) {
+            _pixels[i + 3] = 255;
+        }
         image.create(_width, _height, _pixels.data());
         image.saveToFile(filename);
     }
