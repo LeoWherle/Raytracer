@@ -35,6 +35,9 @@ public:
         if (_gui && _output_file.empty()) {
             _output_file = "output.png";
         }
+        if (_output_file.empty()) {
+            _output_file = "output.ppm";
+        }
         if (_loader.has(0)) {
             _scene_file = _loader.get(0);
         } else {
