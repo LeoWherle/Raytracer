@@ -17,7 +17,37 @@
 #include "Ray.hpp"
 #include "Scene/World.hpp"
 #include "math.h"
+#include <iostream>
 #include <math.h>
+
+static inline double linear_to_gamma(double linear_component)
+{
+    if (linear_component > 0)
+        return std::sqrt(linear_component);
+
+    return 0;
+}
+
+static void write_color(std::ostream &out, const Color &pixel_color)
+{
+    auto r = pixel_color._r;
+    auto g = pixel_color._g;
+    auto b = pixel_color._b;
+
+    // Apply a linear to gamma transform for gamma 2
+    r = linear_to_gamma(r);
+    g = linear_to_gamma(g);
+    b = linear_to_gamma(b);
+
+    // Translate the [0,1] component values to the byte range [0,255].
+    static const Interval intensity(0.000, 0.999);
+    int rbyte = int(256 * intensity.clamp(r));
+    int gbyte = int(256 * intensity.clamp(g));
+    int bbyte = int(256 * intensity.clamp(b));
+
+    // Write out the pixel color components.
+    out << rbyte << ' ' << gbyte << ' ' << bbyte << '\n';
+}
 
 class Camera {
 public:
@@ -146,7 +176,7 @@ public:
                     Ray r = get_ray(i, j);
                     pixel_color += ray_color(r, max_depth, world);
                 }
-                image.set_pixel(i, j, pixel_color * samples_per_pixel);
+                image.set_pixel(i, j, pixel_color * pixel_samples_scale);
             }
         }
     }

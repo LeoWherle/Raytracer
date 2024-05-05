@@ -48,23 +48,31 @@ public:
         return Color(_r * color._r, _g * color._g, _b * color._b);
     }
 
-    inline uint8_t getR() const { return static_cast<uint8_t>(_r); }
+    inline uint8_t getR() const { return static_cast<uint8_t>(_r * 256); }
 
-    inline uint8_t getG() const { return static_cast<uint8_t>(_g); }
+    inline uint8_t getG() const { return static_cast<uint8_t>(_g * 256); }
 
-    inline uint8_t getB() const { return static_cast<uint8_t>(_b); }
+    inline uint8_t getB() const { return static_cast<uint8_t>(_b * 256); }
 
-    Color to_gamma() const { return Color(std::sqrt(_r), std::sqrt(_g), std::sqrt(_b)); }
+    Color to_gamma() const
+    {
+        return Color(
+            (_r > 0 ? std::sqrt(_r) : 0),
+            (_g > 0 ? std::sqrt(_g) : 0),
+            (_b > 0 ? std::sqrt(_b) : 0)
+        );
+    }
 
     Color to_linear() const { return Color(_r * _r, _g * _g, _b * _b); }
 
-    Color clamp(int max) const
+    Color clamp() const
     {
         static const Interval intensity(0.000, 0.999);
+
         return Color {
-            intensity.clamp(_r) * max,
-            intensity.clamp(_g) * max,
-            intensity.clamp(_b) * max,
+            intensity.clamp(_r),
+            intensity.clamp(_g),
+            intensity.clamp(_b),
         };
     }
 };

@@ -37,7 +37,7 @@ public:
 
     void set_pixel(int x, int y, Color pixel_color)
     {
-        auto color = pixel_color.to_gamma().clamp(256);
+        auto color = pixel_color.to_gamma().clamp();
         auto index = (x + y * _width) * 4;
         _pixels[index] = color.getR();
         _pixels[index + 1] = color.getG();

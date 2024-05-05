@@ -94,7 +94,7 @@ auto Main::render_real_time() -> void
 
 auto Main::run() -> int
 {
-    auto green = Color(0.1, 0.8, 0.1);
+    auto green = Color(0.1, 0.8, 0.3);
     _world.addPrimitive(
         std::make_shared<Sphere>(Point3D(0, -1000, 0), 1000, std::make_shared<BaseMaterial>(green))
     );
