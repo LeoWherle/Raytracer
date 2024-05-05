@@ -21,7 +21,7 @@ class MetalMaterial : public AMaterial {
 public:
     // Constructor that takes a Color and a fuzz factor for the material
     // If the fuzz factor is greater than 1, it is clamped to 1
-    MetalMaterial(const Color &color, double fuzz):
+    MetalMaterial(const Color &color, float fuzz):
         _color(color),
         _fuzz(fuzz < 1 ? fuzz : 1)
     {
@@ -51,5 +51,5 @@ public:
 private:
     Color _color;
     // Fuzz factor of the material
-    double _fuzz;
+    float _fuzz;
 };

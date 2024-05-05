@@ -30,6 +30,16 @@ public:
         virtual ~MissingArgument() noexcept { }
         const char *what() const noexcept override { return _message.c_str(); }
     };
+    class HelpArgument : public std::exception {
+    private:
+        const std::string _message;
+
+    public:
+        explicit HelpArgument(const std::string &message): _message(message) {}
+        explicit HelpArgument(const char *const message): _message(message) {}
+        virtual ~HelpArgument() noexcept { }
+        const char *what() const noexcept override { return _message.c_str(); }
+    };
     // clang-format on
 protected:
     std::map<std::string, std::string> _flag_params;

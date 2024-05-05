@@ -19,12 +19,12 @@ public:
     {
     }
 
-    SolidColorTexture(double red, double green, double blue):
+    SolidColorTexture(float red, float green, float blue):
         SolidColorTexture(Color(red, green, blue))
     {
     }
 
-    Color value(double, double, const Point3D &) const override { return _color; }
+    Color value(float, float, const Point3D &) const override { return _color; }
 
 private:
     Color _color;

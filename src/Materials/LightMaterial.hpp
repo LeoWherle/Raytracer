@@ -28,7 +28,7 @@ public:
     {
     }
 
-    Color emitted(double u, double v, const Point3D &p) const override { return texture->value(u, v, p); }
+    Color emitted(float u, float v, const Point3D &p) const override { return texture->value(u, v, p); }
 
 private:
     std::shared_ptr<ITexture> texture;

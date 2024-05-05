@@ -25,7 +25,7 @@ public:
     {
     }
 
-    Point3D pointAt(double u, double v) const
+    Point3D pointAt(float u, float v) const
     {
         if (u < 0 || u > 1 || v < 0 || v > 1) {
             throw std::runtime_error(

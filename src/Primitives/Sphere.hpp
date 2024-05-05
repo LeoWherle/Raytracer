@@ -16,14 +16,14 @@
 class Sphere : public IPrimitive {
 private:
     Point3D origin;
-    double _radius;
+    float _radius;
     std::shared_ptr<IMaterial> material;
     Vector3D origin_vec;
 
 public:
-    Sphere(const Point3D &center, double radius, std::shared_ptr<IMaterial> mat):
+    Sphere(const Point3D &center, float radius, std::shared_ptr<IMaterial> mat):
         origin(center),
-        _radius(fmax(0, radius)),
+        _radius((float)fmax(0, radius)),
         material(mat)
     {
     }
@@ -74,12 +74,12 @@ public:
         return true;
     }
 
-    void get_sphere_uv(const Vector3D &p, double &u, double &v) const
+    void get_sphere_uv(const Vector3D &p, float &u, float &v) const
     {
-        auto theta = acos(-p._y);
-        auto phi = atan2(-p._z, p._x) + M_PI;
+        float theta = acos(-p._y);
+        float phi = atan2(-p._z, p._x) + M_PIf;
 
-        u = phi / (2 * M_PI);
-        v = theta / M_PI;
+        u = phi / (2 * M_PIf);
+        v = theta / M_PIf;
     }
 };

@@ -12,11 +12,9 @@
 
 namespace mathsUtils {
 
-static double degrees_to_radians(double degrees) { return degrees * M_PI / 180.0; }
+static float degrees_to_radians(float degrees) { return degrees * M_PIf / 180.0f; }
 
-static double random_double() { return rand() / (RAND_MAX + 1.0); }
-
-static double random_double(double min, double max) { return min + (max - min) * random_double(); }
+static float random_float() { return (float)rand() / ((float)RAND_MAX + 1.0f); }
 
 inline Vector3D random_in_unit_sphere()
 {
