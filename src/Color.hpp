@@ -86,9 +86,9 @@ public:
         static const Interval intensity(0.000f, 0.999f);
 
         return Color {
-            (float)intensity.clamp(_r),
-            (float)intensity.clamp(_g),
-            (float)intensity.clamp(_b),
+            intensity.clamp(_r),
+            intensity.clamp(_g),
+            intensity.clamp(_b),
         };
     }
 };
