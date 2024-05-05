@@ -13,10 +13,12 @@
 #include <omp.h>
 #include <vector>
 
+#include <iostream>
+
 class Image {
 public:
     Image() = default;
-    Image(int width, int height):
+    Image(uint32_t width, uint32_t height):
         _width(width),
         _height(height)
     {
@@ -27,7 +29,7 @@ public:
 protected:
 private:
 public:
-    void resize(int width, int height)
+    void resize(uint32_t width, uint32_t height)
     {
         if (width == _width && height == _height) {
             return;
@@ -37,7 +39,7 @@ public:
         _pixels.resize(width * height * 4);
     }
 
-    void set_pixel(int x, int y, Color pixel_color)
+    void set_pixel(uint32_t x, uint32_t y, Color pixel_color)
     {
         auto color = pixel_color.to_gamma().clamp();
         auto index = (x + y * _width) * 4;
@@ -49,9 +51,9 @@ public:
 private:
     void writePixelInPPM(std::ofstream &out, uint32_t i, uint32_t j)
     {
-        out << static_cast<int>(_pixels[(j * _width + i) * 4 + 0]) << ' '
-            << static_cast<int>(_pixels[(j * _width + i) * 4 + 1]) << ' '
-            << static_cast<int>(_pixels[(j * _width + i) * 4 + 2]) << '\n';
+        out << static_cast<uint32_t>(_pixels[(j * _width + i) * 4 + 0]) << ' '
+            << static_cast<uint32_t>(_pixels[(j * _width + i) * 4 + 1]) << ' '
+            << static_cast<uint32_t>(_pixels[(j * _width + i) * 4 + 2]) << '\n';
     }
 
 public:
@@ -62,8 +64,8 @@ public:
     {
         std::ofstream out(filename);
         out << "P3\n" << _width << ' ' << _height << "\n255\n";
-        for (int j = 0; j < _height; j++) {
-            for (int i = 0; i < _width; i++) {
+        for (uint32_t j = 0; j < _height; j++) {
+            for (uint32_t i = 0; i < _width; i++) {
                 writePixelInPPM(out, i, j);
             }
         }
@@ -102,8 +104,8 @@ public:
         header.height = _height;
         header.imageSize = 3 * _width * _height;
         out.write(reinterpret_cast<char *>(&header), sizeof(header));
-        for (int j = _height - 1; j >= 0; j--) {
-            for (int i = 0; i < _width; i++) {
+        for (uint32_t j = _height; j > 0; j--) {
+            for (uint32_t i = 0; i < _width; i++) {
                 out.write((char *) &_pixels[(j * _width + i) * 4 + 2], 1);
                 out.write((char *) &_pixels[(j * _width + i) * 4 + 1], 1);
                 out.write((char *) &_pixels[(j * _width + i) * 4 + 0], 1);
@@ -124,6 +126,6 @@ public:
 protected:
 private:
     std::vector<sf::Uint8> _pixels;
-    int _width;
-    int _height;
+    uint32_t _width;
+    uint32_t _height;
 };

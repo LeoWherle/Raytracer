@@ -28,7 +28,23 @@ public:
 
     inline Color operator*(const double nb) const { return Color(_r * nb, _g * nb, _b * nb); }
 
+    inline Color &operator*=(const double nb)
+    {
+        _r *= nb;
+        _g *= nb;
+        _b *= nb;
+        return *this;
+    }
+
     inline Color operator/(const double nb) const { return Color(_r / nb, _g / nb, _b / nb); }
+
+    inline Color &operator/=(const double nb)
+    {
+        _r /= nb;
+        _g /= nb;
+        _b /= nb;
+        return *this;
+    }
 
     inline Color operator+(const Color &color) const
     {

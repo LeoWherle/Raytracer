@@ -23,9 +23,9 @@
 class Camera {
 public:
     double aspect_ratio = 1.0; // Can be 16:9, 4:3, etc.
-    int image_width = 100;
-    int samples_per_pixel = 10;
-    int max_depth = 10;
+    uint32_t image_width = 100;
+    uint32_t samples_per_pixel = 10;
+    uint32_t max_depth = 10;
     Color background;
 
     double vfov = 90;
@@ -36,7 +36,7 @@ public:
     double defocus_angle = 0; // Variation angle of rays through each pixel
     double focus_dist = 10; // Distance from camera lookfrom point to plane of perfect focus
 
-    int image_height;
+    uint32_t image_height;
 
 private:
     double pixel_samples_scale;
@@ -52,7 +52,7 @@ public:
 
     void update()
     {
-        image_height = int(image_width / aspect_ratio);
+        image_height = uint32_t(image_width / aspect_ratio);
         image_height = (image_height < 1) ? 1 : image_height;
 
         pixel_samples_scale = 1.0 / samples_per_pixel;
@@ -140,10 +140,10 @@ public:
     {
         update();
         image.resize(image_width, image_height);
-        for (int j = 0; j < image_height; j++) {
-            for (int i = 0; i < image_width; i++) {
+        for (uint32_t j = 0; j < image_height; j++) {
+            for (uint32_t i = 0; i < image_width; i++) {
                 Color pixel_color(0, 0, 0);
-                for (int sample = 0; sample < samples_per_pixel; sample++) {
+                for (uint32_t sample = 0; sample < samples_per_pixel; sample++) {
                     Ray r = get_ray(i, j);
                     pixel_color += ray_color(r, max_depth, world);
                 }
