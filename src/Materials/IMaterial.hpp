@@ -17,7 +17,7 @@ class IMaterial {
 public:
     virtual ~IMaterial() = default;
 
-    virtual Color emitted(double u, double v, const Point3D &point) const = 0;
+    virtual Color emitted(float u, float v, const Point3D &point) const = 0;
 
     virtual bool scatter(const Ray &r_in, const HitRecord &rec, Color &attenuation, Ray &scattered) const = 0;
 };

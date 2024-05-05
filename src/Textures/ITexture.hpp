@@ -15,5 +15,5 @@ class ITexture {
 public:
     virtual ~ITexture() = default;
 
-    virtual Color value(double u, double v, const Point3D &point) const = 0;
+    virtual Color value(float u, float v, const Point3D &point) const = 0;
 };

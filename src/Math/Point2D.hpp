@@ -11,14 +11,14 @@
 class Point2D {
 public:
     Point2D() = default;
-    Point2D(double x, double y):
+    Point2D(float x, float y):
         _x(x),
         _y(y) {};
 
     ~Point2D() = default;
 
-    double _x = 0;
-    double _y = 0;
+    float _x = 0;
+    float _y = 0;
 
     Point2D operator+(const Vector2D &vector) const { return Point2D(_x + vector._x, _y + vector._y); }
 

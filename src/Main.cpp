@@ -32,7 +32,7 @@ auto Main::arg_parse() -> bool
 auto handle_events(sf::RenderWindow &window, Camera &cam) -> void
 {
     sf::Event event;
-    constexpr auto movespeed = 0.01;
+    constexpr auto movespeed = 0.01f;
     while (window.pollEvent(event)) {
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wswitch"
@@ -101,19 +101,19 @@ auto Main::render_real_time() -> void
 
 auto Main::run() -> int
 {
-    auto green = Color(0.1, 0.8, 0.3);
-    auto purple = Color(0.8, 0.1, 0.8);
+    auto green = Color(0.1f, 0.8f, 0.3f);
+    auto purple = Color(0.8f, 0.1f, 0.8f);
     _world.addPrimitive(
         std::make_shared<Sphere>(Point3D(0, -1000, 0), 1000, std::make_shared<BaseMaterial>(purple))
     );
     _world.addPrimitive(std::make_shared<Sphere>(Point3D(0, 2, 0), 2, std::make_shared<BaseMaterial>(green)));
     _world.addPrimitive(std::make_shared<Sphere>(
-        Point3D(2, 2, -4), 2, std::make_shared<MetalMaterial>(Color(0.8, 0.8, 0.8), 0.1)
+        Point3D(2, 2, -4), 2, std::make_shared<MetalMaterial>(Color(0.8f, 0.8f, 0.8f), 0.1f)
     ));
     auto difflight = std::make_shared<LightMaterial>(Color(4, 4, 4));
     _world.addPrimitive(std::make_shared<Sphere>(Point3D(0, 7, 0), 2, difflight));
 
-    _camera.aspect_ratio = 16.0 / 9.0;
+    _camera.aspect_ratio = 16.0f / 9.0f;
     _camera.image_width = 400;
     _camera.samples_per_pixel = 1000;
     _camera.max_depth = 50;

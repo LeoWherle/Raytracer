@@ -11,12 +11,12 @@
 
 class Point3D {
 public:
-    double _x = 0;
-    double _y = 0;
-    double _z = 0;
+    float _x = 0;
+    float _y = 0;
+    float _z = 0;
 
     Point3D() = default;
-    Point3D(double x, double y, double z):
+    Point3D(float x, float y, float z):
         _x(x),
         _y(y),
         _z(z) {};

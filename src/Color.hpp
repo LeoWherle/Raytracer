@@ -14,7 +14,7 @@
 class Color {
 public:
     Color() = default;
-    Color(double r, double g, double b):
+    Color(float r, float g, float b):
         _r(r),
         _g(g),
         _b(b)
@@ -22,13 +22,13 @@ public:
     }
     ~Color() = default;
 
-    double _r = 0;
-    double _g = 0;
-    double _b = 0;
+    float _r = 0;
+    float _g = 0;
+    float _b = 0;
 
-    inline Color operator*(const double nb) const { return Color(_r * nb, _g * nb, _b * nb); }
+    inline Color operator*(const float nb) const { return Color(_r * nb, _g * nb, _b * nb); }
 
-    inline Color &operator*=(const double nb)
+    inline Color &operator*=(const float nb)
     {
         _r *= nb;
         _g *= nb;
@@ -36,9 +36,9 @@ public:
         return *this;
     }
 
-    inline Color operator/(const double nb) const { return Color(_r / nb, _g / nb, _b / nb); }
+    inline Color operator/(const float nb) const { return Color(_r / nb, _g / nb, _b / nb); }
 
-    inline Color &operator/=(const double nb)
+    inline Color &operator/=(const float nb)
     {
         _r /= nb;
         _g /= nb;
@@ -83,12 +83,12 @@ public:
 
     Color clamp() const
     {
-        static const Interval intensity(0.000, 0.999);
+        static const Interval intensity(0.000f, 0.999f);
 
         return Color {
-            intensity.clamp(_r),
-            intensity.clamp(_g),
-            intensity.clamp(_b),
+            (float)intensity.clamp(_r),
+            (float)intensity.clamp(_g),
+            (float)intensity.clamp(_b),
         };
     }
 };

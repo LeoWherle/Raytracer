@@ -12,21 +12,21 @@
 class Vector3D {
 public:
     Vector3D() = default;
-    Vector3D(double x, double y, double z):
+    Vector3D(float x, float y, float z):
         _x(x),
         _y(y),
         _z(z) {};
     ~Vector3D() = default;
 
-    double _x = 0;
-    double _y = 0;
-    double _z = 0;
+    float _x = 0;
+    float _y = 0;
+    float _z = 0;
 
-    inline double length() const { return std::sqrt(_x * _x + _y * _y + _z * _z); }
-    inline double length_squared() const { return _x * _x + _y * _y + _z * _z; }
+    inline float length() const { return std::sqrt(_x * _x + _y * _y + _z * _z); }
+    inline float length_squared() const { return _x * _x + _y * _y + _z * _z; }
     inline Vector3D &normalize() { return *this /= length(); }
 
-    inline double dot(const Vector3D &other) const { return _x * other._x + _y * other._y + _z * other._z; }
+    inline float dot(const Vector3D &other) const { return _x * other._x + _y * other._y + _z * other._z; }
 
     Vector3D cross(const Vector3D &other) const
     {
@@ -38,11 +38,11 @@ public:
     inline Vector3D unit() const { return *this / length(); }
     static inline Vector3D unit(const Vector3D &v) { return v / v.length(); }
 
-    static inline Vector3D random(double min, double max)
+    static inline Vector3D random(float min, float max)
     {
         return Vector3D(
-            min + (max - min) * rand() / (RAND_MAX + 1.0), min + (max - min) * rand() / (RAND_MAX + 1.0),
-            min + (max - min) * rand() / (RAND_MAX + 1.0)
+            min + (max - min) * (float)rand() / ((float)RAND_MAX + 1.0f), min + (max - min) * (float)rand() / ((float)RAND_MAX + 1.0f),
+            min + (max - min) * (float)rand() / ((float)RAND_MAX + 1.0f)
         );
     }
 
@@ -98,9 +98,9 @@ public:
         return *this;
     }
 
-    inline Vector3D operator*(double scalar) const { return Vector3D(_x * scalar, _y * scalar, _z * scalar); }
+    inline Vector3D operator*(float scalar) const { return Vector3D(_x * scalar, _y * scalar, _z * scalar); }
 
-    inline Vector3D &operator*=(double scalar)
+    inline Vector3D &operator*=(float scalar)
     {
         _x *= scalar;
         _y *= scalar;
@@ -108,9 +108,9 @@ public:
         return *this;
     }
 
-    inline Vector3D operator/(double scalar) const { return *this * (1 / scalar); }
+    inline Vector3D operator/(float scalar) const { return *this * (1 / scalar); }
 
-    inline Vector3D &operator/=(double scalar)
+    inline Vector3D &operator/=(float scalar)
     {
         _x /= scalar;
         _y /= scalar;
