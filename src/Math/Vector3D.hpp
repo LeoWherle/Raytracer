@@ -8,6 +8,7 @@
 #pragma once
 
 #include <cmath>
+#include <random>
 
 class Vector3D {
 public:
@@ -40,10 +41,11 @@ public:
 
     static inline Vector3D random(float min, float max)
     {
-        return Vector3D(
-            min + (max - min) * (float)rand() / ((float)RAND_MAX + 1.0f), min + (max - min) * (float)rand() / ((float)RAND_MAX + 1.0f),
-            min + (max - min) * (float)rand() / ((float)RAND_MAX + 1.0f)
-        );
+        static std::random_device rd;
+        static std::mt19937 gen(rd());
+        std::uniform_real_distribution<float> dis(min, max);
+        
+        return Vector3D(dis(gen), dis(gen), dis(gen));
     }
 
     bool near_zero() const
