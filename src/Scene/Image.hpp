@@ -27,18 +27,12 @@ public:
         for (size_t i = 0; i < _pixels.size(); i += 4) {
             _pixels[i + 3] = 255;
         }
-        _row_iterator.resize(height);
-        _row_iterator.resize(height);
-        std::iota(_row_iterator.begin(), _row_iterator.end(), 0);
     }
     ~Image() = default;
 
 protected:
 private:
 public:
-    // Iterators for the image (returns an iterator the index of the row)
-    auto row_begin() -> std::vector<uint32_t>::iterator { return _row_iterator.begin(); }
-    auto row_end() -> std::vector<uint32_t>::iterator { return _row_iterator.end(); }
 
     void resize(uint32_t width, uint32_t height)
     {
@@ -51,8 +45,6 @@ public:
         for (size_t i = 0; i < _pixels.size(); i += 4) {
             _pixels[i + 3] = 255;
         }
-        _row_iterator.resize(height);
-        std::iota(_row_iterator.begin(), _row_iterator.end(), 0);
     }
 
     void set_pixel(uint32_t x, uint32_t y, Color pixel_color)
@@ -158,5 +150,4 @@ private:
     std::vector<uint8_t> _pixels;
     uint32_t _width;
     uint32_t _height;
-    std::vector<uint32_t> _row_iterator;
 };

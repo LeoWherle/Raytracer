@@ -12,6 +12,7 @@
 #include "HitRecord.hpp"
 #include "Math/MathsUtils.hpp"
 #include "Math/Point3D.hpp"
+#include "Math/Random.hpp"
 #include "Ray.hpp"
 #include "Textures/ITexture.hpp"
 #include "Textures/SolidColorTexture.hpp"
@@ -35,7 +36,7 @@ public:
         Vector3D reflected = Vector3D::reflect(r_in.direction(), rec.normal);
 
         // Add a random unit vector scaled by the fuzz factor to the reflected direction
-        reflected = Vector3D::unit(reflected) + (mathsUtils::random_unit_vector() * _fuzz);
+        reflected = Vector3D::unit(reflected) + (Random::unit_vector() * _fuzz);
 
         // Set scattered to a new Ray with the reflected direction
         scattered = Ray(rec.p, reflected);

@@ -16,9 +16,6 @@ public:
     virtual void set_pixel(uint32_t x, uint32_t y, Color pixel_color) = 0;
     virtual Color get_pixel(uint32_t x, uint32_t y) const = 0;
 
-    virtual std::vector<uint32_t>::iterator row_begin() = 0;
-    virtual std::vector<uint32_t>::iterator row_end() = 0;
-
 protected:
 private:
 };
