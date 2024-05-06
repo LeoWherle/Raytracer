@@ -26,7 +26,7 @@ You can read the documentation by navigating to the `gh-pages` branch and openin
 
 ## Result exampls
 
-![Result](assets/render.png)
+![Result](assets/render/render.png)
 
 ## UML
 ![UML](assets/plantuml/plantuml.svg)
