@@ -29,6 +29,15 @@ add_executable(${PROJECT_NAME} ${SRC})
 
 target_link_libraries(${PROJECT_NAME} PRIVATE ${SFML_LIBRARIES})
 
+set(CMAKE_THREAD_PREFER_PTHREAD TRUE)
+set(THREADS_PREFER_PTHREAD_FLAG TRUE)
+find_package(Threads REQUIRED)
+
+target_link_libraries(${PROJECT_NAME} PRIVATE Threads::Threads)
+
+# add gprof
+target_link_libraries(${PROJECT_NAME} PRIVATE "-pg")
+
 # Make executable in root directory
 set_target_properties(${PROJECT_NAME} PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
@@ -49,8 +58,14 @@ target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra -Wformat=2
     -fno-common -fstrict-aliasing -Wunused-macros -fno-gnu-unique
 )
 
+if (CMAKE_BUILD_TYPE MATCHES RelWithDebInfo)
+    target_compile_options(${PROJECT_NAME} PRIVATE -O2)
+    set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-g3")
+endif()
+
 if(CMAKE_BUILD_TYPE MATCHES Release)
     target_compile_options(${PROJECT_NAME} PRIVATE -O2)
+    set(CMAKE_CXX_FLAGS_RELEASE "-g3")
 else()
     target_compile_options(${PROJECT_NAME} PRIVATE -O0)
     set(CMAKE_CXX_FLAGS_DEBUG "-g3")

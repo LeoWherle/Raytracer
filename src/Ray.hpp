@@ -12,16 +12,22 @@
 
 class Ray {
 public:
-    Point3D _origin;
-    Vector3D _direction;
-    Point3D _color;
-
+public:
     Ray() = default;
+
     Ray(const Point3D &origin, const Vector3D &direction):
         _origin(origin),
         _direction(direction)
     {
     }
 
-    Point3D at(double t) const { return _origin + _direction * t; }
+    const Point3D &origin() const { return _origin; }
+    const Vector3D &direction() const { return _direction; }
+
+
+    Point3D at(float t) const { return _origin + _direction * t; }
+
+private:
+    Point3D _origin;
+    Vector3D _direction;
 };

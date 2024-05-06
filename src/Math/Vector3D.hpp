@@ -8,24 +8,26 @@
 #pragma once
 
 #include <cmath>
+#include <random>
+
 class Vector3D {
 public:
     Vector3D() = default;
-    Vector3D(double x, double y, double z):
+    Vector3D(float x, float y, float z):
         _x(x),
         _y(y),
         _z(z) {};
     ~Vector3D() = default;
 
-    double _x = 0;
-    double _y = 0;
-    double _z = 0;
+    float _x = 0;
+    float _y = 0;
+    float _z = 0;
 
-    inline double length() const { return std::sqrt(_x * _x + _y * _y + _z * _z); }
-    inline double length_squared() const { return _x * _x + _y * _y + _z * _z; }
+    inline float length() const { return std::sqrt(_x * _x + _y * _y + _z * _z); }
+    inline float length_squared() const { return _x * _x + _y * _y + _z * _z; }
     inline Vector3D &normalize() { return *this /= length(); }
 
-    inline double dot(const Vector3D &other) const { return _x * other._x + _y * other._y + _z * other._z; }
+    inline float dot(const Vector3D &other) const { return _x * other._x + _y * other._y + _z * other._z; }
 
     Vector3D cross(const Vector3D &other) const
     {
@@ -35,6 +37,27 @@ public:
     }
 
     inline Vector3D unit() const { return *this / length(); }
+    static inline Vector3D unit(const Vector3D &v) { return v / v.length(); }
+
+    static inline Vector3D random(float min, float max)
+    {
+        static std::random_device rd;
+        static std::mt19937 gen(rd());
+        std::uniform_real_distribution<float> dis(min, max);
+        
+        return Vector3D(dis(gen), dis(gen), dis(gen));
+    }
+
+    bool near_zero() const
+    {
+        // Return true if the vector is close to zero in all dimensions.
+        auto s = 1e-8;
+        return (fabs(_x) < s) && (fabs(_y) < s) && (fabs(_z) < s);
+    }
+
+    static inline Vector3D reflect(const Vector3D &v, const Vector3D &n) { return v - (n * (v.dot(n) * 2)); }
+
+    inline Vector3D operator-() const { return Vector3D(-_x, -_y, -_z); }
 
     inline Vector3D operator+(const Vector3D &other) const
     {
@@ -77,9 +100,9 @@ public:
         return *this;
     }
 
-    inline Vector3D operator*(double scalar) const { return Vector3D(_x * scalar, _y * scalar, _z * scalar); }
+    inline Vector3D operator*(float scalar) const { return Vector3D(_x * scalar, _y * scalar, _z * scalar); }
 
-    inline Vector3D &operator*=(double scalar)
+    inline Vector3D &operator*=(float scalar)
     {
         _x *= scalar;
         _y *= scalar;
@@ -87,9 +110,9 @@ public:
         return *this;
     }
 
-    inline Vector3D operator/(double scalar) const { return *this * (1 / scalar); }
+    inline Vector3D operator/(float scalar) const { return *this * (1 / scalar); }
 
-    inline Vector3D &operator/=(double scalar)
+    inline Vector3D &operator/=(float scalar)
     {
         _x /= scalar;
         _y /= scalar;

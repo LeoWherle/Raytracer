@@ -5,25 +5,16 @@
 ** Main
 */
 
-#include <SFML/Config.hpp>
-#include <SFML/Graphics/RenderWindow.hpp>
-#include <SFML/Window/Keyboard.hpp>
-#include <SFML/Window/Window.hpp>
-#include <cstdint>
-#include <exception>
-#include <fstream>
-#include <iostream>
-
-#include "Camera.hpp"
-#include "Lights/LightPoint.hpp"
-#include "Main.hpp"
-#include "Math/Rectangle3D.hpp"
-#include "Parameters.hpp"
-#include "Primitives/Sphere.hpp"
-
 #include <SFML/Graphics.hpp>
-#include <ostream>
-#include <string>
+
+#include "Main.hpp"
+#include "Camera.hpp"
+#include "Materials/BaseMaterial.hpp"
+#include "Materials/LightMaterial.hpp"
+#include "Materials/MetalMaterial.hpp"
+#include "Primitives/Plane.hpp"
+#include "Primitives/Sphere.hpp"
+#include "Scene/World.hpp"
 
 auto Main::arg_parse() -> bool
 {
@@ -32,52 +23,18 @@ auto Main::arg_parse() -> bool
     } catch (std::exception &e) {
         std::cerr << e.what() << std::endl;
         std::cerr << "Usage: " << _av[0] << " [scene file]" << std::endl;
+        std::cerr << "Options:" << std::endl;
+        std::cerr << "  -gui: Open a window to render the scene in real time" << std::endl;
+        std::cerr << "  -o [outputfile]: Save the rendered image to the specified file (BMP, PPM or PNG)" << std::endl;
         return false;
     }
     return true;
 }
 
-static Color add_light_to_sphere(const Ray &ray, std::shared_ptr<Sphere> sphere, std::shared_ptr<ILight> light)
-{
-    Color result = Color(0, 0, 0);
-    double t = sphere->hits(ray);
-    if (t == -1)
-        return result;
-    Point3D hit_point = ray.at(t);
-    Vector3D normal = (hit_point - sphere->_center).normalize();
-    Vector3D light_direction = (hit_point - light->_origin).normalize();
-    double light_intensity = normal.dot(light_direction);
-    if (light_intensity > 0) {
-        result = sphere->_color * light_intensity * light->_intensity;
-    }
-    return result;
-}
-
-auto render_frame(
-    sf::Uint8 *pixels, uint32_t image_width, uint32_t image_height, World &world) -> void
-{
-    for (uint32_t j = 0; j < image_height; ++j) {
-        for (uint32_t i = 0; i < image_width; ++i) {
-            double u = double(i) / (image_width - 1);
-            double v = double(j) / (image_height - 1);
-            Color color = Color(0, 0, 0);
-
-            // if (world.hits(world.camera.ray(u, v)) != -1) {
-            //     color = Color(255, 0, 0);
-            // }
-            color = add_light_to_sphere(world.camera.ray(u, v), std::dynamic_pointer_cast<Sphere>(world.primitives[0]), world.lights[0]);
-            pixels[(j * image_width + i) * 4 + 0] = color.getR();
-            pixels[(j * image_width + i) * 4 + 1] = color.getG();
-            pixels[(j * image_width + i) * 4 + 2] = color.getB();
-            pixels[(j * image_width + i) * 4 + 3] = 255;
-        }
-    }
-}
-
 auto handle_events(sf::RenderWindow &window, Camera &cam) -> void
 {
     sf::Event event;
-    constexpr auto movespeed = 0.01;
+    constexpr auto movespeed = 0.01f;
     while (window.pollEvent(event)) {
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wswitch"
@@ -123,64 +80,61 @@ auto handle_events(sf::RenderWindow &window, Camera &cam) -> void
     }
 }
 
-auto Main::render_real_time(sf::Uint8 *pixels, uint32_t image_width, uint32_t image_height) -> void
+auto Main::render_real_time() -> void
 {
-    sf::RenderWindow window(sf::VideoMode(image_width, image_height), "Raytracer", sf::Style::Close);
-    sf::Texture texture;
-    texture.create(image_width, image_height);
-    sf::Sprite sprite(texture);
+    _camera.update();
+    sf::RenderWindow window(
+        sf::VideoMode(_camera.image_width, _camera.image_height), "Raytracer", sf::Style::Close
+    );
 
+    // check the time for rendering a frame
+    sf::Clock clock;
     while (window.isOpen()) {
-        handle_events(window, _world.camera);
-        render_frame(pixels, image_width, image_height, _world);
+        handle_events(window, _camera);
+        clock.restart();
+        _camera.render(_world, _image);
+        auto stop = clock.getElapsedTime();
+        std::cout << "Rendering time: " << stop.asMilliseconds() << "ms" << std::endl;
         window.clear();
-        texture.update(pixels);
-        window.draw(sprite);
+        window.draw(_image);
         window.display();
     }
 }
 
-static void
-writePixelInPPM(std::ofstream &out, sf::Uint8 *pixels, uint32_t i, uint32_t j, uint32_t image_width)
-{
-    out << static_cast<int>(pixels[(j * image_width + i) * 4 + 0]) << ' '
-        << static_cast<int>(pixels[(j * image_width + i) * 4 + 1]) << ' '
-        << static_cast<int>(pixels[(j * image_width + i) * 4 + 2]) << '\n';
-}
-
-auto Main::render_image(sf::Uint8 *pixels, uint32_t image_width, uint32_t image_height) -> void
-{
-    std::string file_name = _params._output_file.empty() ? "output.ppm" : _params._output_file;
-    std::ofstream out(file_name);
-    out << "P3\n" << image_width << ' ' << image_height << "\n255\n";
-
-    for (uint32_t j = 0; j < image_height; ++j) {
-        for (uint32_t i = 0; i < image_width; ++i) {
-            writePixelInPPM(out, pixels, i, j, image_width);
-        }
-    }
-    std::cout << "Image saved to " << file_name << std::endl;
-    out.close();
-}
-
 auto Main::run() -> int
 {
-    const uint32_t image_width = 400;
-    const uint32_t image_height = 400;
-    Camera cam;
+    auto green = Color(0.1f, 0.8f, 0.3f);
+    auto purple = Color(0.8f, 0.1f, 0.8f);
+    _world.addPrimitive(
+        std::make_shared<Sphere>(Point3D(0, -1000, 0), 1000, std::make_shared<BaseMaterial>(purple))
+    );
+    _world.addPrimitive(std::make_shared<Sphere>(Point3D(0, 2, 0), 2, std::make_shared<BaseMaterial>(green)));
+    _world.addPrimitive(std::make_shared<Sphere>(
+        Point3D(2, 2, -4), 2, std::make_shared<MetalMaterial>(Color(0.8f, 0.8f, 0.8f), 0.1f)
+    ));
+    auto difflight = std::make_shared<LightMaterial>(Color(4, 4, 4));
+    _world.addPrimitive(std::make_shared<Sphere>(Point3D(0, 7, 0), 2, difflight));
 
-    _world.addPrimitive(std::make_shared<Sphere>(Point3D(0, -0.5, -1), 0.2, Color(255, 0, 0)));
-    _world.addLight(std::make_shared<LightPoint>(Point3D(1, -0.8, -1.5), 1));
-    sf::Uint8 *pixels = new sf::Uint8[image_width * image_height * 4];
+    _camera.aspect_ratio = 16.0f / 9.0f;
+    _camera.image_width = 400;
+    _camera.samples_per_pixel = 1000;
+    _camera.max_depth = 50;
+    _camera.background = Color(0, 0, 0);
+
+    _camera.vfov = 20;
+    _camera.origin = Point3D(14, 3, 22);
+    _camera.lookat = Point3D(1, 2, -2);
+    _camera.vup = Vector3D(0, 1, 0);
+
+    _camera.defocus_angle = 0;
 
     if (_params._gui) {
-        render_real_time(pixels, image_width, image_height);
+        render_real_time();
     }
-    if (!_params._scene_file.empty()) {
-        render_frame(pixels, image_width, image_height, _world);
-        render_image(pixels, image_width, image_height);
+    if (!_params._output_file.empty()) {
+        _camera.render(_world, _image);
+        _image.writeBMP(_params._output_file);
     }
-    delete[] pixels;
     return 0;
 }
 
@@ -195,7 +149,7 @@ auto main(int ac, char *argv[]) -> int
         }
         exitCode = main.run();
     } catch (const std::exception &e) {
-        std::cerr << e.what() << std::endl;
+        // std::cerr << e.what() << std::endl;
         exitCode = 84;
     }
     return exitCode;

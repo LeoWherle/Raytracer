@@ -6,11 +6,370 @@
 
 /' Objects '/
 
+class AMaterial {
+	+~AMaterial()
+	+emitted(float, float, const Point3D &) : Color {query}
+	+scatter(const Ray &, const HitRecord &, Color &, Ray &) : bool {query}
+}
+
+
+class ArgumentsLoader {
+	+ArgumentsLoader()
+	+~ArgumentsLoader()
+	+has(const std::string& key) : bool
+	+has(uint32_t index) : bool
+	+operator<<(std::ostream& os, const ArgumentsLoader& params) : std :: ostream&
+	#_flag_params : std::map<std::string, std::string>
+	+get(const std::string& key) : std::string
+	+get(uint32_t index) : std::string
+	#_positional_params : std::vector<std::string>
+	+clear() : void
+	+parse(int ac, char** av) : void
+	+remove(const std::string& key) : void
+	+set(const std::string& key, const std::string& value) : void
+	+visit(std::function<void ( const std::string&, const std::string& )> visitor) : void
+}
+
+
+class ArgumentsLoader::HelpArgument {
+	+HelpArgument(const std::string& message)
+	+HelpArgument(const char* const message)
+	+~HelpArgument()
+	+what() : char* {query}
+	-_message : const std::string
+}
+
+
+class ArgumentsLoader::MissingArgument {
+	+MissingArgument(const std::string& message)
+	+MissingArgument(const char* const message)
+	+~MissingArgument()
+	+what() : char* {query}
+	-_message : const std::string
+}
+
+
+class BaseMaterial {
+	+BaseMaterial(const Color& color)
+	+BaseMaterial(std::shared_ptr<ITexture> texture)
+	+scatter(const Ray &, const HitRecord& rec, Color& attenuation, Ray& scattered) : bool {query}
+	-_texture : std::shared_ptr<ITexture>
+}
+
+
+class Camera {
+	+Camera()
+	+background : Color
+	+ray_color(const Ray& r, int depth, const World& world) : Color {query}
+	-center : Point3D
+	+lookat : Point3D
+	+origin : Point3D
+	-pixel00_loc : Point3D
+	+new_ray(float u, float v) : Ray {query}
+	-defocus_disk_u : Vector3D
+	-defocus_disk_v : Vector3D
+	-pixel_delta_u : Vector3D
+	-pixel_delta_v : Vector3D
+	+vup : Vector3D
+	+aspect_ratio : float
+	+defocus_angle : float
+	+focus_dist : float
+	-pixel_samples_scale : float
+	+vfov : float
+	+image_height : uint32_t
+	+image_width : uint32_t
+	+max_depth : uint32_t
+	+samples_per_pixel : uint32_t
+	+move(const Vector3D& direction) : void
+	+render(World& world, Image& image) : void
+	+update() : void
+}
+
+
+class Color {
+	+Color()
+	+Color(float r, float g, float b)
+	+~Color()
+	+clamp() : Color {query}
+	+operator*(const float nb) : Color {query}
+	+operator*(const Color& color) : Color {query}
+	+operator+(const Color& color) : Color {query}
+	+operator+=(const Color& color) : Color
+	+operator/(const float nb) : Color {query}
+	+to_gamma() : Color {query}
+	+to_linear() : Color {query}
+	+operator*=(const float nb) : Color&
+	+operator/=(const float nb) : Color&
+	+_b : float
+	+_g : float
+	+_r : float
+	+getB() : uint8_t {query}
+	+getG() : uint8_t {query}
+	+getR() : uint8_t {query}
+}
+
+
+class HitRecord {
+	+p : Point3D
+	+normal : Vector3D
+	+front_face : bool
+	+t : float
+	+u : float
+	+v : float
+	+material : std::shared_ptr<IMaterial>
+	+set_face_normal(const Ray& ray, const Vector3D& out_normal) : void
+}
+
+
+abstract class IMaterial {
+	+~IMaterial()
+	+{abstract} emitted(float u, float v, const Point3D& point) : Color {query}
+	+{abstract} scatter(const Ray& r_in, const HitRecord& rec, Color& attenuation, Ray& scattered) : bool {query}
+}
+
+
+abstract class IPrimitive {
+	+~IPrimitive()
+	+{abstract} hits(const Ray& r, Interval ray_max, HitRecord& rec) : bool {query}
+}
+
+
+abstract class ITexture {
+	+~ITexture()
+	+{abstract} value(float u, float v, const Point3D& point) : Color {query}
+}
+
+
+class Image {
+	+Image()
+	+Image(uint32_t width, uint32_t height)
+	+~Image()
+	+get_stream() : auto
+	+height() : auto
+	+width() : auto
+	-_pixels : std::vector<uint8_t>
+	-_height : uint32_t
+	-_width : uint32_t
+	+draw(sf::RenderTarget& target, sf::RenderStates states) : void {query}
+	+resize(uint32_t width, uint32_t height) : void
+	+set_pixel(uint32_t x, uint32_t y, Color pixel_color) : void
+	+writeBMP(const std::string& filename) : void
+	+writePNG(const std::string& filename) : void
+	+writePPM(const std::string& filename) : void
+	-writePixelInPPM(std::ofstream& out, uint32_t i, uint32_t j) : void
+}
+
+
+class Interval {
+	+Interval()
+	+Interval(float min_, float max_)
+	+Interval(const Interval& a, const Interval& b)
+	+expand(float delta) : Interval {query}
+	+contains(float x) : bool {query}
+	+surrounds(float x) : bool {query}
+	+clamp(float x) : float {query}
+	+max : float
+	+min : float
+	+size() : float {query}
+	+{static} empty : static const Interval
+	+{static} universe : static const Interval
+}
+
+
+class LightMaterial {
+	+LightMaterial(std::shared_ptr<ITexture> tex)
+	+LightMaterial(const Color& emit)
+	+emitted(float u, float v, const Point3D& p) : Color {query}
+	-texture : std::shared_ptr<ITexture>
+}
+
+
 class Main {
-	+Main()
+	+Main(int ac, char* av)
 	+~Main()
-	#arg_parse(int ac, char** av) : auto
-	+run(int ac, char** av) : auto
+	+_camera : Camera
+	+_image : Image
+	+_params : Parameters
+	+_world : World
+	+arg_parse() : auto
+	+render_real_time() : auto
+	+run() : auto
+	+_av : char**
+	+_ac : int
+}
+
+
+class MetalMaterial {
+	+MetalMaterial(const Color& color, float fuzz)
+	-_color : Color
+	+scatter(const Ray& r_in, const HitRecord& rec, Color& attenuation, Ray& scattered) : bool {query}
+	-_fuzz : float
+}
+
+
+class Parameters {
+	+Parameters()
+	+~Parameters()
+	+_loader : ArgumentsLoader
+	+_gui : bool
+	+_help : bool
+	+_output_file : std::string
+	+_scene_file : std::string
+	+load(int ac, char** av) : void
+}
+
+
+class Plane {
+	+Plane(const Point3D& origin, const Vector3D& normal, std::shared_ptr<IMaterial> material)
+	+_origin : Point3D
+	+_normal : Vector3D
+	+hits(const Ray& r, Interval ray_max, HitRecord& rec) : bool {query}
+	+_material : std::shared_ptr<IMaterial>
+}
+
+
+class Point2D {
+	+Point2D()
+	+Point2D(float x, float y)
+	+~Point2D()
+	+operator+(const Vector2D& vector) : Point2D {query}
+	+operator-(const Point2D& point) : Vector2D {query}
+	+_x : float
+	+_y : float
+}
+
+
+class Point3D {
+	+Point3D()
+	+Point3D(float x, float y, float z)
+	+operator+(const Vector3D& vector) : Point3D {query}
+	+operator-(const Vector3D& vector) : Point3D {query}
+	+operator-(const Point3D& point) : Vector3D {query}
+	+_x : float
+	+_y : float
+	+_z : float
+}
+
+
+class Ray {
+	+Ray()
+	+Ray(const Point3D& origin, const Vector3D& direction)
+	-_origin : Point3D
+	+at(float t) : Point3D {query}
+	+origin() : Point3D& {query}
+	-_direction : Vector3D
+	+direction() : Vector3D& {query}
+}
+
+
+class Rectangle3D {
+	+Rectangle3D()
+	+Rectangle3D(const Point3D& origin, const Vector3D& bottom_side, const Vector3D& left_side)
+	+_origin : Point3D
+	+pointAt(float u, float v) : Point3D {query}
+	+_bottom_side : Vector3D
+	+_left_side : Vector3D
+}
+
+
+class SolidColorTexture {
+	+SolidColorTexture(const Color& color)
+	+SolidColorTexture(float red, float green, float blue)
+	-_color : Color
+	+value(float, float, const Point3D &) : Color {query}
+}
+
+
+class Sphere {
+	+Sphere(const Point3D& center, float radius, std::shared_ptr<IMaterial> mat)
+	-origin : Point3D
+	-origin_vec : Vector3D
+	+hits(const Ray& ray, Interval ray_d, HitRecord& hitrec) : bool {query}
+	-_radius : float
+	-material : std::shared_ptr<IMaterial>
+	+get_sphere_uv(const Vector3D& p, float& u, float& v) : void {query}
+}
+
+
+class Vector2D {
+	+Vector2D()
+	+Vector2D(float x, float y)
+	+~Vector2D()
+	+cross(const Vector2D& other) : Vector2D {query}
+	+normal(const Vector3D& other) : Vector2D {query}
+	+operator*(float scalar) : Vector2D {query}
+	+operator+(const Vector2D& other) : Vector2D {query}
+	+operator-(const Vector2D& other) : Vector2D {query}
+	+operator/(float scalar) : Vector2D {query}
+	+unit() : Vector2D {query}
+	+normalize() : Vector2D&
+	+operator*=(float scalar) : Vector2D&
+	+operator+=(const Vector2D& other) : Vector2D&
+	+operator-=(const Vector2D& other) : Vector2D&
+	+operator/=(float scalar) : Vector2D&
+	+_x : float
+	+_y : float
+	+dot(const Vector2D& other) : float {query}
+	+length() : float {query}
+	+length_squared() : float {query}
+}
+
+
+class Vector3D {
+	+Vector3D()
+	+Vector3D(float x, float y, float z)
+	+~Vector3D()
+	+cross(const Vector3D& other) : Vector3D {query}
+	+operator*(const Vector3D& other) : Vector3D {query}
+	+operator*(float scalar) : Vector3D {query}
+	+operator+(const Vector3D& other) : Vector3D {query}
+	+operator-() : Vector3D {query}
+	+operator-(const Vector3D& other) : Vector3D {query}
+	+operator/(float scalar) : Vector3D {query}
+	+{static} random(float min, float max) : Vector3D
+	+{static} reflect(const Vector3D& v, const Vector3D& n) : Vector3D
+	+unit() : Vector3D {query}
+	+{static} unit(const Vector3D& v) : Vector3D
+	+normalize() : Vector3D&
+	+operator*=(const Vector3D& other) : Vector3D&
+	+operator*=(float scalar) : Vector3D&
+	+operator+=(const Vector3D& other) : Vector3D&
+	+operator-=(const Vector3D& other) : Vector3D&
+	+operator/=(float scalar) : Vector3D&
+	+near_zero() : bool {query}
+	+_x : float
+	+_y : float
+	+_z : float
+	+dot(const Vector3D& other) : float {query}
+	+length() : float {query}
+	+length_squared() : float {query}
+}
+
+
+class World {
+	+World()
+	+~World()
+	+hits(const Ray& r, Interval ray_d, HitRecord& rec) : bool {query}
+	+primitives : std::vector<std::shared_ptr<IPrimitive>>
+	+addPrimitive(std::shared_ptr<IPrimitive> primitive) : void
+}
+
+
+class Image::BMPHeader {
+	+height : int32_t
+	+width : int32_t
+	+xPixelsPerMeter : int32_t
+	+yPixelsPerMeter : int32_t
+	+bitsPerPixel : uint16_t
+	+planes : uint16_t
+	+compression : uint32_t
+	+dataOffset : uint32_t
+	+fileSize : uint32_t
+	+headerSize : uint32_t
+	+imageSize : uint32_t
+	+importantColors : uint32_t
+	+reserved : uint32_t
+	+totalColors : uint32_t
 }
 
 
@@ -19,16 +378,130 @@ class Main {
 
 /' Inheritance relationships '/
 
+.AMaterial <|-- .BaseMaterial
+
+
+.AMaterial <|-- .LightMaterial
+
+
+.AMaterial <|-- .MetalMaterial
+
+
+.IMaterial <|-- .AMaterial
+
+
+.IPrimitive <|-- .Plane
+
+
+.IPrimitive <|-- .Sphere
+
+
+.IPrimitive <|-- .World
+
+
+.ITexture <|-- .SolidColorTexture
+
+
 
 
 
 /' Aggregation relationships '/
+
+.BaseMaterial *-- .ITexture
+
+
+.Camera *-- .Color
+
+
+.Camera "4" *-- .Point3D
+
+
+.Camera "5" *-- .Vector3D
+
+
+.HitRecord *-- .IMaterial
+
+
+.HitRecord *-- .Point3D
+
+
+.HitRecord *-- .Vector3D
+
+
+.Interval "2" *-- .Interval
+
+
+.LightMaterial *-- .ITexture
+
+
+.Main *-- .Camera
+
+
+.Main *-- .Image
+
+
+.Main *-- .Parameters
+
+
+.Main *-- .World
+
+
+.MetalMaterial *-- .Color
+
+
+.Parameters *-- .ArgumentsLoader
+
+
+.Plane *-- .IMaterial
+
+
+.Plane *-- .Point3D
+
+
+.Plane *-- .Vector3D
+
+
+.Ray *-- .Point3D
+
+
+.Ray *-- .Vector3D
+
+
+.Rectangle3D *-- .Point3D
+
+
+.Rectangle3D "2" *-- .Vector3D
+
+
+.SolidColorTexture *-- .Color
+
+
+.Sphere *-- .IMaterial
+
+
+.Sphere *-- .Point3D
+
+
+.Sphere *-- .Vector3D
+
+
+.World *-- .IPrimitive
+
 
 
 
 
 
 /' Nested objects '/
+
+.ArgumentsLoader +-- .ArgumentsLoader::HelpArgument
+
+
+.ArgumentsLoader +-- .ArgumentsLoader::MissingArgument
+
+
+.Image +-- .Image::BMPHeader
+
 
 
 

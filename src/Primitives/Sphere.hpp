@@ -8,35 +8,78 @@
 #pragma once
 
 #include "IPrimitive.hpp"
+#include "Materials/IMaterial.hpp"
 #include "Math/Point3D.hpp"
+#include "Ray.hpp"
+#include <memory>
 
 class Sphere : public IPrimitive {
-public:
-    Point3D _center;
-    double _radius;
-    Color _color;
+private:
+    Point3D origin;
+    float _radius;
+    std::shared_ptr<IMaterial> material;
+    Vector3D origin_vec;
 
-    Sphere(const Point3D &center, double radius, const Color &color):
-        _center(center),
-        _radius(radius),
-        _color(color)
+public:
+    Sphere(const Point3D &center, float radius, std::shared_ptr<IMaterial> mat):
+        origin(center),
+        _radius((float)fmax(0, radius)),
+        material(mat)
     {
     }
 
-    double hits(const Ray &ray) const override
+    bool hits(const Ray &ray, Interval ray_d, HitRecord &hitrec) const override
     {
-        Vector3D oc = ray._origin - _center;
-        double a = ray._direction.dot(ray._direction);
-        double b = 2.0 * oc.dot(ray._direction);
-        double c = oc.dot(oc) - _radius * _radius;
-        double discriminant = b * b - 4 * a * c;
+        /* formula:
+        * ray = origin + t * direction
+        * sphere = (x - center)^2 + (y - center)^2 + (z - center)^2 = radius^2
+        * substitute ray into sphere equation
+        * (origin + t * direction - center)^2 = radius^2
+        * a = direction * direction
+        * b = 2 * direction * (origin - center)
+        * c = (origin - center) * (origin - center) - radius^2
+        * discriminant = b^2 - 4ac
+        * if discriminant < 0, no real roots
+        * if discriminant = 0, one real root
+        * if discriminant > 0, two real roots
+        * roots = (-b +- sqrt(discriminant)) / 2a
+        */
+        Vector3D oc = origin - ray.origin();
+        auto a = ray.direction().length_squared();
+        auto b = ray.direction().dot(oc);
+        auto c = oc.length_squared() - _radius * _radius;
+
+        auto discriminant = b * b - a * c;
         if (discriminant < 0) {
-            return -1;
+            return false;
         }
-        double t = (-b - sqrt(discriminant)) / (2.0 * a);
-        if (t < 0) {
-            t = (-b + sqrt(discriminant)) / (2.0 * a);
+
+        auto sqrtd = sqrt(discriminant);
+
+        // Find the nearest root that lies in the acceptable range.
+        auto root = (b - sqrtd) / a;
+        if (!ray_d.surrounds(root)) {
+            root = (b + sqrtd) / a;
+            if (!ray_d.surrounds(root))
+                return false;
         }
-        return t;
+
+        hitrec.t = root;
+        hitrec.p = ray.at(hitrec.t);
+        Vector3D outward_normal = (hitrec.p - origin) / _radius;
+        hitrec.set_face_normal(ray, outward_normal);
+        get_sphere_uv(outward_normal, hitrec.u, hitrec.v);
+        hitrec.material = material;
+
+        return true;
+    }
+
+    void get_sphere_uv(const Vector3D &p, float &u, float &v) const
+    {
+        float theta = acos(-p._y);
+        float phi = atan2(-p._z, p._x) + M_PIf;
+
+        u = phi / (2 * M_PIf);
+        v = theta / M_PIf;
     }
 };
