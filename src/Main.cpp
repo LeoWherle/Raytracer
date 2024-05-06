@@ -5,6 +5,8 @@
 ** Main
 */
 
+#include <SFML/Graphics.hpp>
+
 #include "Main.hpp"
 #include "Camera.hpp"
 #include "Materials/BaseMaterial.hpp"

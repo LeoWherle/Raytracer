@@ -9,17 +9,19 @@
 
 #include "Color.hpp"
 #include "HitRecord.hpp"
-#include "Image.hpp"
 #include "Interval.hpp"
 #include "Math/MathsUtils.hpp"
 #include "Math/Point3D.hpp"
 #include "Math/Rectangle3D.hpp"
 #include "Ray.hpp"
+#include "Scene/IImage.hpp"
 #include "Scene/World.hpp"
 #include "math.h"
+#include <execution>
 #include <iomanip>
 #include <iostream>
 #include <math.h>
+#include <vector>
 
 class Camera {
 public:
@@ -53,10 +55,10 @@ public:
 
     void update()
     {
-        image_height = uint32_t((float)image_width / (float)aspect_ratio);
+        image_height = uint32_t((float) image_width / (float) aspect_ratio);
         image_height = (image_height < 1) ? 1 : image_height;
 
-        pixel_samples_scale = 1.0f / (float)samples_per_pixel;
+        pixel_samples_scale = 1.0f / (float) samples_per_pixel;
 
         center = origin;
 
@@ -64,7 +66,7 @@ public:
         auto theta = mathsUtils::degrees_to_radians(vfov);
         auto h = tan(theta / 2);
         auto viewport_height = 2 * h * focus_dist;
-        auto viewport_width = viewport_height * (float(image_width) / (float)image_height);
+        auto viewport_width = viewport_height * (float(image_width) / (float) image_height);
 
         // Calculate the u,v,w unit basis vectors for the camera coordinate frame.
         auto w = Vector3D::unit(origin - lookat);
@@ -76,8 +78,8 @@ public:
         Vector3D viewport_v = -v * viewport_height; // Vector down viewport vertical edge
 
         // Calculate the horizontal and vertical delta vectors from pixel to pixel.
-        pixel_delta_u = viewport_u / (float)image_width;
-        pixel_delta_v = viewport_v / (float)image_height;
+        pixel_delta_u = viewport_u / (float) image_width;
+        pixel_delta_v = viewport_v / (float) image_height;
 
         // Calculate the location of the upper left pixel.
         auto viewport_upper_left =
@@ -131,23 +133,31 @@ public:
         return color_from_emission + color_from_scatter;
     }
 
-    void render(World &world, Image &image)
+    void render(World &world, IImage &image)
     {
         update();
         image.resize(image_width, image_height);
         std::clog << "\rRendering: 0.00%" << std::flush;
-        for (uint32_t j = 0; j < image_height; j++) {
-            for (uint32_t i = 0; i < image_width; i++) {
-                Color pixel_color(0, 0, 0);
-                for (uint32_t sample = 0; sample < samples_per_pixel; sample++) {
-                    Ray r = new_ray((float)i, (float)j);
-                    pixel_color += ray_color(r, max_depth, world);
-                }
-                image.set_pixel(i, j, pixel_color * pixel_samples_scale);
+
+        auto pixel_func = [&](uint32_t i, uint32_t j) {
+            Color pixel_color(0, 0, 0);
+            for (uint32_t sample = 0; sample < samples_per_pixel; sample++) {
+                Ray r = new_ray((float) i, (float) j);
+                pixel_color += ray_color(r, max_depth, world);
             }
-            std::clog << "\rRendering: " << std::fixed << std::setprecision(2)
-                      << (100.0f * (float)j / (float)(image_height - 1)) << "%" << std::flush;
-        }
+            image.set_pixel(i, j, pixel_color * pixel_samples_scale);
+        };
+
+        // clang-format off
+        std::for_each(std::execution::par_unseq, image.row_begin(), image.row_end(), [&](uint32_t j) {
+        // for (uint32_t j = 0; j < image.get_height(); j++) {
+            for (uint32_t i = 0; i < image.get_width(); i++) {
+                pixel_func(i, j);
+            };
+            std::clog << "\rRendering: " << std::fixed << std::setprecision(2) << (100.0f * (float) j / (float) (image.get_height() - 1)) << "%" << std::flush;
+        // };
+        });
+        // clang-format on
         std::clog << std::endl;
     }
 };
