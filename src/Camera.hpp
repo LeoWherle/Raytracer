@@ -149,7 +149,7 @@ public:
                 Ray r = new_ray((float) i, (float) j);
                 pixel_color += ray_color(r, max_depth, world);
             }
-            image.set_pixel(i, j, pixel_color * pixel_samples_scale);
+            image.set_pixel(i, j, pixel_color * pixel_samples_scale, samples_per_pixel, max_depth);
         };
 
         auto number_threads = std::thread::hardware_concurrency();
