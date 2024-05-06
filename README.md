@@ -24,5 +24,9 @@ You can read the documentation by navigating to the `gh-pages` branch and openin
 ./raytracer [scene_file]
 ```
 
+## Result exampls
+
+![Result](assets/result.bmp)
+
 ## UML
 ![UML](assets/plantuml/plantuml.svg)
