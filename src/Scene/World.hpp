@@ -11,7 +11,7 @@
 #include <vector>
 
 #include "HitRecord.hpp"
-#include "Interval.hpp"
+#include "Math/Interval.hpp"
 #include "Primitives/IPrimitive.hpp"
 #include "Ray.hpp"
 
