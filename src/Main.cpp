@@ -7,14 +7,16 @@
 
 #include <SFML/Graphics.hpp>
 
-#include "Main.hpp"
 #include "Camera.hpp"
+#include "Main.hpp"
 #include "Materials/BaseMaterial.hpp"
 #include "Materials/LightMaterial.hpp"
 #include "Materials/MetalMaterial.hpp"
 #include "Primitives/Plane.hpp"
 #include "Primitives/Sphere.hpp"
 #include "Scene/World.hpp"
+#include "Scene/IncrementalImage.hpp"
+
 
 auto Main::arg_parse() -> bool
 {
@@ -25,16 +27,18 @@ auto Main::arg_parse() -> bool
         std::cerr << "Usage: " << _av[0] << " [scene file]" << std::endl;
         std::cerr << "Options:" << std::endl;
         std::cerr << "  -gui: Open a window to render the scene in real time" << std::endl;
-        std::cerr << "  -o [outputfile]: Save the rendered image to the specified file (BMP, PPM or PNG)" << std::endl;
+        std::cerr << "  -o [outputfile]: Save the rendered image to the specified file (BMP, PPM or PNG)"
+                  << std::endl;
         return false;
     }
     return true;
 }
 
-auto handle_events(sf::RenderWindow &window, Camera &cam) -> void
+auto handle_events(sf::RenderWindow &window, Camera &cam) -> bool
 {
     sf::Event event;
-    constexpr auto movespeed = 0.01f;
+    constexpr auto movespeed = 0.5f;
+    bool moved = false;
     while (window.pollEvent(event)) {
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wswitch"
@@ -51,24 +55,30 @@ auto handle_events(sf::RenderWindow &window, Camera &cam) -> void
             case sf::Keyboard::Key::Down:
             case sf::Keyboard::Key::S:
                 cam.move(Vector3D(0, 0, movespeed));
+                moved = true;
                 break;
             case sf::Keyboard::Key::Up:
             case sf::Keyboard::Key::Z:
                 cam.move(Vector3D(0, 0, -movespeed));
+                moved = true;
                 break;
             case sf::Keyboard::Key::Right:
             case sf::Keyboard::Key::D:
                 cam.move(Vector3D(-movespeed, 0, 0));
+                moved = true;
                 break;
             case sf::Keyboard::Key::Left:
             case sf::Keyboard::Key::Q:
                 cam.move(Vector3D(movespeed, 0, 0));
+                moved = true;
                 break;
             case sf::Keyboard::Key::Space:
                 cam.move(Vector3D(0, movespeed, 0));
+                moved = true;
                 break;
             case sf::Keyboard::Key::LShift:
                 cam.move(Vector3D(0, -movespeed, 0));
+                moved = true;
                 break;
             default:
                 break;
@@ -78,6 +88,7 @@ auto handle_events(sf::RenderWindow &window, Camera &cam) -> void
         }
 #pragma GCC diagnostic pop
     }
+    return moved;
 }
 
 auto Main::render_real_time() -> void
@@ -87,16 +98,20 @@ auto Main::render_real_time() -> void
         sf::VideoMode(_camera.image_width, _camera.image_height), "Raytracer", sf::Style::Close
     );
 
+    IncrementalImage image;
     // check the time for rendering a frame
     sf::Clock clock;
+    _camera.samples_per_pixel = 100;
     while (window.isOpen()) {
-        handle_events(window, _camera);
+        if (handle_events(window, _camera)) {
+            image.clear();
+        }
         clock.restart();
-        _camera.render(_world, _image);
+        _camera.render(_world, image);
         auto stop = clock.getElapsedTime();
         std::cout << "Rendering time: " << stop.asMilliseconds() << "ms" << std::endl;
         window.clear();
-        window.draw(_image);
+        window.draw(image);
         window.display();
     }
 }
