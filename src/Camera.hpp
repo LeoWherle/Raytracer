@@ -9,7 +9,7 @@
 
 #include "Color.hpp"
 #include "HitRecord.hpp"
-#include "Interval.hpp"
+#include "Math/Interval.hpp"
 #include "Math/MathsUtils.hpp"
 #include "Math/Point3D.hpp"
 #include "Math/Random.hpp"

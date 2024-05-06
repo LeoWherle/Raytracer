@@ -7,7 +7,7 @@
 
 #pragma once
 
-#include "Interval.hpp"
+#include "Math/Interval.hpp"
 #include "Math/Vector3D.hpp"
 #include <cstdint>
 

@@ -8,7 +8,7 @@
 #pragma once
 #include "Color.hpp"
 #include "HitRecord.hpp"
-#include "Interval.hpp"
+#include "Math/Interval.hpp"
 #include "Ray.hpp"
 
 class IPrimitive {
