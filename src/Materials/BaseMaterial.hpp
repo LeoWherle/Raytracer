@@ -12,6 +12,7 @@
 #include "HitRecord.hpp"
 #include "Math/MathsUtils.hpp"
 #include "Math/Point3D.hpp"
+#include "Math/Random.hpp"
 #include "Ray.hpp"
 #include "Textures/ITexture.hpp"
 #include "Textures/SolidColorTexture.hpp"
@@ -36,7 +37,7 @@ public:
     bool scatter(const Ray &, const HitRecord &rec, Color &attenuation, Ray &scattered) const override
     {
         // Calculate scatter direction
-        auto scatter_direction = rec.normal + mathsUtils::random_unit_vector();
+        auto scatter_direction = rec.normal + Random::unit_vector();
 
         // If scatter direction is near zero, set it to the normal
         if (scatter_direction.near_zero())
