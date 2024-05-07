@@ -22,42 +22,128 @@ public:
     float _y = 0;
     float _z = 0;
 
-    float length() const;
-    float length_squared() const;
-    Vector3D &normalize();
+    inline float length() const
+    {
+        return std::sqrt(_x * _x + _y * _y + _z * _z);
+    }
 
-    float dot(const Vector3D &other) const;
+    inline float length_squared() const
+    {
+        return _x * _x + _y * _y + _z * _z;
+    }
 
-    Vector3D cross(const Vector3D &other) const;
+    inline Vector3D &normalize()
+    {
+        return *this /= length();
+    }
 
-    Vector3D unit() const;
-    static Vector3D unit(const Vector3D &v);
+    inline float dot(const Vector3D &other) const
+    {
+        return _x * other._x + _y * other._y + _z * other._z;
+    }
 
-    bool near_zero() const;
+    Vector3D cross(const Vector3D &other) const
+    {
+        return Vector3D(
+            _y * other._z - _z * other._y,
+            _z * other._x - _x * other._z,
+            _x * other._y - _y * other._x
+        );
+    }
 
-    static Vector3D reflect(const Vector3D &v, const Vector3D &n);
+    inline Vector3D unit() const
+    {
+        return *this / length();
+    }
 
-    Vector3D operator-() const;
+    static inline Vector3D unit(const Vector3D &v)
+    {
+        return v / v.length();
+    }
 
-    Vector3D operator-(const Vector3D &other) const;
+    bool near_zero() const
+    {
+        // Return true if the vector is close to zero in all dimensions.
+        auto s = 1e-8;
+        return (fabs(_x) < s) && (fabs(_y) < s) && (fabs(_z) < s);
+    }
 
-    Vector3D &operator-=(const Vector3D &other);
+    static inline Vector3D reflect(const Vector3D &v, const Vector3D &n)
+    {
+        return v - (n * (v.dot(n) * 2));
+    }
 
-    Vector3D operator+(const Vector3D &other) const;
+    inline Vector3D operator-() const
+    {
+        return Vector3D(-_x, -_y, -_z);
+    }
 
-    Vector3D &operator+=(const Vector3D &other);
+    inline Vector3D operator-(const Vector3D &other) const
+    {
+        return Vector3D(_x - other._x, _y - other._y, _z - other._z);
+    }
 
-    Vector3D operator*(const Vector3D &other) const;
+    inline Vector3D &operator-=(const Vector3D &other)
+    {
+        _x -= other._x;
+        _y -= other._y;
+        _z -= other._z;
+        return *this;
+    }
 
-    Vector3D &operator*=(const Vector3D &other);
+    inline Vector3D operator+(const Vector3D &other) const
+    {
+        return Vector3D(_x + other._x, _y + other._y, _z + other._z);
+    }
 
-    Vector3D operator*(float scalar) const;
+    inline Vector3D &operator+=(const Vector3D &other)
+    {
+        _x += other._x;
+        _y += other._y;
+        _z += other._z;
+        return *this;
+    }
 
-    Vector3D &operator*=(float scalar);
+    inline Vector3D operator*(float scalar) const
+    {
+        return Vector3D(_x * scalar, _y * scalar, _z * scalar);
+    }
 
-    Vector3D operator/(float scalar) const;
+    inline Vector3D &operator*=(float scalar)
+    {
+        _x *= scalar;
+        _y *= scalar;
+        _z *= scalar;
+        return *this;
+    }
 
-    Vector3D &operator/=(float scalar);
+    inline Vector3D operator*(const Vector3D &other) const
+    {
+        return Vector3D (
+            _y * other._z - _z * other._y, _z * other._x - _x * other._z, _x * other._y - _y * other._x
+        );
+    }
+
+    inline Vector3D &operator*=(const Vector3D &other)
+    {
+        _x = _y * other._z - _z * other._y;
+        _y = _z * other._x - _x * other._z;
+        _z = _x * other._y - _y * other._x;
+        return *this;
+    }
+
+    inline Vector3D operator/(float scalar) const
+    {
+        return *this * (1 / scalar);
+    }
+
+    inline Vector3D &operator/=(float scalar)
+    {
+        _x /= scalar;
+        _y /= scalar;
+        _z /= scalar;
+        return *this;
+    }
 
 protected:
 private:
