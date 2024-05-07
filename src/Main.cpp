@@ -19,6 +19,8 @@
 #include "Scene/World.hpp"
 #include "Scene/JsonLoader.hpp"
 #include <boost/property_tree/ptree.hpp>
+#include "Factories/WorldCreator.hpp"
+#include "Factories/CameraFactory.hpp"
 
 auto Main::arg_parse() -> bool
 {
@@ -148,124 +150,15 @@ auto Main::render_real_time() -> void
     }
 }
 
-static void WIPShereFactory(World &_world, JsonLoader &loader)
-{
-    for (boost::property_tree::ptree::value_type &sphere : loader.json.get_child("primitives").get_child("spheres")) {
-        auto center = Point3D(
-            sphere.second.get<float>("position.x"),
-            sphere.second.get<float>("position.y"),
-            sphere.second.get<float>("position.z")
-        );
-        auto color = Color(
-            sphere.second.get<float>("material.color.r"),
-            sphere.second.get<float>("material.color.g"),
-            sphere.second.get<float>("material.color.b")
-        );
-        auto radius = sphere.second.get<float>("radius");
-        auto material = sphere.second.get<std::string>("material.material");
-
-        if (material == "LightMaterial") {
-            _world.addPrimitive(std::make_shared<Sphere>(center, radius, std::make_shared<LightMaterial>(color)));
-        } else if (material == "MetalMaterial") {
-            auto fuzz = sphere.second.get<float>("material.fuzz");
-            _world.addPrimitive(std::make_shared<Sphere>(center, radius, std::make_shared<MetalMaterial>(color, fuzz)));
-        } else {
-            _world.addPrimitive(std::make_shared<Sphere>(center, radius, std::make_shared<BaseMaterial>(color)));
-        }
-    }
-}
-
-static void WIPTriangleFactory(World &_world, JsonLoader &loader)
-{
-    std::vector<Point3D> vertices;
-    for (boost::property_tree::ptree::value_type &triangle : loader.json.get_child("primitives").get_child("triangles")) {
-        for (boost::property_tree::ptree::value_type &vectice : triangle.second.get_child("vertices")) {
-            vertices.push_back(Point3D(
-                vectice.second.get<float>("x"),
-                vectice.second.get<float>("y"),
-                vectice.second.get<float>("z")
-            ));
-        }
-        if (vertices.size() != 3) {
-            throw std::runtime_error("Triangle must have 3 vertices");
-        }
-        auto color = Color(
-            triangle.second.get<float>("material.color.r"),
-            triangle.second.get<float>("material.color.g"),
-            triangle.second.get<float>("material.color.b")
-        );
-        auto material = triangle.second.get<std::string>("material.material");
-
-        if (material == "LightMaterial") {
-            _world.addPrimitive(std::make_shared<Triangle>(vertices[0], vertices[1], vertices[2], std::make_shared<LightMaterial>(color)));
-        } else if (material == "MetalMaterial") {
-            auto fuzz = triangle.second.get<float>("material.fuzz");
-            _world.addPrimitive(std::make_shared<Triangle>(vertices[0], vertices[1], vertices[2], std::make_shared<MetalMaterial>(color, fuzz)));
-        } else {
-            _world.addPrimitive(std::make_shared<Triangle>(vertices[0], vertices[1], vertices[2], std::make_shared<BaseMaterial>(color)));
-        }
-    }
-}
-
-static void WIPPlaneFactory(World &_world, JsonLoader &loader)
-{
-    for (boost::property_tree::ptree::value_type &plane : loader.json.get_child("primitives").get_child("planes")) {
-        auto origin = Point3D(
-            plane.second.get<float>("position.x"),
-            plane.second.get<float>("position.y"),
-            plane.second.get<float>("position.z")
-        );
-        auto normal = Vector3D(
-            plane.second.get<float>("normal.x"),
-            plane.second.get<float>("normal.y"),
-            plane.second.get<float>("normal.z")
-        );
-        auto color = Color(
-            plane.second.get<float>("material.color.r"),
-            plane.second.get<float>("material.color.g"),
-            plane.second.get<float>("material.color.b")
-        );
-        auto material = plane.second.get<std::string>("material.material");
-
-        if (material == "LightMaterial") {
-            _world.addPrimitive(std::make_shared<Plane>(origin, normal, std::make_shared<LightMaterial>(color)));
-        } else if (material == "MetalMaterial") {
-            auto fuzz = plane.second.get<float>("material.fuzz");
-            _world.addPrimitive(std::make_shared<Plane>(origin, normal, std::make_shared<MetalMaterial>(color, fuzz)));
-        } else {
-            _world.addPrimitive(std::make_shared<Plane>(origin, normal, std::make_shared<BaseMaterial>(color)));
-        }
-    }
-
-}
-
 auto Main::run() -> int
 {
     JsonLoader loader;
+    CameraFactory camFactory;
+    WorldCreator god;
 
     loader.load(_params._scene_file);
-    
-    WIPShereFactory(_world, loader);
-    WIPTriangleFactory(_world, loader);
-    WIPPlaneFactory(_world, loader);
-    _camera.aspect_ratio = 16.0f / 9.0f;
-    _camera.image_width = loader.json.get<int>("camera.resolution.width");
-    _camera.samples_per_pixel = loader.json.get<int>("camera.RayPerPixel");
-    _camera.max_depth = loader.json.get<int>("camera.MaxBounces");
-    _camera.background._r = loader.json.get<float>("camera.BackgroundColor.r");
-    _camera.background._g = loader.json.get<float>("camera.BackgroundColor.g");
-    _camera.background._b = loader.json.get<float>("camera.BackgroundColor.b");
-
-    _camera.vfov = loader.json.get<float>("camera.fieldOfView");
-    _camera.origin._x = loader.json.get<float>("camera.position.x");
-    _camera.origin._y = loader.json.get<float>("camera.position.y");
-    _camera.origin._z = loader.json.get<float>("camera.position.z");
-    _camera.lookat._x = loader.json.get<float>("camera.rotation.x");
-    _camera.lookat._y = loader.json.get<float>("camera.rotation.y");
-    _camera.lookat._z = loader.json.get<float>("camera.rotation.z");
-    _camera.vup = Vector3D(0, 1, 0);
-
-    _camera.defocus_angle = loader.json.get<float>("camera.DefocusAngle");
+    _world = god.createWorld(loader.json.get_child("primitives"));
+    _camera = camFactory.createCamera(loader.json.get_child("camera"));
 
     if (_params._gui) {
         render_real_time();
