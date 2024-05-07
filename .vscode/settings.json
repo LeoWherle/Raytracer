@@ -63,6 +63,11 @@
         "cinttypes": "cpp",
         "variant": "cpp",
         "*.h++": "cpp",
-        "iomanip": "cpp"
+        "iomanip": "cpp",
+        "bitset": "cpp",
+        "list": "cpp",
+        "set": "cpp",
+        "optional": "cpp",
+        "typeindex": "cpp"
     },
 }

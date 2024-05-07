@@ -23,10 +23,10 @@ private:
     Point3D _v1;
     Point3D _v2;
     Vector3D _normal;
-    std::shared_ptr<IMaterial> _material;
+    IMaterial *_material;
 
 public:
-    Triangle(const Point3D &v0, const Point3D &v1, const Point3D &v2, std::shared_ptr<IMaterial> mat):
+    Triangle(const Point3D &v0, const Point3D &v1, const Point3D &v2, IMaterial *mat):
         _v0(v0),
         _v1(v1),
         _v2(v2),
@@ -34,7 +34,10 @@ public:
     {
         _normal = (v1 - v0).cross(v2 - v0).normalize();
     }
-    ~Triangle() = default;
+    ~Triangle()
+    {
+        delete _material;
+    }
 
     // Möller-Trumbore intersection algorithm
     // https://en.wikipedia.org/wiki/M%C3%B6ller%E2%80%93Trumbore_intersection_algorithm
