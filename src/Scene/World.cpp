@@ -7,7 +7,7 @@
 
 #include "World.hpp"
 
-void World::addPrimitive(std::shared_ptr<IPrimitive> primitive)
+void World::addPrimitive(std::unique_ptr<IPrimitive> primitive)
 {
     primitives.push_back(std::move(primitive));
 }

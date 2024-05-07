@@ -18,5 +18,5 @@ public:
     WorldCreator() = default;
     ~WorldCreator() = default;
 
-    World createWorld(const boost::property_tree::ptree &pt) const;
+    void createWorld(World &world, const boost::property_tree::ptree &pt) const;
 };

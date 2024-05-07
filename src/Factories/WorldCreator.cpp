@@ -7,10 +7,8 @@
 
 #include "WorldCreator.hpp"
 
-World WorldCreator::createWorld(const boost::property_tree::ptree &pt) const
+void WorldCreator::createWorld(World &world, const boost::property_tree::ptree &pt) const
 {
-    World world;
-
     for (const auto &sphere : pt.get_child("spheres")) {
         world.addPrimitive(createSphere(sphere.second));
     }
@@ -20,5 +18,4 @@ World WorldCreator::createWorld(const boost::property_tree::ptree &pt) const
     for (const auto &plane : pt.get_child("planes")) {
         world.addPrimitive(createPlane(plane.second));
     }
-    return world;
 }

@@ -9,8 +9,8 @@
 #include "Camera.hpp"
 #include "Parameters.hpp"
 #include "Primitives/Sphere.hpp"
-#include "Scene/World.hpp"
 #include "Scene/Image.hpp"
+#include "Scene/World.hpp"
 
 class Main {
 public:

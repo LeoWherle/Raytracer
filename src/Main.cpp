@@ -8,19 +8,19 @@
 #include <SFML/Graphics.hpp>
 
 #include "Camera.hpp"
+#include "Factories/CameraFactory.hpp"
+#include "Factories/WorldCreator.hpp"
 #include "Main.hpp"
 #include "Materials/BaseMaterial.hpp"
 #include "Materials/LightMaterial.hpp"
 #include "Materials/MetalMaterial.hpp"
 #include "Primitives/Plane.hpp"
-#include "Primitives/Triangle.hpp"
 #include "Primitives/Sphere.hpp"
+#include "Primitives/Triangle.hpp"
 #include "Scene/IncrementalImage.hpp"
-#include "Scene/World.hpp"
 #include "Scene/JsonLoader.hpp"
+#include "Scene/World.hpp"
 #include <boost/property_tree/ptree.hpp>
-#include "Factories/WorldCreator.hpp"
-#include "Factories/CameraFactory.hpp"
 
 auto Main::arg_parse() -> bool
 {
@@ -157,7 +157,7 @@ auto Main::run() -> int
     WorldCreator god;
 
     loader.load(_params._scene_file);
-    _world = god.createWorld(loader.json.get_child("primitives"));
+    god.createWorld(_world, loader.json.get_child("primitives"));
     _camera = camFactory.createCamera(loader.json.get_child("camera"));
 
     if (_params._gui) {
