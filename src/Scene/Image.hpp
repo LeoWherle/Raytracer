@@ -47,7 +47,7 @@ public:
         }
     }
 
-    void set_pixel(uint32_t x, uint32_t y, Color pixel_color, uint32_t weight, float depth)
+    void set_pixel(uint32_t x, uint32_t y, Color pixel_color, uint32_t, float)
     {
         auto color = pixel_color.to_gamma().clamp();
         auto index = (x + y * _width) * 4;
