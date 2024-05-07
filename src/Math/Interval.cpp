@@ -19,27 +19,6 @@ Interval::Interval(const Interval &a, const Interval &b)
     max = a.max >= b.max ? a.max : b.max;
 }
 
-float Interval::size() const { return max - min; }
-
-bool Interval::contains(float x) const { return min <= x && x <= max; }
-
-bool Interval::surrounds(float x) const { return min < x && x < max; }
-
-float Interval::clamp(float x) const
-{
-    if (x < min)
-        return min;
-    if (x > max)
-        return max;
-    return x;
-}
-
-Interval Interval::expand(float delta) const
-{
-    auto padding = delta / 2;
-    return Interval(min - padding, max + padding);
-}
-
 const Interval Interval::empty = Interval(+std::numeric_limits<float>::infinity(), -std::numeric_limits<float>::infinity());
 
 const Interval Interval::universe = Interval(-std::numeric_limits<float>::infinity(), +std::numeric_limits<float>::infinity());
