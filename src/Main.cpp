@@ -13,6 +13,7 @@
 #include "Materials/LightMaterial.hpp"
 #include "Materials/MetalMaterial.hpp"
 #include "Primitives/Plane.hpp"
+#include "Primitives/Triangle.hpp"
 #include "Primitives/Sphere.hpp"
 #include "Scene/World.hpp"
 
@@ -104,10 +105,14 @@ auto Main::render_real_time() -> void
 auto Main::run() -> int
 {
     auto green = Color(0.1f, 0.8f, 0.3f);
+    auto yellow = Color(0.8f, 0.8f, 0.1f);
     auto purple = Color(0.8f, 0.1f, 0.8f);
     _world.addPrimitive(
         std::make_shared<Sphere>(Point3D(0, -1000, 0), 1000, std::make_shared<BaseMaterial>(purple))
     );
+    _world.addPrimitive(std::make_shared<Triangle>(
+        Point3D(2, 4, 0), Point3D(4, 4, 0), Point3D(2, 8, 0), std::make_shared<BaseMaterial>(yellow)
+    ));
     _world.addPrimitive(std::make_shared<Sphere>(Point3D(0, 2, 0), 2, std::make_shared<BaseMaterial>(green)));
     _world.addPrimitive(std::make_shared<Sphere>(
         Point3D(2, 2, -4), 2, std::make_shared<MetalMaterial>(Color(0.8f, 0.8f, 0.8f), 0.1f)
