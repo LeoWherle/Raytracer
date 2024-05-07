@@ -47,7 +47,7 @@ public:
         }
     }
 
-    void set_pixel(uint32_t x, uint32_t y, Color pixel_color)
+    void set_pixel(uint32_t x, uint32_t y, Color pixel_color, uint32_t weight, float depth)
     {
         auto color = pixel_color.to_gamma().clamp();
         auto index = (x + y * _width) * 4;
@@ -143,6 +143,15 @@ public:
         texture.create(_width, _height);
         texture.update(_pixels.data());
         target.draw(sf::Sprite(texture), states);
+    }
+
+    void clear(void)
+    {
+        for (size_t i = 0; i < _pixels.size(); i += 4) {
+            _pixels[i] = 0;
+            _pixels[i + 1] = 0;
+            _pixels[i + 2] = 0;
+        }
     }
 
 protected:

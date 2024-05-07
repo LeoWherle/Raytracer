@@ -7,13 +7,14 @@
 
 #include <SFML/Graphics.hpp>
 
-#include "Main.hpp"
 #include "Camera.hpp"
+#include "Main.hpp"
 #include "Materials/BaseMaterial.hpp"
 #include "Materials/LightMaterial.hpp"
 #include "Materials/MetalMaterial.hpp"
 #include "Primitives/Plane.hpp"
 #include "Primitives/Sphere.hpp"
+#include "Scene/IncrementalImage.hpp"
 #include "Scene/World.hpp"
 
 auto Main::arg_parse() -> bool
@@ -25,27 +26,37 @@ auto Main::arg_parse() -> bool
         std::cerr << "Usage: " << _av[0] << " [scene file]" << std::endl;
         std::cerr << "Options:" << std::endl;
         std::cerr << "  -gui: Open a window to render the scene in real time" << std::endl;
-        std::cerr << "  -o [outputfile]: Save the rendered image to the specified file (BMP, PPM or PNG)" << std::endl;
+        std::cerr << "  -o [outputfile]: Save the rendered image to the specified file (BMP, PPM or PNG)"
+                  << std::endl;
         return false;
     }
     return true;
 }
 
-auto handle_events(sf::RenderWindow &window, Camera &cam) -> void
+auto handle_events(sf::RenderWindow &window, Camera &cam) -> bool
 {
     sf::Event event;
-    constexpr auto movespeed = 0.01f;
+    constexpr auto movespeed = 0.5f;
+    bool moved = false;
     while (window.pollEvent(event)) {
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wswitch"
         switch (event.type) {
 
+        case ::sf::Event::Resized:
+            // Work in progress
+            cam.image_width = event.size.width;
+            cam.aspect_ratio = static_cast<float>(event.size.width) / event.size.height;
+            cam.update();
+            break;
         case sf::Event::Closed:
             window.close();
             break;
         case sf::Event::KeyPressed:
+            moved = true;
             switch (event.key.code) {
             case sf::Keyboard::Escape:
+                moved = false;
                 window.close();
                 break;
             case sf::Keyboard::Key::Down:
@@ -70,6 +81,32 @@ auto handle_events(sf::RenderWindow &window, Camera &cam) -> void
             case sf::Keyboard::Key::LShift:
                 cam.move(Vector3D(0, -movespeed, 0));
                 break;
+            case sf::Keyboard::Key::Add:
+                cam.vfov -= 1;
+                cam.update();
+                break;
+            case sf::Keyboard::Key::Subtract:
+                cam.vfov += 1;
+                cam.update();
+                break;
+            case sf::Keyboard::Key::J:
+                cam.rotate(Vector3D(0, 1, 0), 0.1f);
+                break;
+            case sf::Keyboard::Key::K:
+                cam.rotate(Vector3D(1, 0, 0), 0.1f);
+                break;
+            case sf::Keyboard::Key::L:
+                cam.rotate(Vector3D(0, 0, 1), 0.1f);
+                break;
+            case sf::Keyboard::Key::U:
+                cam.rotate(Vector3D(0, 1, 0), -0.1f);
+                break;
+            case sf::Keyboard::Key::I:
+                cam.rotate(Vector3D(1, 0, 0), -0.1f);
+                break;
+            case sf::Keyboard::Key::O:
+                cam.rotate(Vector3D(0, 0, 1), -0.1f);
+                break;
             default:
                 break;
             }
@@ -78,25 +115,31 @@ auto handle_events(sf::RenderWindow &window, Camera &cam) -> void
         }
 #pragma GCC diagnostic pop
     }
+    return moved;
 }
 
 auto Main::render_real_time() -> void
 {
     _camera.update();
-    sf::RenderWindow window(
-        sf::VideoMode(_camera.image_width, _camera.image_height), "Raytracer", sf::Style::Close
-    );
+    sf::RenderWindow window(sf::VideoMode(_camera.image_width, _camera.image_height), "Raytracer");
 
+    IncrementalImage image;
     // check the time for rendering a frame
     sf::Clock clock;
+    _camera.samples_per_pixel = 100;
+    _camera.max_depth = 5;
     while (window.isOpen()) {
-        handle_events(window, _camera);
+        if (handle_events(window, _camera)) {
+            image.clear();
+            _camera.max_depth = 5;
+        }
+        _camera.max_depth += 10;
         clock.restart();
-        _camera.render(_world, _image);
+        _camera.render<false>(_world, image);
         auto stop = clock.getElapsedTime();
         std::cout << "Rendering time: " << stop.asMilliseconds() << "ms" << std::endl;
         window.clear();
-        window.draw(_image);
+        window.draw(image);
         window.display();
     }
 }
@@ -118,7 +161,7 @@ auto Main::run() -> int
     _camera.aspect_ratio = 16.0f / 9.0f;
     _camera.image_width = 400;
     _camera.samples_per_pixel = 1000;
-    _camera.max_depth = 50;
+    _camera.max_depth = 20;
     _camera.background = Color(0, 0, 0);
 
     _camera.vfov = 20;
