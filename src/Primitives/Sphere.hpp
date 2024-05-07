@@ -17,15 +17,19 @@ class Sphere : public IPrimitive {
 private:
     Point3D origin;
     float _radius;
-    std::shared_ptr<IMaterial> material;
+    IMaterial *material;
     Vector3D origin_vec;
 
 public:
-    Sphere(const Point3D &center, float radius, std::shared_ptr<IMaterial> mat):
+    Sphere(const Point3D &center, float radius, IMaterial* mat):
         origin(center),
         _radius((float)fmax(0, radius)),
         material(mat)
     {
+    }
+    ~Sphere()
+    {
+        delete material;
     }
 
     bool hits(const Ray &ray, Interval ray_d, HitRecord &hitrec) const override
@@ -45,19 +49,19 @@ public:
         * roots = (-b +- sqrt(discriminant)) / 2a
         */
         Vector3D oc = origin - ray.origin();
-        auto a = ray.direction().length_squared();
-        auto b = ray.direction().dot(oc);
-        auto c = oc.length_squared() - _radius * _radius;
+        float a = ray.direction().length_squared();
+        float b = ray.direction().dot(oc);
+        float c = oc.length_squared() - _radius * _radius;
 
-        auto discriminant = b * b - a * c;
+        float discriminant = b * b - a * c;
         if (discriminant < 0) {
             return false;
         }
 
-        auto sqrtd = sqrt(discriminant);
+        float sqrtd = std::sqrt(discriminant);
 
         // Find the nearest root that lies in the acceptable range.
-        auto root = (b - sqrtd) / a;
+        float root = (b - sqrtd) / a;
         if (!ray_d.surrounds(root)) {
             root = (b + sqrtd) / a;
             if (!ray_d.surrounds(root))
@@ -76,8 +80,8 @@ public:
 
     void get_sphere_uv(const Vector3D &p, float &u, float &v) const
     {
-        float theta = acos(-p._y);
-        float phi = atan2(-p._z, p._x) + M_PIf;
+        float theta = std::acos(-p._y);
+        float phi = std::atan2(-p._z, p._x) + M_PIf;
 
         u = phi / (2 * M_PIf);
         v = theta / M_PIf;

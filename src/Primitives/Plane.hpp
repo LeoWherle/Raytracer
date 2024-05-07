@@ -16,13 +16,17 @@ class Plane : public IPrimitive {
 public:
     Point3D _origin;
     Vector3D _normal;
-    std::shared_ptr<IMaterial> _material;
+    IMaterial *_material;
 
-    Plane(const Point3D &origin, const Vector3D &normal, std::shared_ptr<IMaterial> material):
+    Plane(const Point3D &origin, const Vector3D &normal, IMaterial *material):
         _origin(origin),
         _normal(normal),
         _material(material)
     {
+    }
+    ~Plane()
+    {
+        delete _material;
     }
 
     // TODO
