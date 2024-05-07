@@ -6,10 +6,10 @@
 */
 
 #include <fstream>
+#include "JsonLoader.hpp"
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/json_parser.hpp>
 #include <iostream>
-#include "JsonLoader.hpp"
 
 void JsonLoader::load(const std::string &filename)
 {
