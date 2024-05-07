@@ -21,11 +21,11 @@ public:
     {
     }
 
-    const Point3D &origin() const { return _origin; }
-    const Vector3D &direction() const { return _direction; }
+    const Point3D &origin() const;
+    const Vector3D &direction() const;
 
 
-    Point3D at(float t) const { return _origin + _direction * t; }
+    Point3D at(float t) const;
 
 private:
     Point3D _origin;
