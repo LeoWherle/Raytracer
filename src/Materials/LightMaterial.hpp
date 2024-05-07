@@ -18,17 +18,17 @@
 
 class LightMaterial : public AMaterial {
 public:
-    LightMaterial(std::unique_ptr<ITexture> tex):
-        texture(std::move(tex))
+    LightMaterial(std::shared_ptr<ITexture> tex):
+        texture(tex)
     {
     }
     LightMaterial(const Color &emit):
-        texture(std::make_unique<SolidColorTexture>(emit))
+        texture(std::make_shared<SolidColorTexture>(emit))
     {
     }
 
     Color emitted(float u, float v, const Point3D &p) const override { return texture->value(u, v, p); }
 
 private:
-    std::unique_ptr<ITexture> texture;
+    std::shared_ptr<ITexture> texture;
 };
