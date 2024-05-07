@@ -17,7 +17,7 @@ public:
     SphereFactory() = default;
     ~SphereFactory() = default;
 
-    std::shared_ptr<Sphere> createSphere(const boost::property_tree::ptree &pt) const;
+    std::unique_ptr<Sphere> createSphere(const boost::property_tree::ptree &pt) const;
 
 private:
     MaterialFactory _material_factory;

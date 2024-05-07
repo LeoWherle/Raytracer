@@ -18,7 +18,7 @@ public:
     PlaneFactory() = default;
     ~PlaneFactory() = default;
 
-    std::shared_ptr<Plane> createPlane(const boost::property_tree::ptree &pt) const;
+    std::unique_ptr<Plane> createPlane(const boost::property_tree::ptree &pt) const;
 
 private:
     MaterialFactory _material_factory;

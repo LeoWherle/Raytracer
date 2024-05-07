@@ -9,7 +9,7 @@
 #include <memory>
 #include "TriangleFactory.hpp"
 
-std::shared_ptr<Triangle> TriangleFactory::createTriangle(const boost::property_tree::ptree &triangle) const
+std::unique_ptr<Triangle> TriangleFactory::createTriangle(const boost::property_tree::ptree &triangle) const
 {
     std::vector<Point3D> vertices;
 
@@ -22,5 +22,5 @@ std::shared_ptr<Triangle> TriangleFactory::createTriangle(const boost::property_
 
     IMaterial *mat = _material_factory.createMaterial(triangle.get_child("material"));
 
-    return std::make_shared<Triangle>(vertices[0], vertices[1], vertices[2], mat);
+    return std::make_unique<Triangle>(vertices[0], vertices[1], vertices[2], mat);
 }

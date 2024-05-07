@@ -9,7 +9,7 @@
 #include <memory>
 #include "SphereFactory.hpp"
 
-std::shared_ptr<Sphere> SphereFactory::createSphere(const boost::property_tree::ptree &sphere) const
+std::unique_ptr<Sphere> SphereFactory::createSphere(const boost::property_tree::ptree &sphere) const
 {
     auto center = _point3d_factory.createPoint3D(sphere.get_child("position"));
     auto radius = sphere.get<float>("radius");
@@ -17,5 +17,5 @@ std::shared_ptr<Sphere> SphereFactory::createSphere(const boost::property_tree::
 
     IMaterial *mat = _material_factory.createMaterial(sphere.get_child("material"));
 
-    return std::make_shared<Sphere>(center, radius, mat);
+    return std::make_unique<Sphere>(center, radius, mat);
 }

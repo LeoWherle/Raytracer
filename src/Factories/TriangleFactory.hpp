@@ -17,7 +17,7 @@ public:
     TriangleFactory() = default;
     ~TriangleFactory() = default;
 
-    std::shared_ptr<Triangle> createTriangle(const boost::property_tree::ptree &pt) const;
+    std::unique_ptr<Triangle> createTriangle(const boost::property_tree::ptree &pt) const;
 
 private:
     MaterialFactory _material_factory;

@@ -71,6 +71,8 @@ Color Camera::ray_color(const Ray &r, int depth, const World &world) const
     // If the ray hits nothing, return the background color.
     if (!world.hits(r, Interval(0.001f, std::numeric_limits<float>::infinity()), rec))
         return background;
+    if (rec.material == nullptr)
+        return Color(0, 0, 0);
     Ray scattered;
     Color attenuation;
     Color color_from_emission = rec.material->emitted(rec.u, rec.v, rec.p);

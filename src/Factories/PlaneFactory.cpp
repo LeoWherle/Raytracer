@@ -9,7 +9,7 @@
 #include <memory>
 #include "PlaneFactory.hpp"
 
-std::shared_ptr<Plane> PlaneFactory::createPlane(const boost::property_tree::ptree &plane) const
+std::unique_ptr<Plane> PlaneFactory::createPlane(const boost::property_tree::ptree &plane) const
 {
     auto origin = _point3d_factory.createPoint3D(plane.get_child("position"));
     auto normal = _vector3d_factory.createVector3D(plane.get_child("normal"));
@@ -17,5 +17,5 @@ std::shared_ptr<Plane> PlaneFactory::createPlane(const boost::property_tree::ptr
 
     IMaterial *mat = _material_factory.createMaterial(plane.get_child("material"));
 
-    return std::make_shared<Plane>(origin, normal, mat);
+    return std::make_unique<Plane>(origin, normal, mat);
 }
