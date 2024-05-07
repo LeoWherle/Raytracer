@@ -18,7 +18,6 @@ private:
     Point3D origin;
     float _radius;
     IMaterial *material;
-    Vector3D origin_vec;
 
 public:
     Sphere(const Point3D &center, float radius, IMaterial* mat):

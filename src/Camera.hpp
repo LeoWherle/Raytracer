@@ -13,7 +13,6 @@
 #include "Math/Matrix3D.hpp"
 #include "Math/Point3D.hpp"
 #include "Math/Random.hpp"
-#include "Math/Rectangle3D.hpp"
 #include "Ray.hpp"
 #include "Scene/IImage.hpp"
 #include "Scene/World.hpp"
@@ -63,7 +62,14 @@ public:
 
     void rotate(const Vector3D &axis, float angle);
 
-    Ray new_ray(float u, float v) const;
+    inline Ray new_ray(float u, float v) const
+    {
+        auto offset = Vector3D(Random::gen_float() - 0.5f, Random::gen_float() - 0.5f, 0);
+        auto pixel_sample =
+            pixel00_loc + (pixel_delta_u * (u + offset._x)) + (pixel_delta_v * (v + offset._y));
+        auto ray_direction = pixel_sample - center;
+        return Ray(center, ray_direction);
+    }
 
     Color ray_color(const Ray &r, int depth, const World &world) const;
 
