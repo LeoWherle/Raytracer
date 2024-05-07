@@ -23,10 +23,10 @@ private:
     Point3D _v1;
     Point3D _v2;
     Vector3D _normal;
-    std::shared_ptr<IMaterial> _material;
+    IMaterial *_material;
 
 public:
-    Triangle(const Point3D &v0, const Point3D &v1, const Point3D &v2, std::shared_ptr<IMaterial> mat):
+    Triangle(const Point3D &v0, const Point3D &v1, const Point3D &v2, IMaterial *mat):
         _v0(v0),
         _v1(v1),
         _v2(v2),

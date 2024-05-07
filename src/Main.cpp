@@ -13,8 +13,8 @@
 #include "Materials/LightMaterial.hpp"
 #include "Materials/MetalMaterial.hpp"
 #include "Primitives/Plane.hpp"
-#include "Primitives/Triangle.hpp"
 #include "Primitives/Sphere.hpp"
+#include "Primitives/Triangle.hpp"
 #include "Scene/IncrementalImage.hpp"
 #include "Scene/World.hpp"
 
@@ -128,7 +128,7 @@ auto Main::render_real_time() -> void
     IncrementalImage image;
     // check the time for rendering a frame
     sf::Clock clock;
-    _camera.samples_per_pixel = 100;
+    _camera.samples_per_pixel = 20;
     _camera.max_depth = 5;
     while (window.isOpen()) {
         if (handle_events(window, _camera)) {
@@ -151,18 +151,16 @@ auto Main::run() -> int
     auto green = Color(0.1f, 0.8f, 0.3f);
     auto yellow = Color(0.8f, 0.8f, 0.1f);
     auto purple = Color(0.8f, 0.1f, 0.8f);
+    _world.addPrimitive(std::make_unique<Sphere>(Point3D(0, -1000, 0), 1000, new BaseMaterial(purple)));
+    _world.addPrimitive(std::make_unique<Triangle>(
+        Point3D(2, 4, 0), Point3D(4, 4, 0), Point3D(2, 8, 0), new BaseMaterial(yellow)
+    ));
+    _world.addPrimitive(std::make_unique<Sphere>(Point3D(0, 2, 0), 2, new BaseMaterial(green)));
     _world.addPrimitive(
-        std::make_shared<Sphere>(Point3D(0, -1000, 0), 1000, std::make_shared<BaseMaterial>(purple))
+        std::make_unique<Sphere>(Point3D(2, 2, -4), 2, new MetalMaterial(Color(0.8f, 0.8f, 0.8f), 0.1f))
     );
-    _world.addPrimitive(std::make_shared<Triangle>(
-        Point3D(2, 4, 0), Point3D(4, 4, 0), Point3D(2, 8, 0), std::make_shared<BaseMaterial>(yellow)
-    ));
-    _world.addPrimitive(std::make_shared<Sphere>(Point3D(0, 2, 0), 2, std::make_shared<BaseMaterial>(green)));
-    _world.addPrimitive(std::make_shared<Sphere>(
-        Point3D(2, 2, -4), 2, std::make_shared<MetalMaterial>(Color(0.8f, 0.8f, 0.8f), 0.1f)
-    ));
-    auto difflight = std::make_unique<LightMaterial>(Color(4, 4, 4));
-    _world.addPrimitive(std::make_shared<Sphere>(Point3D(0, 7, 0), 2, std::move(difflight)));
+    auto difflight = new LightMaterial(Color(4, 4, 4));
+    _world.addPrimitive(std::make_unique<Sphere>(Point3D(0, 7, 0), 2, difflight));
 
     _camera.aspect_ratio = 16.0f / 9.0f;
     _camera.image_width = 400;

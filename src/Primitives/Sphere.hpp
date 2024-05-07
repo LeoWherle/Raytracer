@@ -17,11 +17,11 @@ class Sphere : public IPrimitive {
 private:
     Point3D origin;
     float _radius;
-    std::shared_ptr<IMaterial> material;
+    IMaterial *material;
     Vector3D origin_vec;
 
 public:
-    Sphere(const Point3D &center, float radius, std::shared_ptr<IMaterial> mat):
+    Sphere(const Point3D &center, float radius, IMaterial *mat):
         origin(center),
         _radius((float)fmax(0, radius)),
         material(mat)
