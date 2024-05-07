@@ -10,7 +10,6 @@
 #include "Color.hpp"
 #include "HitRecord.hpp"
 #include "Math/Interval.hpp"
-#include "Math/MathsUtils.hpp"
 #include "Math/Matrix3D.hpp"
 #include "Math/Point3D.hpp"
 #include "Math/Random.hpp"

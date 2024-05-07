@@ -5,6 +5,7 @@
 ** Camera
 */
 
+#include "Math/MathsUtils.hpp"
 #include "Camera.hpp"
 
 void Camera::update()
