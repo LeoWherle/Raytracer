@@ -22,13 +22,13 @@ class BaseMaterial : public AMaterial {
 public:
     // Constructor that takes a Color and creates a SolidColorTexture from it
     BaseMaterial(const Color &color):
-        _texture(std::make_shared<SolidColorTexture>(color))
+        _texture(std::make_unique<SolidColorTexture>(color))
     {
     }
 
     // Constructor that takes a shared pointer to an ITexture
-    BaseMaterial(std::shared_ptr<ITexture> texture):
-        _texture(texture)
+    BaseMaterial(std::unique_ptr<ITexture> texture):
+        _texture(std::move(texture))
     {
     }
 
@@ -54,5 +54,5 @@ public:
     }
 
 private:
-    std::shared_ptr<ITexture> _texture;
+    std::unique_ptr<ITexture> _texture;
 };

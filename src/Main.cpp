@@ -161,8 +161,8 @@ auto Main::run() -> int
     _world.addPrimitive(std::make_shared<Sphere>(
         Point3D(2, 2, -4), 2, std::make_shared<MetalMaterial>(Color(0.8f, 0.8f, 0.8f), 0.1f)
     ));
-    auto difflight = std::make_shared<LightMaterial>(Color(4, 4, 4));
-    _world.addPrimitive(std::make_shared<Sphere>(Point3D(0, 7, 0), 2, difflight));
+    auto difflight = std::make_unique<LightMaterial>(Color(4, 4, 4));
+    _world.addPrimitive(std::make_shared<Sphere>(Point3D(0, 7, 0), 2, std::move(difflight)));
 
     _camera.aspect_ratio = 16.0f / 9.0f;
     _camera.image_width = 400;

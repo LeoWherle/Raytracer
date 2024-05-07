@@ -144,6 +144,34 @@ public:
 
         return color_from_emission + color_from_scatter;
     }
+ù
+    // WIP
+    // Color ray_color_iterative(const Ray &r, int depth, const World &world) const
+    // {
+    //     Color color(0, 0, 0);
+    //     Color attenuation;
+    //     Ray current_ray = r;
+
+    //     for (int i = 0; i < depth; i++) {
+    //         HitRecord rec;
+
+    //         // If the ray hits nothing, return the color.
+    //         if (!world.hits(current_ray, Interval(0.001f, std::numeric_limits<float>::infinity()), rec))
+    //             return color + background * attenuation;
+
+    //         Ray scattered;
+    //         Color color_from_emission = rec.material->emitted(rec.u, rec.v, rec.p);
+
+    //         // If the ray is scattered, modify the color by the attenuation and continue.
+    //         if (!rec.material->scatter(current_ray, rec, attenuation, scattered))
+    //             return color + color_from_emission * attenuation;
+
+    //         color += color_from_emission * attenuation;
+    //         current_ray = scattered;
+    //     }
+
+    //     return color;
+    // }
 
     template<bool ShowProgress = true>
     void render(World &world, IImage &image)
