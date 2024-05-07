@@ -207,6 +207,38 @@ static void WIPTriangleFactory(World &_world, JsonLoader &loader)
     }
 }
 
+static void WIPPlaneFactory(World &_world, JsonLoader &loader)
+{
+    for (boost::property_tree::ptree::value_type &plane : loader.json.get_child("primitives").get_child("planes")) {
+        auto origin = Point3D(
+            plane.second.get<float>("position.x"),
+            plane.second.get<float>("position.y"),
+            plane.second.get<float>("position.z")
+        );
+        auto normal = Vector3D(
+            plane.second.get<float>("normal.x"),
+            plane.second.get<float>("normal.y"),
+            plane.second.get<float>("normal.z")
+        );
+        auto color = Color(
+            plane.second.get<float>("material.color.r"),
+            plane.second.get<float>("material.color.g"),
+            plane.second.get<float>("material.color.b")
+        );
+        auto material = plane.second.get<std::string>("material.material");
+
+        if (material == "LightMaterial") {
+            _world.addPrimitive(std::make_shared<Plane>(origin, normal, std::make_shared<LightMaterial>(color)));
+        } else if (material == "MetalMaterial") {
+            auto fuzz = plane.second.get<float>("material.fuzz");
+            _world.addPrimitive(std::make_shared<Plane>(origin, normal, std::make_shared<MetalMaterial>(color, fuzz)));
+        } else {
+            _world.addPrimitive(std::make_shared<Plane>(origin, normal, std::make_shared<BaseMaterial>(color)));
+        }
+    }
+
+}
+
 auto Main::run() -> int
 {
     JsonLoader loader;
@@ -215,6 +247,7 @@ auto Main::run() -> int
     
     WIPShereFactory(_world, loader);
     WIPTriangleFactory(_world, loader);
+    WIPPlaneFactory(_world, loader);
     _camera.aspect_ratio = 16.0f / 9.0f;
     _camera.image_width = loader.json.get<int>("camera.resolution.width");
     _camera.samples_per_pixel = loader.json.get<int>("camera.RayPerPixel");

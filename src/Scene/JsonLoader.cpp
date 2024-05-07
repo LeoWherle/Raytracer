@@ -8,8 +8,8 @@
 #include <fstream>
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/json_parser.hpp>
-#include "JsonLoader.hpp"
 #include <iostream>
+#include "JsonLoader.hpp"
 
 void JsonLoader::load(const std::string &filename)
 {

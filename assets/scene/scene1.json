@@ -69,27 +69,6 @@
         }
       },
       {
-        "radius": 1000,
-        "position": {
-          "x": 0,
-          "y": -1000,
-          "z": 0
-        },
-        "rotation": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "material": {
-          "material": "BaseMaterial",
-          "color": {
-            "r": 0.8,
-            "g": 0.1,
-            "b": 0.8
-          }
-        }
-      },
-      {
         "radius": 2,
         "position": {
           "x": 0,
@@ -111,7 +90,28 @@
         }
       }
     ],
-    "planes": [],
+    "planes": [
+      {
+        "normal": {
+          "x": 0,
+          "y": 1,
+          "z": 0
+        },
+        "position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "material": {
+          "material": "BaseMaterial",
+          "color": {
+            "r": 0.8,
+            "g": 0.1,
+            "b": 0.8
+          }
+        }
+      }
+    ],
     "triangles": [
       {
         "vertices": [
