@@ -127,5 +127,6 @@ public:
         for (auto &thread : threads) {
             thread.join();
         }
+        image.finish_frame(samples_per_pixel, static_cast<float>(max_depth));
     };
 };

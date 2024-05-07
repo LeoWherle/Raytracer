@@ -22,31 +22,32 @@ void IncrementalImage::set_pixel(uint32_t x, uint32_t y, Color pixel_color, uint
 {
     auto index = (x + y * _image.get_width());
     auto &pixel = _pixels[index];
-    float p_weight = static_cast<float>(pixel.weight);
+    float p_weight = static_cast<float>(_weight);
     float n_weight = static_cast<float>(weight);
-    pixel.color = (pixel.color * p_weight + pixel_color * n_weight) / (p_weight + n_weight);
-    pixel.weight += weight;
-    pixel.depth = (pixel.depth * p_weight + depth) / (p_weight + 1);
-    _image.set_pixel(x, y, pixel.color, pixel.weight, pixel.depth);
+    pixel = (pixel * p_weight + pixel_color * n_weight) / (p_weight + n_weight);
+    _image.set_pixel(x, y, pixel);
 }
 
-Color IncrementalImage::get_pixel(uint32_t x, uint32_t y) const
+void IncrementalImage::finish_frame(uint32_t weight, float depth)
 {
-    return _image.get_pixel(x, y);
+    _weight += weight;
+    _depth = (_depth * static_cast<float>(_weight) + depth) / static_cast<float>(_weight + 1);
 }
 
-uint32_t IncrementalImage::get_width() const
-{
-    return _image.get_width();
-}
+Color IncrementalImage::get_pixel(uint32_t x, uint32_t y) const { return _image.get_pixel(x, y); }
 
-uint32_t IncrementalImage::get_height() const
-{
-    return _image.get_height();
-}
+uint32_t IncrementalImage::get_width() const { return _image.get_width(); }
+
+uint32_t IncrementalImage::get_height() const { return _image.get_height(); }
+
+uint32_t IncrementalImage::get_sample_count() const { return _weight; }
 
 void IncrementalImage::clear()
 {
     _image.clear();
     _pixels.clear();
+    _weight = 0;
+    _depth = 0;
 }
+
+void IncrementalImage::save(const std::string &filename) const { _image.save(filename); }

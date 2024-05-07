@@ -15,8 +15,9 @@
 
 #include "Color.hpp"
 #include "IImage.hpp"
+#include "ISaveable.hpp"
 
-class Image : public sf::Drawable, public IImage {
+class Image : public sf::Drawable, public IImage, public ISaveable {
 public:
     Image() = default;
     Image(uint32_t width, uint32_t height):
@@ -32,7 +33,7 @@ public:
 
     void resize(uint32_t width, uint32_t height);
 
-    void set_pixel(uint32_t x, uint32_t y, Color pixel_color, uint32_t, float);
+    void set_pixel(uint32_t x, uint32_t y, Color pixel_color, uint32_t weight = 1, float depth = 1);
 
     Color get_pixel(uint32_t x, uint32_t y) const;
 
@@ -75,6 +76,8 @@ public:
     void writeBMP(const std::string &filename) const;
 
     void writePNG(const std::string &filename) const;
+
+    void save(const std::string &filename) const override;
 
     void draw(sf::RenderTarget &target, sf::RenderStates states) const override;
 

@@ -93,6 +93,20 @@ void Image::writePNG(const std::string &filename) const
     image.saveToFile(filename);
 }
 
+void Image::save(const std::string &filename) const
+{
+    auto extension = filename.substr(filename.find_last_of('.') + 1);
+    if (extension == "ppm") {
+        writePPM(filename);
+    } else if (extension == "bmp") {
+        writeBMP(filename);
+    } else if (extension == "png" || extension == "tga" || extension == "jpg") {
+        writePNG(filename);
+    } else {
+        throw std::runtime_error("Unknown file extension");
+    }
+}
+
 void Image::draw(sf::RenderTarget &target, sf::RenderStates states) const
 {
     sf::Texture texture;

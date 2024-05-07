@@ -31,7 +31,8 @@ auto Main::arg_parse() -> bool
         std::cerr << "Usage: " << _av[0] << " [scene file]" << std::endl;
         std::cerr << "Options:" << std::endl;
         std::cerr << "  -gui: Open a window to render the scene in real time" << std::endl;
-        std::cerr << "  -o [outputfile]: Save the rendered image to the specified file (BMP, PPM or PNG)"
+        std::cerr << "  -o [outputfile]: Save the rendered image to the specified file (BMP, PPM, PNG, TGA, "
+                     "JPG), default is output.bmp"
                   << std::endl;
         return false;
     }
@@ -128,24 +129,47 @@ auto Main::render_real_time() -> void
 {
     _camera.update();
     sf::RenderWindow window(sf::VideoMode(_camera.image_width, _camera.image_height), "Raytracer");
+    sf::Text text;
+    sf::Font font;
+    font.loadFromFile("assets/font/BebasNeue-Regular.ttf");
+    text.setFont(font);
+    text.setCharacterSize(24);
+    text.setFillColor(sf::Color::White);
+    text.setPosition(10, 10);
 
-    IncrementalImage image;
-    // check the time for rendering a frame
+    text.setString("Sample per pixel: " + std::to_string(_image.get_sample_count()));
     sf::Clock clock;
-    _camera.samples_per_pixel = 100;
+    _camera.samples_per_pixel = 10;
     _camera.max_depth = 5;
+
+    double total_time = 0;
+    auto old_elapsed = clock.getElapsedTime();
+    auto elapsed = clock.getElapsedTime();
+
     while (window.isOpen()) {
         if (handle_events(window, _camera)) {
-            image.clear();
+            _image.clear();
             _camera.max_depth = 5;
+            clock.restart();
         }
-        _camera.max_depth += 10;
-        clock.restart();
-        _camera.render<false>(_world, image);
-        auto stop = clock.getElapsedTime();
-        std::cout << "Rendering time: " << stop.asMilliseconds() << "ms" << std::endl;
+        _camera.max_depth += 1;
+        _camera.render<false>(_world, _image);
+
+        // prepare info display
+        old_elapsed = elapsed;
+        elapsed = clock.getElapsedTime();
+        total_time = elapsed.asMilliseconds() - old_elapsed.asMilliseconds();
+        std::cout << "Frame Rendering time: " << total_time << "ms" << std::endl;
+        std::stringstream stream;
+        stream << std::fixed << std::setprecision(2);
+        stream << "Render Time: " << (static_cast<double>(elapsed.asMilliseconds()) / 1000) << "s" << "\n";
+        stream << "Sample per pixel: " << _image.get_sample_count() << "\n";
+        stream << "Depth: " << _camera.max_depth << "\n";
+        text.setString(stream.str());
+
         window.clear();
-        window.draw(image);
+        window.draw(_image);
+        window.draw(text);
         window.display();
     }
 }
@@ -164,8 +188,10 @@ auto Main::run() -> int
         render_real_time();
     }
     if (!_params._output_file.empty()) {
-        _camera.render(_world, _image);
-        _image.writeBMP(_params._output_file);
+        if (!_params._gui) {
+            _camera.render(_world, _image);
+        }
+        _image.save(_params._output_file);
     }
     return 0;
 }
