@@ -9,6 +9,7 @@
 
 #include <array>
 #include <memory>
+#include <limits>
 
 #include "IPrimitive.hpp"
 #include "Materials/IMaterial.hpp"
@@ -39,7 +40,7 @@ public:
     // https://en.wikipedia.org/wiki/M%C3%B6ller%E2%80%93Trumbore_intersection_algorithm
     bool hits(const Ray &ray, Interval ray_d, HitRecord &hitrec) const override
     {
-        const float EPSILON = 0.0000001;
+        const float EPSILON = std::numeric_limits<float>::epsilon();
         Vector3D edge1 = _v1 - _v0;
         Vector3D edge2 = _v2 - _v0;
 
@@ -48,7 +49,7 @@ public:
         if (det > -EPSILON && det < EPSILON)
             return false;
 
-        float inv_det = 1.0 / det;
+        float inv_det = static_cast<float>(1.0 / det);
         Vector3D tvec = ray.origin() - _v0;
         float u = inv_det * tvec.dot(pvec);
         if (u < 0.0 || u > 1.0)

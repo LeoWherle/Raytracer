@@ -40,9 +40,11 @@ public:
     {
         auto index = (x + y * _image.get_width());
         auto &pixel = _pixels[index];
-        pixel.color = (pixel.color * pixel.weight + pixel_color * weight) / (pixel.weight + weight);
+        float p_weight = static_cast<float>(pixel.weight);
+        float n_weight = static_cast<float>(weight);
+        pixel.color = (pixel.color * p_weight + pixel_color * n_weight) / (p_weight + n_weight);
         pixel.weight += weight;
-        pixel.depth = (pixel.depth * pixel.weight + depth) / (pixel.weight + 1);
+        pixel.depth = (pixel.depth * p_weight + depth) / (p_weight + 1);
         _image.set_pixel(x, y, pixel.color, pixel.weight, pixel.depth);
     }
 

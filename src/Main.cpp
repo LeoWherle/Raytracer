@@ -47,7 +47,7 @@ auto handle_events(sf::RenderWindow &window, Camera &cam) -> bool
         case ::sf::Event::Resized:
             // Work in progress
             cam.image_width = event.size.width;
-            cam.aspect_ratio = static_cast<float>(event.size.width) / event.size.height;
+            cam.aspect_ratio = static_cast<float>(event.size.width) / static_cast<float>(event.size.height);
             cam.update();
             break;
         case sf::Event::Closed:
@@ -109,6 +109,7 @@ auto handle_events(sf::RenderWindow &window, Camera &cam) -> bool
                 cam.rotate(Vector3D(0, 0, 1), -0.1f);
                 break;
             default:
+                moved = false;
                 break;
             }
         default:

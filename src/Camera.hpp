@@ -11,10 +11,10 @@
 #include "HitRecord.hpp"
 #include "Math/Interval.hpp"
 #include "Math/MathsUtils.hpp"
+#include "Math/Matrix3D.hpp"
 #include "Math/Point3D.hpp"
 #include "Math/Random.hpp"
 #include "Math/Rectangle3D.hpp"
-#include "Math/Matrix3D.hpp"
 #include "Ray.hpp"
 #include "Scene/IImage.hpp"
 #include "Scene/World.hpp"
@@ -160,7 +160,9 @@ public:
                 Ray r = new_ray((float) i, (float) j);
                 pixel_color += ray_color(r, max_depth, world);
             }
-            image.set_pixel(i, j, pixel_color * pixel_samples_scale, samples_per_pixel, max_depth);
+            image.set_pixel(
+                i, j, pixel_color * pixel_samples_scale, samples_per_pixel, static_cast<float>(max_depth)
+            );
         };
 
         auto number_threads = std::thread::hardware_concurrency();
