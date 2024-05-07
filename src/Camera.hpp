@@ -9,18 +9,23 @@
 
 #include "Color.hpp"
 #include "HitRecord.hpp"
-#include "Interval.hpp"
+#include "Math/Interval.hpp"
 #include "Math/MathsUtils.hpp"
+#include "Math/Matrix3D.hpp"
 #include "Math/Point3D.hpp"
+#include "Math/Random.hpp"
 #include "Math/Rectangle3D.hpp"
 #include "Ray.hpp"
 #include "Scene/IImage.hpp"
 #include "Scene/World.hpp"
 #include "math.h"
-#include <execution>
+
+#include <array>
+#include <atomic>
 #include <iomanip>
 #include <iostream>
 #include <math.h>
+#include <thread>
 #include <vector>
 
 class Camera {
@@ -96,10 +101,17 @@ public:
 
     void move(const Vector3D &direction) { origin = origin + direction; }
 
+    void rotate(const Vector3D &axis, float angle)
+    {
+        auto rotation = Matrix3D::rotation(axis, angle);
+        lookat = rotation * lookat;
+        vup = rotation * vup;
+    }
+
     Ray new_ray(float u, float v) const
     {
 
-        auto offset = Vector3D(mathsUtils::random_float() - 0.5f, mathsUtils::random_float() - 0.5f, 0);
+        auto offset = Vector3D(Random::gen_float() - 0.5f, Random::gen_float() - 0.5f, 0);
         auto pixel_sample =
             pixel00_loc + (pixel_delta_u * (u + offset._x)) + (pixel_delta_v * (v + offset._y));
         auto ray_direction = pixel_sample - center;
@@ -133,11 +145,14 @@ public:
         return color_from_emission + color_from_scatter;
     }
 
+    template<bool ShowProgress = true>
     void render(World &world, IImage &image)
     {
         update();
         image.resize(image_width, image_height);
-        std::clog << "\rRendering: 0.00%" << std::flush;
+        if constexpr (ShowProgress) {
+            std::clog << "\rRendering: 0.00%" << std::flush;
+        }
 
         auto pixel_func = [&](uint32_t i, uint32_t j) {
             Color pixel_color(0, 0, 0);
@@ -145,19 +160,50 @@ public:
                 Ray r = new_ray((float) i, (float) j);
                 pixel_color += ray_color(r, max_depth, world);
             }
-            image.set_pixel(i, j, pixel_color * pixel_samples_scale);
+            image.set_pixel(
+                i, j, pixel_color * pixel_samples_scale, samples_per_pixel, static_cast<float>(max_depth)
+            );
         };
 
-        // clang-format off
-        std::for_each(std::execution::par_unseq, image.row_begin(), image.row_end(), [&](uint32_t j) {
-        // for (uint32_t j = 0; j < image.get_height(); j++) {
-            for (uint32_t i = 0; i < image.get_width(); i++) {
-                pixel_func(i, j);
-            };
-            std::clog << "\rRendering: " << std::fixed << std::setprecision(2) << (100.0f * (float) j / (float) (image.get_height() - 1)) << "%" << std::flush;
-        // };
-        });
-        // clang-format on
-        std::clog << std::endl;
-    }
+        auto number_threads = std::thread::hardware_concurrency();
+        std::atomic<uint32_t> row = 0;
+
+        std::vector<std::atomic<uint32_t>> progress(number_threads);
+        auto thread_func = [&](uint32_t thread_id) {
+            for (uint32_t j = row++; j < image.get_height(); j = row++) {
+                for (uint32_t i = 0; i < image.get_width(); i++) {
+                    pixel_func(i, j);
+                }
+                if constexpr (ShowProgress) {
+                    progress[thread_id].fetch_add(1);
+                }
+            }
+        };
+
+        std::vector<std::thread> threads;
+        for (uint32_t n = 0; n < number_threads; n++) {
+            threads.push_back(std::thread(thread_func, n));
+        }
+
+        if constexpr (ShowProgress) {
+            while (true) {
+                uint32_t total_progress = 0;
+                for (auto &p : progress) {
+                    total_progress += p.load();
+                }
+                if (total_progress == image.get_height()) {
+                    break;
+                }
+                std::this_thread::sleep_for(std::chrono::milliseconds(100));
+                auto progress_percent = (100.0f * (float) total_progress / (float) (image.get_height() - 1));
+                std::clog << "\rRendering: " << std::fixed << std::setprecision(2) << progress_percent << "%"
+                          << std::flush;
+            }
+            std::clog << std::endl;
+        }
+
+        for (auto &thread : threads) {
+            thread.join();
+        }
+    };
 };
