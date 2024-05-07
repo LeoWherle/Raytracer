@@ -35,7 +35,7 @@ public:
 
         auto t = (_origin - r.origin()).dot(_normal) / denom;
 
-        if (t < 0.0 || t > ray_max.max)
+        if (t < 0.0 || !ray_max.surrounds(t))
             return false;
 
         rec.t = t;
