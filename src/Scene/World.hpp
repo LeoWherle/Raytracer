@@ -20,7 +20,7 @@ public:
     World() = default;
     ~World() = default;
 
-    std::vector<std::unique_ptr<IPrimitive>> primitives;
+    std::vector<std::shared_ptr<IPrimitive>> primitives;
 
     void addPrimitive(std::shared_ptr<IPrimitive> primitive);
 

@@ -13,8 +13,8 @@
 #include "Materials/LightMaterial.hpp"
 #include "Materials/MetalMaterial.hpp"
 #include "Primitives/Plane.hpp"
-#include "Primitives/Sphere.hpp"
 #include "Primitives/Triangle.hpp"
+#include "Primitives/Sphere.hpp"
 #include "Scene/IncrementalImage.hpp"
 #include "Scene/World.hpp"
 #include "Scene/JsonLoader.hpp"
@@ -132,7 +132,7 @@ auto Main::render_real_time() -> void
     IncrementalImage image;
     // check the time for rendering a frame
     sf::Clock clock;
-    _camera.samples_per_pixel = 20;
+    _camera.samples_per_pixel = 100;
     _camera.max_depth = 5;
     while (window.isOpen()) {
         if (handle_events(window, _camera)) {
