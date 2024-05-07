@@ -24,22 +24,10 @@ public:
         _material(material)
     {
     }
-
-    // TODO
-    bool hits(const Ray &r, Interval ray_max, HitRecord &rec) const override
+    ~Plane()
     {
-        auto denom = _normal.dot(r.direction());
-        if (denom > 1e-6) {
-            auto p0l0 = _origin - r.origin();
-            auto t = p0l0.dot(_normal) / denom;
-            if (t >= ray_max.min && t <= ray_max.max) {
-                rec.t = t;
-                rec.p = r.at(t);
-                rec.normal = _normal;
-                rec.material = _material;
-                return true;
-            }
-        }
-        return false;
+        delete _material;
     }
+
+    bool hits(const Ray &r, Interval ray_max, HitRecord &rec) const override;
 };

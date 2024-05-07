@@ -10,7 +10,6 @@
 #include "AMaterial.hpp"
 #include "Color.hpp"
 #include "HitRecord.hpp"
-#include "Math/MathsUtils.hpp"
 #include "Math/Point3D.hpp"
 #include "Math/Random.hpp"
 #include "Ray.hpp"
