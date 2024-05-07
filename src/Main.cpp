@@ -32,7 +32,9 @@ auto Main::arg_parse() -> bool
         std::cerr << "Options:" << std::endl;
         std::cerr << "  -gui: Open a window to render the scene in real time" << std::endl;
         std::cerr << "  -o [outputfile]: Save the rendered image to the specified file (BMP, PPM, PNG, TGA, "
-                     "JPG), default is output.bmp"
+                     "JPG), default is output.bmp. If -gui is set, the image will be saved when the window "
+                     "is closed."
+                     "The file extension will determine the format."
                   << std::endl;
         return false;
     }
@@ -162,7 +164,8 @@ auto Main::render_real_time() -> void
         std::cout << "Frame Rendering time: " << total_time << "ms" << std::endl;
         std::stringstream stream;
         stream << std::fixed << std::setprecision(2);
-        stream << "Render Time: " << (static_cast<double>(elapsed.asMilliseconds()) / 1000) << "s" << "\n";
+        stream << "Render Time: " << (static_cast<double>(elapsed.asMilliseconds()) / 1000) << "s"
+               << "\n";
         stream << "Sample per pixel: " << _image.get_sample_count() << "\n";
         stream << "Depth: " << _camera.max_depth << "\n";
         text.setString(stream.str());
