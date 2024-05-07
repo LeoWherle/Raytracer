@@ -16,7 +16,7 @@
 IMaterial *MaterialFactory::createMaterial(const boost::property_tree::ptree &pt) const
 {
     std::string type = pt.get<std::string>("material");
-    Color color = _color_factory.createColor(pt.get_child("color"));
+    Color color = createColor(pt.get_child("color"));
 
     if (type == "BaseMaterial")
         return new BaseMaterial(color);

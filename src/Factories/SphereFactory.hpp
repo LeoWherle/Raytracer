@@ -12,14 +12,10 @@
 #include "Factories/MaterialFactory.hpp"
 #include <boost/property_tree/ptree.hpp>
 
-class SphereFactory {
+class SphereFactory : public Point3DFactory, public MaterialFactory {
 public:
     SphereFactory() = default;
     ~SphereFactory() = default;
 
     std::unique_ptr<Sphere> createSphere(const boost::property_tree::ptree &pt) const;
-
-private:
-    MaterialFactory _material_factory;
-    Point3DFactory _point3d_factory;
 };

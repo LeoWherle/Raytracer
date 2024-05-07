@@ -13,15 +13,10 @@
 #include "Factories/PlaneFactory.hpp"
 #include <boost/property_tree/ptree.hpp>
 
-class WorldCreator {
+class WorldCreator : public SphereFactory, public TriangleFactory, public PlaneFactory {
 public:
     WorldCreator() = default;
     ~WorldCreator() = default;
 
     World createWorld(const boost::property_tree::ptree &pt) const;
-
-private:
-    SphereFactory _sphere_factory;
-    TriangleFactory _triangle_factory;
-    PlaneFactory _plane_factory;
 };

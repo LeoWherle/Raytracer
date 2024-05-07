@@ -13,15 +13,10 @@
 #include "Factories/MaterialFactory.hpp"
 #include <boost/property_tree/ptree.hpp>
 
-class PlaneFactory {
+class PlaneFactory : public Point3DFactory, public Vector3DFactory, public MaterialFactory {
 public:
     PlaneFactory() = default;
     ~PlaneFactory() = default;
 
     std::unique_ptr<Plane> createPlane(const boost::property_tree::ptree &pt) const;
-
-private:
-    MaterialFactory _material_factory;
-    Point3DFactory _point3d_factory;
-    Vector3DFactory _vector3d_factory;
 };

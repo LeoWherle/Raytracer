@@ -12,14 +12,10 @@
 #include "Factories/MaterialFactory.hpp"
 #include <boost/property_tree/ptree.hpp>
 
-class TriangleFactory {
+class TriangleFactory : public MaterialFactory, public Point3DFactory {
 public:
     TriangleFactory() = default;
     ~TriangleFactory() = default;
 
     std::unique_ptr<Triangle> createTriangle(const boost::property_tree::ptree &pt) const;
-
-private:
-    MaterialFactory _material_factory;
-    Point3DFactory _point3d_factory;
 };

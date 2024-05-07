@@ -11,13 +11,11 @@
 #include "Factories/ColorFactory.hpp"
 #include <boost/property_tree/ptree.hpp>
 
-class MaterialFactory {
+class MaterialFactory : public ColorFactory {
 public:
     MaterialFactory() = default;
     ~MaterialFactory() = default;
 
     IMaterial *createMaterial(const boost::property_tree::ptree &pt) const;
 
-private:
-    ColorFactory _color_factory;
 };
