@@ -20,6 +20,7 @@ void IncrementalImage::resize(uint32_t width, uint32_t height)
 
 void IncrementalImage::set_pixel(uint32_t x, uint32_t y, Color pixel_color, uint32_t weight, float depth)
 {
+    (void) depth;
     auto index = (x + y * _image.get_width());
     auto &pixel = _pixels[index];
     float p_weight = static_cast<float>(_weight);

@@ -164,16 +164,21 @@ auto Main::render_real_time() -> void
         std::cout << "Frame Rendering time: " << total_time << "ms" << std::endl;
         std::stringstream stream;
         stream << std::fixed << std::setprecision(2);
-        stream << "Render Time: " << (static_cast<double>(elapsed.asMilliseconds()) / 1000) << "s"
-               << "\n";
-        stream << "Sample per pixel: " << _image.get_sample_count() << "\n";
+        stream << "TT Render Time: " << (static_cast<double>(elapsed.asMilliseconds()) / 1000) << "s\n";
+        stream << "TT Sample per pixel: " << _image.get_sample_count() << "\n";
         stream << "Depth: " << _camera.max_depth << "\n";
+        stream << "Sample per pixel: " << _camera.samples_per_pixel << "\n";
         text.setString(stream.str());
 
         window.clear();
         window.draw(_image);
         window.draw(text);
         window.display();
+
+        // Calculate the desired frame time (200ms)
+        constexpr double desired_frame_time = 200.0;
+        double speed_factor = desired_frame_time / total_time;
+        _camera.samples_per_pixel *= speed_factor;
     }
 }
 
