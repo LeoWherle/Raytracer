@@ -109,6 +109,7 @@ auto handle_events(sf::RenderWindow &window, Camera &cam) -> bool
                 cam.rotate(Vector3D(0, 0, 1), -0.1f);
                 break;
             default:
+                moved = false;
                 break;
             }
         default:
