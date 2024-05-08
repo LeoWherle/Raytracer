@@ -1,0 +1,108 @@
+{
+    "camera": {
+        "resolution": {
+            "width": 400
+        },
+        "position": {
+            "x": 14,
+            "y": 3,
+            "z": 22
+        },
+        "rotation": {
+            "x": 1,
+            "y": 2,
+            "z": -2
+        },
+        "fieldOfView": 10,
+        "RayPerPixel": 3000,
+        "MaxBounces": 30,
+        "DefocusAngle": 0,
+        "BackgroundColor": {
+            "r": 0,
+            "g": 0,
+            "b": 0
+        }
+    },
+    "primitives": {
+        "spheres": [
+            {
+                "radius": 2,
+                "position": {
+                    "x": 0,
+                    "y": 8,
+                    "z": 0
+                },
+                "rotation": {
+                    "x": 0,
+                    "y": 0,
+                    "z": 0
+                },
+                "material": {
+                    "material": "LightMaterial",
+                    "color": {
+                        "r": 4,
+                        "g": 4,
+                        "b": 4
+                    }
+                }
+            }
+        ],
+        "planes": [
+            {
+                "normal": {
+                    "x": 0,
+                    "y": 1,
+                    "z": 0
+                },
+                "position": {
+                    "x": 0,
+                    "y": 0,
+                    "z": 0
+                },
+                "material": {
+                    "material": "BaseMaterial",
+                    "texture": {
+                        "type": "checker",
+                        "oddTexture": {
+                            "color": {
+                                "r": 0.1,
+                                "g": 0.1,
+                                "b": 0.1
+                            }
+                        },
+                        "evenTexture": {
+                            "color": {
+                                "r": 0.9,
+                                "g": 0.9,
+                                "b": 0.9
+                            }
+                        },
+                        "scale": 2
+                    }
+                }
+            }
+        ],
+        "triangles": [],
+        "cylinders": [],
+        "objects": [
+            {
+                "filename": "assets/obj/monkey.obj",
+                "position": {
+                    "x": 0,
+                    "y": 2,
+                    "z": 0
+                },
+                "scale": 1,
+                "material": {
+                    "material": "BaseMaterial",
+                    "color": {
+                        "r": 1,
+                        "g": 0.5,
+                        "b": 0.5
+                    }
+                }
+            }
+        ],
+        "cones": []
+    }
+}

@@ -76,19 +76,12 @@ auto ObjLoader::load(const std::string &filename, const Point3D &origin, float s
         if (line[0] == '#' || line.empty()) {
             continue;
         }
-        // skip material & name
-        if (line[0] == 'm' || line[0] == 'o') {
-            continue;
-        }
-
         if (line[0] == 'v' && line[1] == ' ') {
             vertices.push_back(parse_vertex(line));
         } else if (line[0] == 'v' && line[1] == 'n') {
             normals.push_back(parse_normal(line));
         } else if (line[0] == 'f') {
             indices.push_back(parse_index(line));
-        } else {
-            std::cout << "Unknown line: " << line << std::endl;
         }
     }
 
