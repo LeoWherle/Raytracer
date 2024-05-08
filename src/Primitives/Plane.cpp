@@ -25,3 +25,8 @@ bool Plane::hits(const Ray &r, Interval ray_max, HitRecord &rec) const
     rec.material = _material;
     return true;
 }
+
+void Plane::translate(const Point3D &trans)
+{
+    _origin += trans;
+}
