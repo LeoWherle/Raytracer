@@ -7,24 +7,30 @@
 
 #pragma once
 
-#include <random>
+#include <cstdint>
 #include <thread>
+#include <random>
 
 #include "Math/Vector3D.hpp"
+#include "Xoroshiro.hpp"
 
 class Random {
 public:
-    static void init();
+
+    static auto gen_int() -> std::uint32_t
+    {
+        return s_RNG();
+    }
 
     static inline float gen_float(float min, float max)
     {
         std::uniform_real_distribution<float> dist(min, max);
-        return dist(s_RandomEngine);
+        return dist(s_RNG);
     }
 
     static inline float gen_float()
     {
-        return s_Distribution(s_RandomEngine);
+        return XoshiroCpp::FloatFromBits(s_RNG());
     }
 
     static inline Vector3D gen_vec(float min, float max)
@@ -53,6 +59,5 @@ public:
 
 protected:
 private:
-    static thread_local std::mt19937 s_RandomEngine;
-    static thread_local std::uniform_real_distribution<float> s_Distribution;
+    static thread_local XoshiroCpp::Xoshiro128Plus s_RNG;
 };
