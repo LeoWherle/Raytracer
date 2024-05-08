@@ -18,4 +18,7 @@ void WorldCreator::createWorld(World &world, const boost::property_tree::ptree &
     for (const auto &plane : pt.get_child("planes")) {
         world.addPrimitive(createPlane(plane.second));
     }
+    for (const auto &obj : pt.get_child("objects")) {
+        world.addPrimitive(createObj(obj.second));
+    }
 }

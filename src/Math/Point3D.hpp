@@ -35,4 +35,14 @@ public:
     {
         return Vector3D(_x - point._x, _y - point._y, _z - point._z);
     }
+
+    inline Point3D operator*(float scalar) const
+    {
+        return Point3D(_x * scalar, _y * scalar, _z * scalar);
+    }
+
+    inline Point3D operator+(const Point3D &point) const
+    {
+        return Point3D(_x + point._x, _y + point._y, _z + point._z);
+    }
 };
