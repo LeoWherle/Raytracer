@@ -8,7 +8,7 @@
 #pragma once
 
 #include "Primitives/Sphere.hpp"
-#include "Factories/Point3DFactory.hpp"
+#include "Factories/Math/Point3DFactory.hpp"
 #include "Factories/MaterialFactory.hpp"
 #include <boost/property_tree/ptree.hpp>
 

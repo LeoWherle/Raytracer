@@ -19,10 +19,15 @@
 
 class MetalMaterial : public AMaterial {
 public:
+    MetalMaterial(std::unique_ptr<ITexture> tex, float fuzz):
+        _texture(std::move(tex)),
+        _fuzz(fuzz < 1 ? fuzz : 1)
+    {
+    }
     // Constructor that takes a Color and a fuzz factor for the material
     // If the fuzz factor is greater than 1, it is clamped to 1
     MetalMaterial(const Color &color, float fuzz):
-        _color(color),
+        _texture(std::make_unique<SolidColorTexture>(color)),
         _fuzz(fuzz < 1 ? fuzz : 1)
     {
     }
@@ -41,7 +46,7 @@ public:
         scattered = Ray(rec.p, reflected);
 
         // Set attenuation to the color of the material
-        attenuation = _color;
+        attenuation = _texture->value(rec.u, rec.v, rec.p);
 
         // Return true if the dot product of the scattered direction and the normal is greater than 0
         // This indicates that the ray was scattered in the same hemisphere as the normal
@@ -49,7 +54,7 @@ public:
     }
 
 private:
-    Color _color;
+    std::unique_ptr<ITexture> _texture;
     // Fuzz factor of the material
     float _fuzz;
 };

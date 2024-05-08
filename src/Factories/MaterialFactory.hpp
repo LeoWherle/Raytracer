@@ -8,10 +8,10 @@
 #pragma once
 
 #include "Materials/IMaterial.hpp"
-#include "Factories/ColorFactory.hpp"
+#include "Factories/TextureFactory.hpp"
 #include <boost/property_tree/ptree.hpp>
 
-class MaterialFactory : public ColorFactory {
+class MaterialFactory : public TextureFactory {
 public:
     MaterialFactory() = default;
     ~MaterialFactory() = default;
