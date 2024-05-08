@@ -140,31 +140,37 @@ auto Main::render_real_time() -> void
     text.setPosition(10, 10);
 
     text.setString("Sample per pixel: " + std::to_string(_image.get_sample_count()));
-    sf::Clock clock;
-    _camera.samples_per_pixel = 10;
+    _camera.samples_per_pixel = 1;
     _camera.max_depth = 5;
 
+    auto start_time = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now().time_since_epoch()).count();
     double total_time = 0;
-    auto old_elapsed = clock.getElapsedTime();
-    auto elapsed = clock.getElapsedTime();
+    long int old_elapsed_time = 0;
+    auto elapsed_time = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now().time_since_epoch()).count() -
+        start_time;
 
     while (window.isOpen()) {
         if (handle_events(window, _camera)) {
             _image.clear();
             _camera.max_depth = 5;
-            clock.restart();
+            start_time = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now().time_since_epoch()).count();
+            elapsed_time = 0;
+            _camera.samples_per_pixel = 1;
         }
-        _camera.max_depth += 1;
+        if (_camera.samples_per_pixel > 10) {
+            _camera.max_depth += 1;
+        }
         _camera.render<false>(_world, _image);
 
         // prepare info display
-        old_elapsed = elapsed;
-        elapsed = clock.getElapsedTime();
-        total_time = elapsed.asMilliseconds() - old_elapsed.asMilliseconds();
+        old_elapsed_time = elapsed_time;
+        elapsed_time = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now().time_since_epoch()).count() - start_time;
+        total_time = static_cast<double>(elapsed_time - old_elapsed_time);
+        total_time = total_time <= 2 ? 200 : total_time;
         std::cout << "Frame Rendering time: " << total_time << "ms" << std::endl;
         std::stringstream stream;
         stream << std::fixed << std::setprecision(2);
-        stream << "TT Render Time: " << (static_cast<double>(elapsed.asMilliseconds()) / 1000) << "s\n";
+        stream << "TT Render Time: " << (static_cast<double>(elapsed_time) / 1000) << "s\n";
         stream << "TT Sample per pixel: " << _image.get_sample_count() << "\n";
         stream << "Depth: " << _camera.max_depth << "\n";
         stream << "Sample per pixel: " << _camera.samples_per_pixel << "\n";
@@ -178,7 +184,8 @@ auto Main::render_real_time() -> void
         // Calculate the desired frame time (200ms)
         constexpr double desired_frame_time = 200.0;
         double speed_factor = desired_frame_time / total_time;
-        _camera.samples_per_pixel *= speed_factor;
+        _camera.samples_per_pixel = static_cast<uint32_t>(_camera.samples_per_pixel * speed_factor);
+        _camera.samples_per_pixel = _camera.samples_per_pixel < 1 ? 1 : _camera.samples_per_pixel;
     }
 }
 

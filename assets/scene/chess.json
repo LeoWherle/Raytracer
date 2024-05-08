@@ -118,6 +118,7 @@
             }
         ],
         "triangles": [],
+        "objects": [],
         "cylinders": [],
         "cones": []
     }
