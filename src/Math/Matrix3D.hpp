@@ -18,7 +18,7 @@ public:
     Vector3D operator*(const Vector3D &other) const;
 #ifdef USING_POINT3D
     Point3D operator*(const Point3D &other) const;
-
+#endif
 
     friend std::ostream &operator << (std::ostream &os, const Matrix3D &mat)
     {
