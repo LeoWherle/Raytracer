@@ -32,10 +32,12 @@ std::unique_ptr<Plane> PlaneFactory::createPlane(const boost::property_tree::ptr
             try {
                 auto trans = transformations.get_child(choices);
 
-                if (choices == "translation") {
-                    obj->translate(createPoint3D(trans));
-                }
-            } catch(const wrong_child &e) {continue;}
+                if (choices == "translation") {obj->translate(createPoint3D(trans));}
+                else if (choices == "rotation") {obj->rotate(createPoint3D(trans)); }
+                else {}
+            } catch(const wrong_child &e) {
+                throw std::runtime_error(e.what());
+            }
         }
     } catch(const wrong_child &e) {}
 
