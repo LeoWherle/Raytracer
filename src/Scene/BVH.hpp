@@ -116,13 +116,13 @@ public:
     bool hits_bvh(const Ray &r, Interval ray_d, HitRecord &rec, std::uint32_t node_index) const
     {
         auto &node = bvh_nodes[node_index];
-        if (!node.bounds.hits(r, ray_d, rec)) {
+        if (!node.bounds.hits(r, rec)) {
             return false;
         }
 
         bool hitAnything = false;
         HitRecord tempRec;
-        double closest = ray_d.max;
+        float closest = ray_d.max;
 
         if (node.isLeaf()) {
             for (std::uint32_t i = 0; i < node.count; ++i) {

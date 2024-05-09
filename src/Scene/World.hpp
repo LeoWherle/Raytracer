@@ -48,7 +48,7 @@ public:
         for (const auto &primitive : primitives) {
             centroid += primitive->centroid();
         }
-        centroid /= primitives.size();
+        centroid /= static_cast<float>(primitives.size());
         return centroid;
     }
 

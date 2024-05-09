@@ -30,7 +30,7 @@ public:
     }
     ~AABB() = default;
 
-    bool hits(const Ray &ray, Interval ray_d, HitRecord &hitrec) const
+    bool hits(const Ray &ray, HitRecord &hitrec) const
     {
         float tx1 = (m_min._x - ray.origin()._x) / ray.direction()._x;
         float tx2 = (m_max._x - ray.origin()._x) / ray.direction()._x;
