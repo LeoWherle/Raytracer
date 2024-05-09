@@ -56,7 +56,7 @@ auto handle_events(sf::RenderWindow &window, Camera &cam) -> bool
             cam.image_width = event.size.width;
             cam.aspect_ratio = static_cast<float>(event.size.width) / static_cast<float>(event.size.height);
             cam.update();
-            window.setView(sf::View(sf::FloatRect(0, 0, event.size.width, event.size.height)));
+            window.setView(sf::View(sf::FloatRect(0, 0, float(event.size.width), float(event.size.height))));
             moved = true;
             break;
         case sf::Event::Closed:
@@ -162,7 +162,7 @@ auto Main::render_real_time() -> void
             start_time = get_time();
             elapsed_time = 0;
             _camera.samples_per_pixel = 1;
-            auto new_character_size = _camera.image_height / 40;
+            new_character_size = _camera.image_height / 40;
             text.setCharacterSize(new_character_size < 20 ? 20 : new_character_size);
         }
         if (_camera.samples_per_pixel > 10) {
