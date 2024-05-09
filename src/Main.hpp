@@ -9,7 +9,7 @@
 #include "Camera.hpp"
 #include "Parameters.hpp"
 #include "Primitives/Sphere.hpp"
-#include "Scene/Image.hpp"
+#include "Scene/IncrementalImage.hpp"
 #include "Scene/World.hpp"
 
 class Main {
@@ -26,7 +26,7 @@ public:
     Parameters _params;
     Camera _camera;
     World _world;
-    Image _image;
+    IncrementalImage _image;
 
     auto run() -> int;
     auto render_real_time() -> void;

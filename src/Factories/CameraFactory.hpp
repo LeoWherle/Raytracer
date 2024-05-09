@@ -7,7 +7,7 @@
 
 #pragma once
 
-#include "../Camera.hpp"
+#include "Camera.hpp"
 #include <boost/property_tree/ptree.hpp>
 
 class CameraFactory {

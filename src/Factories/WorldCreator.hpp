@@ -7,10 +7,10 @@
 
 #pragma once
 
-#include "../Scene/World.hpp"
-#include "Factories/SphereFactory.hpp"
-#include "Factories/TriangleFactory.hpp"
-#include "Factories/PlaneFactory.hpp"
+#include "Scene/World.hpp"
+#include "Primitives/SphereFactory.hpp"
+#include "Primitives/TriangleFactory.hpp"
+#include "Primitives/PlaneFactory.hpp"
 #include <boost/property_tree/ptree.hpp>
 
 class WorldCreator : public SphereFactory, public TriangleFactory, public PlaneFactory {

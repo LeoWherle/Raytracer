@@ -8,20 +8,16 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
-#include <vector>
 #include <tuple>
+#include <vector>
 
-#include "IImage.hpp"
-#include "Image.hpp"
 #include "Color.hpp"
+#include "IImage.hpp"
+#include "ISaveable.hpp"
+#include "Image.hpp"
 
-class IncrementalImage : public sf::Drawable, public IImage {
+class IncrementalImage : public sf::Drawable, public IImage, public ISaveable {
 public:
-    struct Pixel {
-        Color color; // Linear color
-        uint32_t weight; // number of samples
-        float depth; // average number of depth per sample
-    };
     IncrementalImage() = default;
     ~IncrementalImage() = default;
 
@@ -30,6 +26,7 @@ public:
     void resize(uint32_t width, uint32_t height);
 
     void set_pixel(uint32_t x, uint32_t y, Color pixel_color, uint32_t weight = 1, float depth = 1);
+    void finish_frame(uint32_t weight, float depth);
 
     Color get_pixel(uint32_t x, uint32_t y) const;
 
@@ -37,10 +34,16 @@ public:
 
     uint32_t get_height() const;
 
+    uint32_t get_sample_count() const;
+
     void clear();
+
+    void save(const std::string &filename) const override;
 
 protected:
 private:
+    uint32_t _weight; // number of samples
+    float _depth; // average number of depth per sample
     Image _image;
-    std::vector<Pixel> _pixels;
+    std::vector<Color> _pixels;
 };

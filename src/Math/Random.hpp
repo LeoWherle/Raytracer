@@ -16,17 +16,40 @@ class Random {
 public:
     static void init();
 
-    static float gen_float();
+    static inline float gen_float(float min, float max)
+    {
+        std::uniform_real_distribution<float> dist(min, max);
+        return dist(s_RandomEngine);
+    }
 
-    static float gen_float(float min, float max);
+    static inline float gen_float()
+    {
+        return s_Distribution(s_RandomEngine);
+    }
 
-    static Vector3D gen_vec();
+    static inline Vector3D gen_vec(float min, float max)
+    {
+        return Vector3D(gen_float(min, max), gen_float(min, max), gen_float(min, max));
+    }
 
-    static Vector3D gen_vec(float min, float max);
+    static inline Vector3D gen_vec()
+    {
+        return Vector3D(gen_float(), gen_float(), gen_float());
+    }
 
-    static Vector3D unit_sphere();
+    static inline Vector3D unit_sphere()
+    {
+        Vector3D p;
+        do {
+            p = gen_vec(-1.0f, 1.0f);
+        } while (p.length_squared() >= 1.0f);
+        return p;
+    }
 
-    static Vector3D unit_vector();
+    static inline Vector3D unit_vector()
+    {
+        return unit_sphere().unit();
+    }
 
 protected:
 private:

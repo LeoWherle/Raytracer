@@ -53,15 +53,6 @@ void Camera::rotate(const Vector3D &axis, float angle)
     vup = rotation * vup;
 }
 
-Ray Camera::new_ray(float u, float v) const
-{
-    auto offset = Vector3D(Random::gen_float() - 0.5f, Random::gen_float() - 0.5f, 0);
-    auto pixel_sample =
-        pixel00_loc + (pixel_delta_u * (u + offset._x)) + (pixel_delta_v * (v + offset._y));
-    auto ray_direction = pixel_sample - center;
-    return Ray(center, ray_direction);
-}
-
 Color Camera::ray_color(const Ray &r, int depth, const World &world) const
 {
     // If we've exceeded the ray bounce limit, no more light is gathered.

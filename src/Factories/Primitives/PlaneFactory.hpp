@@ -8,8 +8,8 @@
 #pragma once
 
 #include "Primitives/Plane.hpp"
-#include "Factories/Point3DFactory.hpp"
-#include "Factories/Vector3DFactory.hpp"
+#include "Factories/Math/Point3DFactory.hpp"
+#include "Factories/Math/Vector3DFactory.hpp"
 #include "Factories/MaterialFactory.hpp"
 #include <boost/property_tree/ptree.hpp>
 
