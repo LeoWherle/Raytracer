@@ -30,4 +30,6 @@ public:
     }
 
     bool hits(const Ray &r, Interval ray_max, HitRecord &rec) const override;
+
+    void translate(const Point3D &trans);
 };

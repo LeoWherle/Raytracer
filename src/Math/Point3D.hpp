@@ -6,7 +6,6 @@
 */
 
 #pragma once
-
 #include "Vector3D.hpp"
 #include <iostream>
 
@@ -25,6 +24,15 @@ public:
     inline Point3D operator+(const Vector3D &vector) const
     {
         return Point3D(_x + vector._x, _y + vector._y, _z + vector._z);
+    }
+
+    inline Point3D &operator+=(const Point3D &dot)
+    {
+        _x += dot._x;
+        _y += dot._y;
+        _z += dot._z;
+
+        return (*this);
     }
 
     inline Point3D operator-(const Vector3D &vector) const

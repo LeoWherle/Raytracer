@@ -42,3 +42,8 @@ bool Plane::hits(const Ray &r, Interval ray_max, HitRecord &rec) const
     get_plane_uv(rec.p, _normal, rec.u, rec.v);
     return true;
 }
+
+void Plane::translate(const Point3D &trans)
+{
+    _origin += trans;
+}

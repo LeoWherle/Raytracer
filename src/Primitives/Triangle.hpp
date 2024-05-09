@@ -43,6 +43,8 @@ public:
     // https://en.wikipedia.org/wiki/M%C3%B6ller%E2%80%93Trumbore_intersection_algorithm
     bool hits(const Ray &ray, Interval ray_d, HitRecord &hitrec) const override;
 
+    void translate(const Point3D &trans);
+
 protected:
 private:
 };

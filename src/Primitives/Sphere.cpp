@@ -61,3 +61,8 @@ void Sphere::get_sphere_uv(const Vector3D &p, float &u, float &v) const
     u = phi / (2 * M_PIf);
     v = theta / M_PIf;
 }
+
+void Sphere::translate(const Point3D &trans)
+{
+    origin += trans;
+}
