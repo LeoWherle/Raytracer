@@ -6,6 +6,8 @@
 */
 
 #include "Plane.hpp"
+#include "Math/MathsUtils.hpp"
+#include "Math/Matrix3D.hpp"
 
 inline void get_plane_uv(const Point3D &p, const Vector3D &normal, float &u, float &v)
 {
@@ -46,4 +48,30 @@ bool Plane::hits(const Ray &r, Interval ray_max, HitRecord &rec) const
 void Plane::translate(const Point3D &trans)
 {
     _origin += trans;
+}
+
+// TODO: fix _normal
+void Plane::rotate(const Point3D &degrees)
+{
+    float x = mathsUtils::degrees_to_radians(degrees._x);
+    float y = mathsUtils::degrees_to_radians(degrees._y);
+    float z = mathsUtils::degrees_to_radians(degrees._z);
+
+    float mx[3][3] = {{1,0,0}, {0,cosf(x),-sinf(x)}, {0,sinf(x),cosf(x)}};
+    float my[3][3] = {{cosf(y),0,sinf(y)}, {0,1,0}, {-sinf(y),0,cosf(y)}};
+    float mz[3][3] = {{cosf(z),-sinf(z),0}, {sinf(z),cosf(z),0}, {0,0,1}};
+
+    Matrix3D x_mat(mx);
+    //std::clog << x_mat << std::endl;
+    Matrix3D y_mat(my);
+    //std::clog << y_mat << std::endl;
+    Matrix3D z_mat(mz);
+    //std::clog << z_mat << std::endl;
+
+    //std::clog << (x_mat * _normal) << std::endl;
+    _normal = x_mat * _normal;
+    //std::clog << (y_mat * _normal) << std::endl;
+    _normal = y_mat * _normal;
+    //std::clog << (z_mat * _normal) << std::endl;
+    _normal = z_mat * _normal;
 }
