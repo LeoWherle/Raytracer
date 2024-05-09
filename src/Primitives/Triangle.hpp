@@ -45,6 +45,8 @@ public:
 
     void translate(const Point3D &trans);
 
+    void rotate(const Point3D &degrees);
+
 protected:
 private:
 };
