@@ -11,7 +11,6 @@
 #include "Math/Vector3D.hpp"
 #include "Ray.hpp"
 
-
 class Plane : public IPrimitive {
 public:
     Point3D _origin;
@@ -24,10 +23,7 @@ public:
         _material(material)
     {
     }
-    ~Plane()
-    {
-        delete _material;
-    }
+    ~Plane() { delete _material; }
 
     bool hits(const Ray &r, Interval ray_max, HitRecord &rec) const override;
 
@@ -46,4 +42,6 @@ public:
     {
         return _origin;
     }
+
+    void rotate(const Point3D &degrees);
 };

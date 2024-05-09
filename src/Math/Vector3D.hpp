@@ -160,3 +160,13 @@ public:
 protected:
 private:
 };
+
+// Vector3D testing << op overload
+
+//#include <ostream>
+
+//inline std::ostream &operator << (std::ostream &os, const Vector3D &vect)
+//{
+//    os << "Vector3D <" << vect._x << ", " << vect._y << ", " << vect._z << ">";
+//    return os;
+//}

@@ -68,6 +68,9 @@ public:
     {
         return (_v0 + _v1 + _v2) / 3;
     }
+
+    void rotate(const Point3D &degrees);
+
 protected:
 private:
 };

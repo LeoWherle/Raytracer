@@ -6,6 +6,7 @@
 */
 
 #include "Plane.hpp"
+#include "Math/MathsUtils.hpp"
 
 inline void get_plane_uv(const Point3D &p, const Vector3D &normal, float &u, float &v)
 {
@@ -46,4 +47,25 @@ bool Plane::hits(const Ray &r, Interval ray_max, HitRecord &rec) const
 void Plane::translate(const Point3D &trans)
 {
     _origin += trans;
+}
+
+void Plane::rotate(const Point3D &degrees)
+{
+    float x = mathsUtils::degrees_to_radians(degrees._x);
+    float y = mathsUtils::degrees_to_radians(degrees._y);
+    float z = mathsUtils::degrees_to_radians(degrees._z);
+
+    float mx[3][3] = {{1,0,0}, {0,cosf(x),-sinf(x)}, {0,sinf(x),cosf(x)}};
+    float my[3][3] = {{cosf(y),0,sinf(y)}, {0,1,0}, {-sinf(y),0,cosf(y)}};
+    float mz[3][3] = {{cosf(z),-sinf(z),0}, {sinf(z),cosf(z),0}, {0,0,1}};
+
+    _normal = Vector3D(mx[0][0] * _normal._x + mx[0][1] * _normal._y + mx[0][2] * _normal._z,
+        mx[1][0] * _normal._x + mx[1][1] * _normal._y + mx[1][2] * _normal._z,
+        mx[2][0] * _normal._x + mx[2][1] * _normal._y + mx[2][2] * _normal._z);
+    _normal = Vector3D(my[0][0] * _normal._x + my[0][1] * _normal._y + my[0][2] * _normal._z,
+        my[1][0] * _normal._x + my[1][1] * _normal._y + my[1][2] * _normal._z,
+        my[2][0] * _normal._x + my[2][1] * _normal._y + my[2][2] * _normal._z);
+    _normal = Vector3D(mz[0][0] * _normal._x + mz[0][1] * _normal._y + mz[0][2] * _normal._z,
+        mz[1][0] * _normal._x + mz[1][1] * _normal._y + mz[1][2] * _normal._z,
+        mz[2][0] * _normal._x + mz[2][1] * _normal._y + mz[2][2] * _normal._z);
 }
