@@ -39,3 +39,10 @@ bool Triangle::hits(const Ray &ray, Interval ray_d, HitRecord &hitrec) const
         }
     return false;
 }
+
+void Triangle::translate(const Point3D &trans)
+{
+    _v0 += trans;
+    _v1 += trans;
+    _v2 += trans;
+}

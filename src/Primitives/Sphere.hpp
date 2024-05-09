@@ -34,4 +34,6 @@ public:
     bool hits(const Ray &ray, Interval ray_d, HitRecord &hitrec) const override;
 
     void get_sphere_uv(const Vector3D &p, float &u, float &v) const;
+
+    void translate(const Point3D &trans);
 };
