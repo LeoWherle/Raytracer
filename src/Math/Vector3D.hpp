@@ -8,6 +8,7 @@
 #pragma once
 
 #include <cmath>
+#include <iostream>
 
 class Vector3D {
 public:
@@ -71,6 +72,16 @@ public:
     static inline Vector3D reflect(const Vector3D &v, const Vector3D &n)
     {
         return v - (n * (v.dot(n) * 2));
+    }
+
+    inline float operator[](int i) const
+    {
+        return i == 0 ? _x : i == 1 ? _y : _z;
+    }
+
+    static inline Vector3D min(const Vector3D& v1, const Vector3D& v2)
+    {
+        return Vector3D(std::fminf(v1._x, v2._x), std::fminf(v1._y, v2._y), std::fminf(v1._z, v2._z));
     }
 
     inline Vector3D operator-() const
@@ -145,6 +156,7 @@ public:
         return *this;
     }
 
+    friend std::ostream &operator<<(std::ostream &os, const Vector3D &point);
 protected:
 private:
 };

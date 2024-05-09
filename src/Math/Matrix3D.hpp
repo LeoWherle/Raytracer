@@ -15,9 +15,9 @@ public:
     static Matrix3D rotation(const Vector3D &axis, float angle);
 
     Vector3D operator*(const Vector3D &other) const;
-
+#ifdef USING_POINT3D
     Point3D operator*(const Point3D &other) const;
-
+#endif // USING_POINT3D
 private:
     float _matrix[3][3];
 };
