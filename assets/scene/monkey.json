@@ -14,7 +14,7 @@
             "z": -2
         },
         "fieldOfView": 10,
-        "RayPerPixel": 3000,
+        "RayPerPixel": 100,
         "MaxBounces": 30,
         "DefocusAngle": 0,
         "BackgroundColor": {
@@ -88,7 +88,7 @@
             {
                 "filename": "assets/obj/monkey.obj",
                 "position": {
-                    "x": 0,
+                    "x": 2,
                     "y": 2,
                     "z": 0
                 },
