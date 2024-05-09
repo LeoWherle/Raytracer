@@ -20,8 +20,7 @@ public:
 
     static inline float gen_float(float min, float max)
     {
-        std::uniform_real_distribution<float> dist(min, max);
-        return dist(s_RNG);
+        return min + (max - min) * gen_float();
     }
 
     static inline float gen_float()
