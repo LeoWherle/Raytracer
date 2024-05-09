@@ -127,7 +127,7 @@ public:
         if (node.isLeaf()) {
             for (std::uint32_t i = 0; i < node.count; ++i) {
                 std::uint32_t triIdx = prim_indices[node.first + i];
-                if (get_triangles()[triIdx]->hits(r, ray_d, tempRec)) {
+                if (get_triangles()[triIdx]->hits(r, Interval(ray_d.min, closest), tempRec)) {
                     hitAnything = true;
                     closest = tempRec.t;
                     rec = tempRec;
