@@ -11,7 +11,8 @@
 #include "PlaneFactory.hpp"
 
 static std::list<std::string> valid_transformations = {
-    "translation"
+    "translation",
+    "rotation"
 };
 
 using wrong_child = boost::property_tree::ptree_bad_path;
@@ -36,7 +37,7 @@ std::unique_ptr<Plane> PlaneFactory::createPlane(const boost::property_tree::ptr
                 else if (choices == "rotation") {obj->rotate(createPoint3D(trans)); }
                 else {}
             } catch(const wrong_child &e) {
-                throw std::runtime_error(e.what());
+                continue;
             }
         }
     } catch(const wrong_child &e) {}
