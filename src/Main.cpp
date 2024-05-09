@@ -199,6 +199,15 @@ auto Main::run() -> int
     god.createWorld(_world, loader.json.get_child("primitives"));
     _camera = camFactory.createCamera(loader.json.get_child("camera"));
 
+// Loop to apply Rotation on the scene's plane
+
+//    for (auto &priv : _world.primitives) {
+//        if (auto obj = dynamic_cast<Plane *>(priv.get())) {
+//            std::clog << "Current normal vector to Plane: " << obj->_normal << std::endl;
+//            obj->rotate(Point3D(0, 90, 0));
+//            std::clog << "Rotated normal vector to Plane: " << obj->_normal << std::endl;
+//        }
+//    }
     if (_params._gui) {
         render_real_time();
     }
