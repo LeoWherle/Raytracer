@@ -10,7 +10,6 @@
 #include <cstdint>
 #include <memory>
 #include <vector>
-#include <iostream>
 
 #include "Math/AABB.hpp"
 #include "Primitives/IPrimitive.hpp"
@@ -38,23 +37,15 @@ public:
 
     void build()
     {
-
-
-        std::cout << "Building BVH" << std::endl;
         bvh_nodes.resize(get_triangles().size() * 2);
-        std::cout << "Building BVH " << get_triangles().size() * 2 << std::endl;
         prim_indices.resize(get_triangles().size());
-        std::cout << "Building BVH " << get_triangles().size() << std::endl;
         for (std::uint32_t i = 0; i < get_triangles().size(); ++i) {
             prim_indices[i] = i;
         }
-        std::cout << "Building BVH" << std::endl;
 
         BVH::Node &root = bvh_nodes[root_node_index];
         root.first = 0;
-        std::cout << "Building BVH" << std::endl;
         root.count = static_cast<uint32_t>(get_triangles().size());
-        std::cout << "Building BVH" << std::endl;
         update_bounds(root_node_index);
 
         subdivide(root_node_index);
@@ -92,9 +83,7 @@ public:
 
         std::int32_t i = node.first;
         std::int32_t j = i + node.count - 1;
-        std::cout << "Subdividing" << std::endl;
         while (i <= j) {
-        std::cout << "Subdividing " << i << " " << j << std::endl;
             if (get_triangles()[prim_indices[i]]->centroid()[axis] < splitPos) {
                 i++;
             } else {
