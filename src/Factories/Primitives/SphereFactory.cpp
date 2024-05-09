@@ -35,9 +35,7 @@ std::unique_ptr<Sphere> SphereFactory::createSphere(const boost::property_tree::
                 if (choices == "translation") {
                     obj->translate(createPoint3D(trans));
                 }
-            } catch(const wrong_child &e) {
-                continue;
-            }
+            } catch(const wrong_child &e) {continue;}
         }
     } catch(const wrong_child &e) {}
 

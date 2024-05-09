@@ -37,9 +37,7 @@ std::unique_ptr<Triangle> TriangleFactory::createTriangle(const boost::property_
             try {
                 auto trans = transformations.get_child(choices);
 
-                if (choices == "translation") {
-                    obj->translate(createPoint3D(trans));
-                }
+                if (choices == "translation") {obj->translate(createPoint3D(trans));}
             } catch(const wrong_child &e) {
                 continue;
             }

@@ -10,8 +10,6 @@
 #include <list>
 #include "PlaneFactory.hpp"
 
-#include <iostream>
-
 static std::list<std::string> valid_transformations = {
     "translation"
 };
@@ -37,10 +35,7 @@ std::unique_ptr<Plane> PlaneFactory::createPlane(const boost::property_tree::ptr
                 if (choices == "translation") {
                     obj->translate(createPoint3D(trans));
                 }
-            } catch(const wrong_child &e) {
-                std::cout << "NO CHILD" << std::endl;
-                continue;
-            }
+            } catch(const wrong_child &e) {continue;}
         }
     } catch(const wrong_child &e) {}
 
