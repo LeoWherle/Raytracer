@@ -5,8 +5,8 @@
 ** Camera
 */
 
-#include "Math/MathsUtils.hpp"
 #include "Camera.hpp"
+#include "Math/MathsUtils.hpp"
 
 void Camera::update()
 {
@@ -71,6 +71,5 @@ Color Camera::ray_color(const Ray &r, int depth, const World &world) const
     if (!rec.material->scatter(r, rec, attenuation, scattered))
         return color_from_emission;
     // Recurse with the new scattered ray, and multiply the result by the attenuation.
-    Color color_from_scatter = ray_color(scattered, depth - 1, world) * attenuation;
-    return color_from_emission + color_from_scatter;
+    return color_from_emission + ray_color(scattered, depth - 1, world) * attenuation;
 }
