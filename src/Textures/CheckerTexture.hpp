@@ -23,14 +23,14 @@ public:
     CheckerTexture(const Color &c1, const Color &c2, float scale = 1.0f):
         _textureOdd(std::make_unique<SolidColorTexture>(c1)),
         _textureEven(std::make_unique<SolidColorTexture>(c2)),
-        _scale(1.0 / scale)
+        _scale(1.0f / scale)
     {
     }
 
     CheckerTexture(std::unique_ptr<ITexture> t1, std::unique_ptr<ITexture> t2, float scale = 1.0f):
         _textureOdd(std::move(t1)),
         _textureEven(std::move(t2)),
-        _scale(1.0 / scale)
+        _scale(1.0f / scale)
     {
     }
 

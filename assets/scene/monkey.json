@@ -1,7 +1,7 @@
 {
     "camera": {
         "resolution": {
-            "width": 800
+            "width": 400
         },
         "position": {
             "x": 14,
@@ -13,9 +13,9 @@
             "y": 2,
             "z": -2
         },
-        "fieldOfView": 20,
-        "RayPerPixel": 1000,
-        "MaxBounces": 20,
+        "fieldOfView": 10,
+        "RayPerPixel": 3000,
+        "MaxBounces": 30,
         "DefocusAngle": 0,
         "BackgroundColor": {
             "r": 0,
@@ -29,7 +29,7 @@
                 "radius": 2,
                 "position": {
                     "x": 0,
-                    "y": 4,
+                    "y": 8,
                     "z": 0
                 },
                 "rotation": {
@@ -43,41 +43,6 @@
                         "r": 4,
                         "g": 4,
                         "b": 4
-                    }
-                }
-            },
-            {
-                "radius": 2,
-                "position": {
-                    "x": 2,
-                    "y": 2,
-                    "z": -4
-                },
-                "rotation": {
-                    "x": 0,
-                    "y": 0,
-                    "z": 0
-                },
-                "material": {
-                    "material": "MetalMaterial",
-                    "fuzz": 0.1,
-                    "texture": {
-                        "type": "checker",
-                        "oddTexture": {
-                            "color": {
-                                "r": 0.8,
-                                "g": 0.1,
-                                "b": 0.1
-                            }
-                        },
-                        "evenTexture": {
-                            "color": {
-                                "r": 0.9,
-                                "g": 0.1,
-                                "b": 0.9
-                            }
-                        },
-                        "scale": 2
                     }
                 }
             }
@@ -118,8 +83,26 @@
             }
         ],
         "triangles": [],
-        "objects": [],
         "cylinders": [],
+        "objects": [
+            {
+                "filename": "assets/obj/monkey.obj",
+                "position": {
+                    "x": 0,
+                    "y": 2,
+                    "z": 0
+                },
+                "scale": 1,
+                "material": {
+                    "material": "BaseMaterial",
+                    "color": {
+                        "r": 1,
+                        "g": 0.5,
+                        "b": 0.5
+                    }
+                }
+            }
+        ],
         "cones": []
     }
 }
