@@ -56,6 +56,8 @@ auto handle_events(sf::RenderWindow &window, Camera &cam) -> bool
             cam.image_width = event.size.width;
             cam.aspect_ratio = static_cast<float>(event.size.width) / static_cast<float>(event.size.height);
             cam.update();
+            window.setView(sf::View(sf::FloatRect(0, 0, event.size.width, event.size.height)));
+            moved = true;
             break;
         case sf::Event::Closed:
             window.close();
@@ -135,7 +137,8 @@ auto Main::render_real_time() -> void
     sf::Font font;
     font.loadFromFile("assets/font/BebasNeue-Regular.ttf");
     text.setFont(font);
-    text.setCharacterSize(24);
+    auto new_character_size = _camera.image_height / 40;
+    text.setCharacterSize(new_character_size < 20 ? 20 : new_character_size);
     text.setFillColor(sf::Color::White);
     text.setPosition(10, 10);
 
@@ -143,19 +146,24 @@ auto Main::render_real_time() -> void
     _camera.samples_per_pixel = 1;
     _camera.max_depth = 5;
 
-    auto start_time = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now().time_since_epoch()).count();
+    auto get_time = []() {
+        return std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now().time_since_epoch()).count();
+    };
+
+    auto start_time = get_time();
     double total_time = 0;
     long int old_elapsed_time = 0;
-    auto elapsed_time = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now().time_since_epoch()).count() -
-        start_time;
+    auto elapsed_time = get_time() - start_time;
 
     while (window.isOpen()) {
         if (handle_events(window, _camera)) {
             _image.clear();
             _camera.max_depth = 5;
-            start_time = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now().time_since_epoch()).count();
+            start_time = get_time();
             elapsed_time = 0;
             _camera.samples_per_pixel = 1;
+            auto new_character_size = _camera.image_height / 40;
+            text.setCharacterSize(new_character_size < 20 ? 20 : new_character_size);
         }
         if (_camera.samples_per_pixel > 10) {
             _camera.max_depth += 1;
@@ -164,7 +172,7 @@ auto Main::render_real_time() -> void
 
         // prepare info display
         old_elapsed_time = elapsed_time;
-        elapsed_time = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now().time_since_epoch()).count() - start_time;
+        elapsed_time = get_time() - start_time;
         total_time = static_cast<double>(elapsed_time - old_elapsed_time);
         total_time = total_time <= 2 ? 200 : total_time;
         std::cout << "Frame Rendering time: " << total_time << "ms" << std::endl;
@@ -174,6 +182,9 @@ auto Main::render_real_time() -> void
         stream << "TT Sample per pixel: " << _image.get_sample_count() << "\n";
         stream << "Depth: " << _camera.max_depth << "\n";
         stream << "Sample per pixel: " << _camera.samples_per_pixel << "\n";
+        stream << "Camera Position: " << _camera.origin << "\n";
+        stream << "Camera LookAt: " << _camera.lookat << "\n";
+        stream << "Character Size: " << text.getCharacterSize() << "\n";
         text.setString(stream.str());
 
         window.clear();
