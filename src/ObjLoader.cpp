@@ -85,6 +85,9 @@ auto ObjLoader::load(const std::string &filename, const Point3D &origin, float s
         }
     }
 
+    if (vertices.empty() || indices.empty() || normals.empty()) {
+        throw std::runtime_error("Invalid object file: " + filename);
+    }
     std::cout << "Object loaded: " << filename << std::endl
               << "\tnumber of vertices: " << vertices.size() << std::endl
               << "\tnumber of normals: " << normals.size() << std::endl
@@ -92,6 +95,11 @@ auto ObjLoader::load(const std::string &filename, const Point3D &origin, float s
     auto object = std::make_unique<Object>(origin, scale, material);
 
     for (size_t i = 0; i < indices.size(); i++) {
+        for (size_t j = 0; j < 3; j++) {
+            if (indices[i][j] < 0 || indices[i][j] > vertices.size() || indices[i][j] > normals.size()) {
+                throw std::runtime_error("Index out of bounds: " + std::to_string(indices[i][j]));
+            }
+        }
         auto triangle = std::make_unique<TriangleObj>(
             std::array<Point3D, 3> {
                 vertices[indices[i][0] - 1] * scale + origin, //
