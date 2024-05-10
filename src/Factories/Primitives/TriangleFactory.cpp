@@ -28,7 +28,7 @@ std::unique_ptr<Triangle> TriangleFactory::createTriangle(const boost::property_
         throw std::runtime_error("Triangle must have 3 vertices");
     }
 
-    IMaterial *mat = createMaterial(triangle.get_child("material"));
+    const IMaterial *mat = createMaterial(triangle.get_child("material"));
     auto obj = std::make_unique<Triangle>(vertices[0], vertices[1], vertices[2], mat);
 
     try {

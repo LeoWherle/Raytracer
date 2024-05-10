@@ -29,7 +29,7 @@ private:
     static auto parse_index(const std::string &line) -> std::array<int, 3>;
 
 public:
-    static auto load(const std::string &filename, const Point3D &origin, float scale, IMaterial *mat)
+    static auto load(const std::string &filename, const Point3D &origin, float scale, const IMaterial *mat)
         -> std::unique_ptr<Object>;
 
 protected:

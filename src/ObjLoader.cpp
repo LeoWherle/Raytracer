@@ -58,7 +58,7 @@ auto ObjLoader::parse_normal(const std::string &line) -> Vector3D
     return normal;
 }
 
-auto ObjLoader::load(const std::string &filename, const Point3D &origin, float scale, IMaterial *material)
+auto ObjLoader::load(const std::string &filename, const Point3D &origin, float scale, const IMaterial *material)
     -> std::unique_ptr<Object>
 {
     std::ifstream file(filename);

@@ -17,7 +17,7 @@ class HitRecord {
 public:
     Point3D p;
     Vector3D normal;
-    IMaterial *material;
+    const IMaterial *material;
     float t;
     float u;
     float v;

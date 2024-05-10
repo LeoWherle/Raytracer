@@ -22,7 +22,7 @@ std::unique_ptr<Sphere> SphereFactory::createSphere(const boost::property_tree::
     auto radius = sphere.get<float>("radius");
     auto material = sphere.get<std::string>("material.material");
 
-    IMaterial *mat = createMaterial(sphere.get_child("material"));
+    const IMaterial *mat = createMaterial(sphere.get_child("material"));
     auto obj = std::make_unique<Sphere>(center, radius, mat);
     
     try {

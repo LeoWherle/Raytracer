@@ -13,7 +13,7 @@
 #include "Materials/LightMaterial.hpp"
 #include "Materials/MetalMaterial.hpp"
 
-IMaterial *MaterialFactory::createMaterial(const boost::property_tree::ptree &pt) const
+const IMaterial *MaterialFactory::createMaterial(const boost::property_tree::ptree &pt) const
 {
     std::string type = pt.get<std::string>("material");
 

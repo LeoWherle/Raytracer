@@ -15,7 +15,7 @@ class Cone : public IPrimitive {
         ~Cone();
 
         Cone(const Point3D &tip, const float &height, const Vector3D &direction,
-            IMaterial *material, const float &angle);
+            const IMaterial *material, const float &angle);
 
         bool hits(const Ray &r, Interval ray_max, HitRecord &rec) const override;
 
@@ -40,7 +40,7 @@ class Cone : public IPrimitive {
         float _height;
         Vector3D _direction;
 
-        IMaterial *_material;
+        const IMaterial *_material;
         
         float _angle;
 };
