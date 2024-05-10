@@ -95,8 +95,8 @@ auto ObjLoader::load(const std::string &filename, const Point3D &origin, float s
     auto object = std::make_unique<Object>(origin, scale, material);
 
     for (size_t i = 0; i < indices.size(); i++) {
-        for (size_t j = 0; j < 3; j++) {
-            if (indices[i][j] < 0 || indices[i][j] > vertices.size() || indices[i][j] > normals.size()) {
+        for (int j = 0; j < 3; j++) {
+            if (indices[i][j] < 0 || static_cast<size_t>(indices[i][j]) > vertices.size() || static_cast<size_t>(indices[i][j]) > normals.size()) {
                 throw std::runtime_error("Index out of bounds: " + std::to_string(indices[i][j]));
             }
         }
