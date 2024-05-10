@@ -22,6 +22,18 @@ class Cone : public IPrimitive {
         void translate(const Point3D &trans);
 
         void rotate(const Point3D &trans);
+
+        // Work in progress
+        AABB boundingBox() const override
+        {
+            return AABB();
+        }
+
+        Point3D centroid() const override
+        {
+            return _tip + _direction * _height;
+        }
+
     protected:
     private:
         Point3D _tip;
