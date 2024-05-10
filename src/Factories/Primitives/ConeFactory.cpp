@@ -20,12 +20,12 @@ using wrong_child = boost::property_tree::ptree_bad_path;
 std::unique_ptr<Cone> ConeFactory::createCone(const boost::property_tree::ptree &cone) const
 {
     auto tip = createPoint3D(cone.get_child("tip"));
-    auto radius = cone.get<float>("radius");
-    auto axis = createVector3D(cone.get_child("axis"));
-    auto surface = createPoint3D(cone.get_child("surface"));
+    auto direction = createVector3D(cone.get_child("direction"));
+    auto height = createVector3D(cone.get_child("height"));
+    auto radius = cone.get<float>("angle");
 
     IMaterial *mat = createMaterial(cone.get_child("material"));
-    auto obj = std::make_unique<Cone>(tip, surface, axis, mat, radius);
+    auto obj = std::make_unique<Cone>(tip, height, direction, mat, radius);
 
     try {
         auto transformations = cone.get_child("transformations");
