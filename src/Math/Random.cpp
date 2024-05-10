@@ -6,6 +6,6 @@
 */
 
 #include "Random.hpp"
+#include "Xoroshiro.hpp"
 
-thread_local std::mt19937 Random::s_RandomEngine;
-thread_local std::uniform_real_distribution<float> Random::s_Distribution;
+thread_local Xoshiro128Plus Random::s_RNG;

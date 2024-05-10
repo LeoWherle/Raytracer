@@ -6,8 +6,8 @@
 */
 
 #pragma once
-
 #include "Vector3D.hpp"
+#include <iostream>
 
 class Point3D {
 public:
@@ -21,18 +21,36 @@ public:
         _y(y),
         _z(z) {};
 
-    Point3D operator+(const Vector3D &vector) const
+    inline Point3D operator+(const Vector3D &vector) const
     {
         return Point3D(_x + vector._x, _y + vector._y, _z + vector._z);
     }
 
-    Point3D operator-(const Vector3D &vector) const
+    inline Point3D &operator+=(const Point3D &dot)
+    {
+        _x += dot._x;
+        _y += dot._y;
+        _z += dot._z;
+
+        return (*this);
+    }
+
+    inline Point3D operator-(const Vector3D &vector) const
     {
         return Point3D(_x - vector._x, _y - vector._y, _z - vector._z);
     }
 
-    Vector3D operator-(const Point3D &point) const
+    inline Vector3D operator-(const Point3D &point) const
     {
         return Vector3D(_x - point._x, _y - point._y, _z - point._z);
     }
+
+    inline Point3D operator*(float scalar) const { return Point3D(_x * scalar, _y * scalar, _z * scalar); }
+
+    inline Point3D operator+(const Point3D &point) const
+    {
+        return Point3D(_x + point._x, _y + point._y, _z + point._z);
+    }
+
+    friend std::ostream &operator<<(std::ostream &os, const Point3D &point);
 };

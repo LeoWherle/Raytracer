@@ -7,31 +7,37 @@
 
 #pragma once
 
+#include <cstdint>
 #include <random>
 #include <thread>
 
 #include "Math/Vector3D.hpp"
+#include "Xoroshiro.hpp"
 
 class Random {
 public:
-    static void init() { s_RandomEngine.seed(std::random_device()()); }
+    static auto gen_int() -> std::uint32_t { return s_RNG(); }
 
-    static float gen_float() { return s_Distribution(s_RandomEngine); }
-
-    static float gen_float(float min, float max)
+    static inline float gen_float(float min, float max)
     {
-        std::uniform_real_distribution<float> dist(min, max);
-        return dist(s_RandomEngine);
+        return min + (max - min) * gen_float();
     }
 
-    static Vector3D gen_vec() { return Vector3D(gen_float(), gen_float(), gen_float()); }
+    static inline float gen_float()
+    // Converts given uint32 value into a 32-bit floating
+    // point value in the range of [0.0f, 1.0f)
+    {
+        return static_cast<float>(s_RNG() >> 8) * 0x1.0p-24f;
+    }
 
-    static Vector3D gen_vec(float min, float max)
+    static inline Vector3D gen_vec(float min, float max)
     {
         return Vector3D(gen_float(min, max), gen_float(min, max), gen_float(min, max));
     }
 
-    static Vector3D unit_sphere()
+    static inline Vector3D gen_vec() { return Vector3D(gen_float(), gen_float(), gen_float()); }
+
+    static inline Vector3D unit_sphere()
     {
         Vector3D p;
         do {
@@ -40,10 +46,9 @@ public:
         return p;
     }
 
-    static Vector3D unit_vector() { return unit_sphere().unit(); }
+    static inline Vector3D unit_vector() { return unit_sphere().unit(); }
 
 protected:
 private:
-    static thread_local std::mt19937 s_RandomEngine;
-    static thread_local std::uniform_real_distribution<float> s_Distribution;
+    static thread_local Xoshiro128Plus s_RNG;
 };
