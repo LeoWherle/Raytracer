@@ -28,9 +28,12 @@ bool Cone::hits(const Ray &r, Interval ray_max, HitRecord &rec) const
 
     if (discriminant < 0)
         return false;
-    float root = (-b - std::sqrt(discriminant)) / (2 * a);
+
+    float sqrt_d = std::sqrt(discriminant);
+
+    float root = (-b - sqrt_d) / (2 * a);
     if (root < ray_max.min|| root > ray_max.max) {
-        root = (-b + std::sqrt(discriminant)) / (2 * a);
+        root = (-b + sqrt_d) / (2 * a);
         if (root < ray_max.min || root > ray_max.max)
             return false;
     }
