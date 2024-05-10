@@ -6,6 +6,20 @@
 
 /' Objects '/
 
+class AABB {
+	+AABB()
+	+AABB(const Interval& x, const Interval& y, const Interval& z)
+	+AABB(const Point3D& min, const Point3D& max)
+	+~AABB()
+	+centroid() : Point3D {query}
+	+m_max : Point3D
+	+m_min : Point3D
+	+hits(const Ray& ray, HitRecord& hitrec) : bool {query}
+	+area() : float
+	+grow(Point3D p) : void
+}
+
+
 class AMaterial {
 	+~AMaterial()
 	+emitted(float, float, const Point3D &) : Color {query}
@@ -49,11 +63,30 @@ class ArgumentsLoader::MissingArgument {
 }
 
 
+abstract class BVH {
+	+BVH()
+	+~BVH()
+	+boundingBox() : AABB {query}
+	+centroid() : Point3D {query}
+	+{abstract} get_triangles() : auto {query}
+	+hits(const Ray& r, Interval ray_d, HitRecord& rec) : bool {query}
+	+hits_bvh(const Ray& r, Interval ray_d, HitRecord& rec, std::uint32_t node_index) : bool {query}
+	-root_node_index : std::uint32_t
+	-root_node_index : std::uint32_t
+	-root_node_index : std::uint32_t
+	-bvh_nodes : std::vector<BVH::Node>
+	-prim_indices : std::vector<std::uint32_t>
+	+build() : void
+	+subdivide(std::uint32_t node_index) : void
+	+update_bounds(std::uint32_t node_index) : void
+}
+
+
 class BaseMaterial {
 	+BaseMaterial(const Color& color)
-	+BaseMaterial(std::shared_ptr<ITexture> texture)
+	+BaseMaterial(std::unique_ptr<ITexture> texture)
 	+scatter(const Ray &, const HitRecord& rec, Color& attenuation, Ray& scattered) : bool {query}
-	-_texture : std::shared_ptr<ITexture>
+	-_texture : std::unique_ptr<ITexture>
 }
 
 
@@ -81,8 +114,27 @@ class Camera {
 	+max_depth : uint32_t
 	+samples_per_pixel : uint32_t
 	+move(const Vector3D& direction) : void
-	+render(World& world, Image& image) : void
+	+render(World& world, IImage& image) : void
+	+rotate(const Vector3D& axis, float angle) : void
 	+update() : void
+}
+
+
+class CameraFactory {
+	+CameraFactory()
+	+~CameraFactory()
+	+createCamera(const boost::property_tree::ptree& pt) : Camera {query}
+}
+
+
+class CheckerTexture {
+	+CheckerTexture(const Color& c1, const Color& c2, float scale)
+	+CheckerTexture(std::unique_ptr<ITexture> t1, std::unique_ptr<ITexture> t2, float scale)
+	+~CheckerTexture()
+	+value(float u, float v, const Point3D& p) : Color {query}
+	-_scale : float
+	-_textureEven : std::unique_ptr<ITexture>
+	-_textureOdd : std::unique_ptr<ITexture>
 }
 
 
@@ -109,15 +161,35 @@ class Color {
 }
 
 
+class ColorFactory {
+	+ColorFactory()
+	+~ColorFactory()
+	+createColor(const boost::property_tree::ptree& pt) : Color {query}
+}
+
+
 class HitRecord {
+	+material : IMaterial*
 	+p : Point3D
 	+normal : Vector3D
 	+front_face : bool
 	+t : float
 	+u : float
 	+v : float
-	+material : std::shared_ptr<IMaterial>
 	+set_face_normal(const Ray& ray, const Vector3D& out_normal) : void
+}
+
+
+abstract class IImage {
+	+~IImage()
+	+{abstract} get_pixel(uint32_t x, uint32_t y) : Color {query}
+	+{abstract} get_height() : uint32_t {query}
+	+get_sample_count() : uint32_t {query}
+	+{abstract} get_width() : uint32_t {query}
+	+{abstract} clear() : void
+	+finish_frame(uint32_t weight, float depth) : void
+	+{abstract} resize(uint32_t width, uint32_t height) : void
+	+{abstract} set_pixel(uint32_t x, uint32_t y, Color pixel_color, uint32_t weight, float width) : void
 }
 
 
@@ -130,7 +202,15 @@ abstract class IMaterial {
 
 abstract class IPrimitive {
 	+~IPrimitive()
+	+{abstract} boundingBox() : AABB {query}
+	+{abstract} centroid() : Point3D {query}
 	+{abstract} hits(const Ray& r, Interval ray_max, HitRecord& rec) : bool {query}
+}
+
+
+abstract class ISaveable {
+	+~ISaveable()
+	+{abstract} save(const std::string& filename) : void {query}
 }
 
 
@@ -144,19 +224,42 @@ class Image {
 	+Image()
 	+Image(uint32_t width, uint32_t height)
 	+~Image()
+	+get_pixel(uint32_t x, uint32_t y) : Color {query}
 	+get_stream() : auto
-	+height() : auto
-	+width() : auto
 	-_pixels : std::vector<uint8_t>
 	-_height : uint32_t
 	-_width : uint32_t
+	+get_height() : uint32_t {query}
+	+get_width() : uint32_t {query}
+	+clear() : void
 	+draw(sf::RenderTarget& target, sf::RenderStates states) : void {query}
 	+resize(uint32_t width, uint32_t height) : void
-	+set_pixel(uint32_t x, uint32_t y, Color pixel_color) : void
-	+writeBMP(const std::string& filename) : void
-	+writePNG(const std::string& filename) : void
-	+writePPM(const std::string& filename) : void
-	-writePixelInPPM(std::ofstream& out, uint32_t i, uint32_t j) : void
+	+save(const std::string& filename) : void {query}
+	+set_pixel(uint32_t x, uint32_t y, Color pixel_color, uint32_t weight, float depth) : void
+	+writeBMP(const std::string& filename) : void {query}
+	+writePNG(const std::string& filename) : void {query}
+	+writePPM(const std::string& filename) : void {query}
+	-writePixelInPPM(std::ofstream& out, uint32_t i, uint32_t j) : void {query}
+}
+
+
+class IncrementalImage {
+	+IncrementalImage()
+	+~IncrementalImage()
+	+get_pixel(uint32_t x, uint32_t y) : Color {query}
+	-_image : Image
+	-_depth : float
+	-_pixels : std::vector<Color>
+	-_weight : uint32_t
+	+get_height() : uint32_t {query}
+	+get_sample_count() : uint32_t {query}
+	+get_width() : uint32_t {query}
+	+clear() : void
+	+draw(sf::RenderTarget& target, sf::RenderStates states) : void {query}
+	+finish_frame(uint32_t weight, float depth) : void
+	+resize(uint32_t width, uint32_t height) : void
+	+save(const std::string& filename) : void {query}
+	+set_pixel(uint32_t x, uint32_t y, Color pixel_color, uint32_t weight, float depth) : void
 }
 
 
@@ -176,11 +279,19 @@ class Interval {
 }
 
 
+class JsonLoader {
+	+JsonLoader()
+	+~JsonLoader()
+	+json : boost::property_tree::ptree
+	+load(const std::string& filename) : void
+}
+
+
 class LightMaterial {
-	+LightMaterial(std::shared_ptr<ITexture> tex)
+	+LightMaterial(std::unique_ptr<ITexture> tex)
 	+LightMaterial(const Color& emit)
 	+emitted(float u, float v, const Point3D& p) : Color {query}
-	-texture : std::shared_ptr<ITexture>
+	-texture : std::unique_ptr<ITexture>
 }
 
 
@@ -188,7 +299,7 @@ class Main {
 	+Main(int ac, char* av)
 	+~Main()
 	+_camera : Camera
-	+_image : Image
+	+_image : IncrementalImage
 	+_params : Parameters
 	+_world : World
 	+arg_parse() : auto
@@ -199,11 +310,61 @@ class Main {
 }
 
 
+class MaterialFactory {
+	+MaterialFactory()
+	+~MaterialFactory()
+	+createMaterial(const boost::property_tree::ptree& pt) : IMaterial* {query}
+}
+
+
+class Matrix3D {
+	+Matrix3D()
+	+Matrix3D(const float matrix)
+	+{static} rotation(const Vector3D& axis, float angle) : Matrix3D
+	+operator*(const Point3D& other) : Point3D {query}
+	+operator*(const Vector3D& other) : Vector3D {query}
+	-_matrix : float
+	+operator<<(std::ostream& os, const Matrix3D& mat) : std :: ostream&
+}
+
+
 class MetalMaterial {
+	+MetalMaterial(std::unique_ptr<ITexture> tex, float fuzz)
 	+MetalMaterial(const Color& color, float fuzz)
-	-_color : Color
 	+scatter(const Ray& r_in, const HitRecord& rec, Color& attenuation, Ray& scattered) : bool {query}
 	-_fuzz : float
+	-_texture : std::unique_ptr<ITexture>
+}
+
+
+class ObjFactory {
+	+ObjFactory()
+	+~ObjFactory()
+	+createObj(const boost::property_tree::ptree& pt) : std::unique_ptr<Object> {query}
+}
+
+
+class ObjLoader {
+	+{static} load(const std::string& filename, const Point3D& origin, float scale, IMaterial* mat) : auto
+	-{static} parse_index(const std::string& line) : auto
+	-{static} parse_normal(const std::string& line) : auto
+	-{static} parse_vertex(const std::string& line) : auto
+}
+
+
+class Object {
+	+Object(const Point3D& origin, float scale, IMaterial* mat)
+	+~Object()
+	+boundingBox() : AABB {query}
+	#_material : IMaterial*
+	#_origin : Point3D
+	+centroid() : Point3D {query}
+	+get_triangles() : auto {query}
+	+hits(const Ray& ray, Interval ray_d, HitRecord& hitrec) : bool {query}
+	#_scale : float
+	#triangles : std::vector<std::unique_ptr<IPrimitive>>
+	+addTriangle(std::array<Point3D, 3> vertices, std::array<Vector3D, 3> normals) : void
+	+addTriangle(std::unique_ptr<TriangleObj> triangle) : void
 }
 
 
@@ -220,34 +381,58 @@ class Parameters {
 
 
 class Plane {
-	+Plane(const Point3D& origin, const Vector3D& normal, std::shared_ptr<IMaterial> material)
+	+Plane(const Point3D& origin, const Vector3D& normal, IMaterial* material)
+	+~Plane()
+	+boundingBox() : AABB {query}
+	+_material : IMaterial*
 	+_origin : Point3D
+	+centroid() : Point3D {query}
 	+_normal : Vector3D
 	+hits(const Ray& r, Interval ray_max, HitRecord& rec) : bool {query}
-	+_material : std::shared_ptr<IMaterial>
+	+rotate(const Point3D& degrees) : void
+	+translate(const Point3D& trans) : void
 }
 
 
-class Point2D {
-	+Point2D()
-	+Point2D(float x, float y)
-	+~Point2D()
-	+operator+(const Vector2D& vector) : Point2D {query}
-	+operator-(const Point2D& point) : Vector2D {query}
-	+_x : float
-	+_y : float
+class PlaneFactory {
+	+PlaneFactory()
+	+~PlaneFactory()
+	+createPlane(const boost::property_tree::ptree& pt) : std::unique_ptr<Plane> {query}
 }
 
 
 class Point3D {
 	+Point3D()
 	+Point3D(float x, float y, float z)
+	+operator*(float scalar) : Point3D {query}
 	+operator+(const Vector3D& vector) : Point3D {query}
+	+operator+(const Point3D& point) : Point3D {query}
 	+operator-(const Vector3D& vector) : Point3D {query}
+	+operator+=(const Point3D& dot) : Point3D&
 	+operator-(const Point3D& point) : Vector3D {query}
 	+_x : float
 	+_y : float
 	+_z : float
+	+operator<<(std::ostream& os, const Point3D& point) : std :: ostream&
+}
+
+
+class Point3DFactory {
+	+Point3DFactory()
+	+~Point3DFactory()
+	+createPoint3D(const boost::property_tree::ptree& pt) : Point3D {query}
+}
+
+
+class Random {
+	+{static} gen_vec(float min, float max) : Vector3D
+	+{static} gen_vec() : Vector3D
+	+{static} unit_sphere() : Vector3D
+	+{static} unit_vector() : Vector3D
+	+{static} gen_int() : auto
+	+{static} gen_float(float min, float max) : float
+	+{static} gen_float() : float
+	-{static} s_RNG : static thread_local Xoshiro128Plus
 }
 
 
@@ -262,16 +447,6 @@ class Ray {
 }
 
 
-class Rectangle3D {
-	+Rectangle3D()
-	+Rectangle3D(const Point3D& origin, const Vector3D& bottom_side, const Vector3D& left_side)
-	+_origin : Point3D
-	+pointAt(float u, float v) : Point3D {query}
-	+_bottom_side : Vector3D
-	+_left_side : Vector3D
-}
-
-
 class SolidColorTexture {
 	+SolidColorTexture(const Color& color)
 	+SolidColorTexture(float red, float green, float blue)
@@ -281,37 +456,79 @@ class SolidColorTexture {
 
 
 class Sphere {
-	+Sphere(const Point3D& center, float radius, std::shared_ptr<IMaterial> mat)
+	+Sphere(const Point3D& center, float radius, IMaterial* mat)
+	+~Sphere()
+	+boundingBox() : AABB {query}
+	-material : IMaterial*
+	+centroid() : Point3D {query}
 	-origin : Point3D
-	-origin_vec : Vector3D
 	+hits(const Ray& ray, Interval ray_d, HitRecord& hitrec) : bool {query}
 	-_radius : float
-	-material : std::shared_ptr<IMaterial>
 	+get_sphere_uv(const Vector3D& p, float& u, float& v) : void {query}
+	+translate(const Point3D& trans) : void
 }
 
 
-class Vector2D {
-	+Vector2D()
-	+Vector2D(float x, float y)
-	+~Vector2D()
-	+cross(const Vector2D& other) : Vector2D {query}
-	+normal(const Vector3D& other) : Vector2D {query}
-	+operator*(float scalar) : Vector2D {query}
-	+operator+(const Vector2D& other) : Vector2D {query}
-	+operator-(const Vector2D& other) : Vector2D {query}
-	+operator/(float scalar) : Vector2D {query}
-	+unit() : Vector2D {query}
-	+normalize() : Vector2D&
-	+operator*=(float scalar) : Vector2D&
-	+operator+=(const Vector2D& other) : Vector2D&
-	+operator-=(const Vector2D& other) : Vector2D&
-	+operator/=(float scalar) : Vector2D&
-	+_x : float
-	+_y : float
-	+dot(const Vector2D& other) : float {query}
-	+length() : float {query}
-	+length_squared() : float {query}
+class SphereFactory {
+	+SphereFactory()
+	+~SphereFactory()
+	+createSphere(const boost::property_tree::ptree& pt) : std::unique_ptr<Sphere> {query}
+}
+
+
+class SplitMix64 {
+	+SplitMix64(std::uint64_t state)
+	+operator!=(const SplitMix64& lhs, const SplitMix64& rhs) : bool
+	+operator==(const SplitMix64& lhs, const SplitMix64& rhs) : bool
+	+operator()() : std :: uint64_t
+	-m_state : std::uint64_t
+	+{static} max() : std::uint64_t
+	+{static} min() : std::uint64_t
+}
+
+
+class TextureFactory {
+	+TextureFactory()
+	+~TextureFactory()
+	+createCheckerTexture(const boost::property_tree::ptree& pt) : std::unique_ptr<ITexture> {query}
+	+createColorTexture(const boost::property_tree::ptree& pt) : std::unique_ptr<ITexture> {query}
+	+createTexture(const boost::property_tree::ptree& pt) : std::unique_ptr<ITexture> {query}
+}
+
+
+class Triangle {
+	+Triangle(const Point3D& v0, const Point3D& v1, const Point3D& v2, IMaterial* mat)
+	+~Triangle()
+	+boundingBox() : AABB {query}
+	-_material : IMaterial*
+	-_v0 : Point3D
+	-_v1 : Point3D
+	-_v2 : Point3D
+	+centroid() : Point3D {query}
+	-_normal : Vector3D
+	+hits(const Ray& ray, Interval ray_d, HitRecord& hitrec) : bool {query}
+	+rotate(const Point3D& degrees) : void
+	+translate(const Point3D& trans) : void
+}
+
+
+class TriangleFactory {
+	+TriangleFactory()
+	+~TriangleFactory()
+	+createTriangle(const boost::property_tree::ptree& pt) : std::unique_ptr<Triangle> {query}
+}
+
+
+class TriangleObj {
+	+TriangleObj(const Point3D& v0, const Point3D& v1, const Point3D& v2, const Vector3D& n0, const Vector3D& n1, const Vector3D& n2, IMaterial* mat)
+	+TriangleObj(std::array<Point3D, 3> vertices, std::array<Vector3D, 3> normals, IMaterial* mat)
+	+~TriangleObj()
+	+boundingBox() : AABB {query}
+	-_material : IMaterial*
+	+centroid() : Point3D {query}
+	+hits(const Ray& ray, Interval ray_d, HitRecord& hitrec) : bool {query}
+	-_vertices : std::array<Point3D, 3>
+	-_normals : std::array<Vector3D, 3>
 }
 
 
@@ -320,19 +537,19 @@ class Vector3D {
 	+Vector3D(float x, float y, float z)
 	+~Vector3D()
 	+cross(const Vector3D& other) : Vector3D {query}
-	+operator*(const Vector3D& other) : Vector3D {query}
+	+{static} min(const Vector3D& v1, const Vector3D& v2) : Vector3D
 	+operator*(float scalar) : Vector3D {query}
+	+operator*(const Vector3D& other) : Vector3D {query}
 	+operator+(const Vector3D& other) : Vector3D {query}
 	+operator-() : Vector3D {query}
 	+operator-(const Vector3D& other) : Vector3D {query}
 	+operator/(float scalar) : Vector3D {query}
-	+{static} random(float min, float max) : Vector3D
 	+{static} reflect(const Vector3D& v, const Vector3D& n) : Vector3D
 	+unit() : Vector3D {query}
 	+{static} unit(const Vector3D& v) : Vector3D
 	+normalize() : Vector3D&
-	+operator*=(const Vector3D& other) : Vector3D&
 	+operator*=(float scalar) : Vector3D&
+	+operator*=(const Vector3D& other) : Vector3D&
 	+operator+=(const Vector3D& other) : Vector3D&
 	+operator-=(const Vector3D& other) : Vector3D&
 	+operator/=(float scalar) : Vector3D&
@@ -343,15 +560,55 @@ class Vector3D {
 	+dot(const Vector3D& other) : float {query}
 	+length() : float {query}
 	+length_squared() : float {query}
+	+operator[](int i) : float {query}
+	+operator<<(std::ostream& os, const Vector3D& point) : std :: ostream&
+}
+
+
+class Vector3DFactory {
+	+Vector3DFactory()
+	+~Vector3DFactory()
+	+createVector3D(const boost::property_tree::ptree& pt) : Vector3D {query}
 }
 
 
 class World {
 	+World()
 	+~World()
+	+boundingBox() : AABB {query}
+	+centroid() : Point3D {query}
 	+hits(const Ray& r, Interval ray_d, HitRecord& rec) : bool {query}
-	+primitives : std::vector<std::shared_ptr<IPrimitive>>
-	+addPrimitive(std::shared_ptr<IPrimitive> primitive) : void
+	+primitives : std::vector<std::unique_ptr<IPrimitive>>
+	+addPrimitive(std::unique_ptr<IPrimitive> primitive) : void
+}
+
+
+class WorldCreator {
+	+WorldCreator()
+	+~WorldCreator()
+	+createWorld(World& world, const boost::property_tree::ptree& pt) : void {query}
+}
+
+
+class Xoshiro128Plus {
+	+Xoshiro128Plus(std::uint64_t seed)
+	-m_state : array<std::uint32_t, 4>
+	+operator!=(const Xoshiro128Plus& lhs, const Xoshiro128Plus& rhs) : bool
+	+operator==(const Xoshiro128Plus& lhs, const Xoshiro128Plus& rhs) : bool
+	+operator()() : std :: uint32_t
+	+{static} max() : std::uint32_t
+	+{static} min() : std::uint32_t
+	+{static} rotl(const std::uint32_t x, const int s) : std::uint32_t
+	+jump() : void
+	+longJump() : void
+}
+
+
+class BVH::Node {
+	+bounds : AABB
+	+isLeaf() : bool {query}
+	+count : std::uint32_t
+	+first : std::uint32_t
 }
 
 
@@ -387,7 +644,22 @@ class Image::BMPHeader {
 .AMaterial <|-- .MetalMaterial
 
 
+.BVH <|-- .Object
+
+
+.ColorFactory <|-- .TextureFactory
+
+
+.IImage <|-- .Image
+
+
+.IImage <|-- .IncrementalImage
+
+
 .IMaterial <|-- .AMaterial
+
+
+.IPrimitive <|-- .Object
 
 
 .IPrimitive <|-- .Plane
@@ -396,111 +668,70 @@ class Image::BMPHeader {
 .IPrimitive <|-- .Sphere
 
 
+.IPrimitive <|-- .Triangle
+
+
+.IPrimitive <|-- .TriangleObj
+
+
 .IPrimitive <|-- .World
+
+
+.ISaveable <|-- .Image
+
+
+.ISaveable <|-- .IncrementalImage
+
+
+.ITexture <|-- .CheckerTexture
 
 
 .ITexture <|-- .SolidColorTexture
 
 
+.MaterialFactory <|-- .ObjFactory
 
 
+.MaterialFactory <|-- .PlaneFactory
 
-/' Aggregation relationships '/
 
-.BaseMaterial *-- .ITexture
+.MaterialFactory <|-- .SphereFactory
 
 
-.Camera *-- .Color
+.MaterialFactory <|-- .TriangleFactory
 
 
-.Camera "4" *-- .Point3D
+.ObjFactory <|-- .WorldCreator
 
 
-.Camera "5" *-- .Vector3D
+.PlaneFactory <|-- .WorldCreator
 
 
-.HitRecord *-- .IMaterial
+.Point3DFactory <|-- .ObjFactory
 
 
-.HitRecord *-- .Point3D
+.Point3DFactory <|-- .PlaneFactory
 
 
-.HitRecord *-- .Vector3D
+.Point3DFactory <|-- .SphereFactory
 
 
-.Interval "2" *-- .Interval
+.Point3DFactory <|-- .TriangleFactory
 
 
-.LightMaterial *-- .ITexture
+.SphereFactory <|-- .WorldCreator
 
 
-.Main *-- .Camera
+.TextureFactory <|-- .MaterialFactory
 
 
-.Main *-- .Image
+.TriangleFactory <|-- .WorldCreator
 
 
-.Main *-- .Parameters
+.Vector3DFactory <|-- .PlaneFactory
 
 
-.Main *-- .World
 
-
-.MetalMaterial *-- .Color
-
-
-.Parameters *-- .ArgumentsLoader
-
-
-.Plane *-- .IMaterial
-
-
-.Plane *-- .Point3D
-
-
-.Plane *-- .Vector3D
-
-
-.Ray *-- .Point3D
-
-
-.Ray *-- .Vector3D
-
-
-.Rectangle3D *-- .Point3D
-
-
-.Rectangle3D "2" *-- .Vector3D
-
-
-.SolidColorTexture *-- .Color
-
-
-.Sphere *-- .IMaterial
-
-
-.Sphere *-- .Point3D
-
-
-.Sphere *-- .Vector3D
-
-
-.World *-- .IPrimitive
-
-
-
-
-
-
-/' Nested objects '/
-
-.ArgumentsLoader +-- .ArgumentsLoader::HelpArgument
-
-
-.ArgumentsLoader +-- .ArgumentsLoader::MissingArgument
-
-
-.Image +-- .Image::BMPHeader
 
 
 
