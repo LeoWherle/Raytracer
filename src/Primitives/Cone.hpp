@@ -12,7 +12,7 @@
 
 class Cone : public IPrimitive {
     public:
-        ~Cone() = default;
+        ~Cone();
 
         Cone(
             const Point3D &tip, const Point3D &surface, const Vector3D &axis, IMaterial *material,
@@ -21,6 +21,9 @@ class Cone : public IPrimitive {
 
         bool hits(const Ray &r, Interval ray_max, HitRecord &rec) const override;
 
+        void translate(const Point3D &trans);
+
+        void rotate(const Point3D &trans);
     protected:
     private:
         Point3D _tip;
