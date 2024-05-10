@@ -61,19 +61,6 @@ static void applyRot(Point3D &pos, const float Mx[3][3], const float My[3][3], c
         Mz[2][0] * pos._x + Mz[2][1] * pos._y + Mz[2][2] * pos._z);
 }
 
-static void applyRot(Vector3D &pos, const float Mx[3][3], const float My[3][3], const float Mz[3][3])
-{
-    pos = Vector3D(Mx[0][0] * pos._x + Mx[0][1] * pos._y + Mx[0][2] * pos._z,
-        Mx[1][0] * pos._x + Mx[1][1] * pos._y + Mx[1][2] * pos._z,
-        Mx[2][0] * pos._x + Mx[2][1] * pos._y + Mx[2][2] * pos._z);
-    pos = Vector3D(My[0][0] * pos._x + My[0][1] * pos._y + My[0][2] * pos._z,
-        My[1][0] * pos._x + My[1][1] * pos._y + My[1][2] * pos._z,
-        My[2][0] * pos._x + My[2][1] * pos._y + My[2][2] * pos._z);
-    pos = Vector3D(Mz[0][0] * pos._x + Mz[0][1] * pos._y + Mz[0][2] * pos._z,
-        Mz[1][0] * pos._x + Mz[1][1] * pos._y + Mz[1][2] * pos._z,
-        Mz[2][0] * pos._x + Mz[2][1] * pos._y + Mz[2][2] * pos._z);
-}
-
 void Triangle::rotate(const Point3D &degrees)
 {
     float x = mathsUtils::degrees_to_radians(degrees._x);

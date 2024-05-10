@@ -29,5 +29,19 @@ public:
 
     void translate(const Point3D &trans);
 
+    AABB boundingBox() const override
+    {
+        return AABB(
+            Interval(std::numeric_limits<float>::lowest(), std::numeric_limits<float>::max()),
+            Interval(std::numeric_limits<float>::lowest(), std::numeric_limits<float>::max()),
+            Interval(std::numeric_limits<float>::lowest(), std::numeric_limits<float>::max())
+        );
+    }
+
+    Point3D centroid() const override
+    {
+        return _origin;
+    }
+
     void rotate(const Point3D &degrees);
 };

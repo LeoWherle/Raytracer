@@ -36,4 +36,28 @@ public:
     void get_sphere_uv(const Vector3D &p, float &u, float &v) const;
 
     void translate(const Point3D &trans);
+
+    AABB boundingBox() const override
+    {
+        Point3D min(
+            origin._x - _radius,
+            origin._y - _radius,
+            origin._z - _radius
+        );
+        Point3D max(
+            origin._x + _radius,
+            origin._y + _radius,
+            origin._z + _radius
+        );
+        return AABB(
+            Interval(min._x, max._x),
+            Interval(min._y, max._y),
+            Interval(min._z, max._z)
+        );
+    }
+
+    Point3D centroid() const override
+    {
+        return origin;
+    }
 };

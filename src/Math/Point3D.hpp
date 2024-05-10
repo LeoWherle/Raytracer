@@ -9,6 +9,9 @@
 #include "Vector3D.hpp"
 #include <iostream>
 
+#ifndef USING_POINT3D
+using Point3D = class Vector3D;
+#else
 class Point3D {
 public:
     float _x = 0;
@@ -54,3 +57,4 @@ public:
 
     friend std::ostream &operator<<(std::ostream &os, const Point3D &point);
 };
+#endif // USING_POINT3D

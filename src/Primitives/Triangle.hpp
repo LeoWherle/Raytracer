@@ -45,6 +45,30 @@ public:
 
     void translate(const Point3D &trans);
 
+    AABB boundingBox() const override
+    {
+        Point3D min(
+            std::fmin(_v0._x, std::fmin(_v1._x, _v2._x)),
+            std::fmin(_v0._y, std::fmin(_v1._y, _v2._y)),
+            std::fmin(_v0._z, std::fmin(_v1._z, _v2._z))
+        );
+        Point3D max(
+            std::fmax(_v0._x, std::fmax(_v1._x, _v2._x)),
+            std::fmax(_v0._y, std::fmax(_v1._y, _v2._y)),
+            std::fmax(_v0._z, std::fmax(_v1._z, _v2._z))
+        );
+        return AABB(
+            Interval(min._x, max._x),
+            Interval(min._y, max._y),
+            Interval(min._z, max._z)
+        );
+    }
+
+    Point3D centroid() const override
+    {
+        return (_v0 + _v1 + _v2) / 3;
+    }
+
     void rotate(const Point3D &degrees);
 
 protected:
