@@ -734,6 +734,149 @@ class Image::BMPHeader {
 
 
 
+/' Aggregation relationships '/
+
+.AABB "2" *-- .Point3D
+
+
+.BVH *-- .BVH
+
+
+.BVH *-- .BVH::Node
+
+
+.BVH::Node *-- .AABB
+
+
+.BaseMaterial *-- .ITexture
+
+
+.Camera *-- .Color
+
+
+.Camera "4" *-- .Point3D
+
+
+.Camera "5" *-- .Vector3D
+
+
+.CheckerTexture "2" *-- .ITexture
+
+
+.HitRecord o-- .IMaterial
+
+
+.HitRecord *-- .Point3D
+
+
+.HitRecord *-- .Vector3D
+
+
+.IncrementalImage *-- .Color
+
+
+.IncrementalImage *-- .Image
+
+
+.Interval "2" *-- .Interval
+
+
+.LightMaterial *-- .ITexture
+
+
+.Main *-- .Camera
+
+
+.Main *-- .IncrementalImage
+
+
+.Main *-- .Parameters
+
+
+.Main *-- .World
+
+
+.MetalMaterial *-- .ITexture
+
+
+.Object o-- .IMaterial
+
+
+.Object *-- .IPrimitive
+
+
+.Object *-- .Point3D
+
+
+.Parameters *-- .ArgumentsLoader
+
+
+.Plane o-- .IMaterial
+
+
+.Plane *-- .Point3D
+
+
+.Plane *-- .Vector3D
+
+
+.Random *-- .Xoshiro128Plus
+
+
+.Ray *-- .Point3D
+
+
+.Ray *-- .Vector3D
+
+
+.SolidColorTexture *-- .Color
+
+
+.Sphere o-- .IMaterial
+
+
+.Sphere *-- .Point3D
+
+
+.Triangle o-- .IMaterial
+
+
+.Triangle "3" *-- .Point3D
+
+
+.Triangle *-- .Vector3D
+
+
+.TriangleObj o-- .IMaterial
+
+
+.TriangleObj *-- .Point3D
+
+
+.TriangleObj *-- .Vector3D
+
+
+.World *-- .IPrimitive
+
+
+
+
+
+
+/' Nested objects '/
+
+.ArgumentsLoader +-- .ArgumentsLoader::HelpArgument
+
+
+.ArgumentsLoader +-- .ArgumentsLoader::MissingArgument
+
+
+.BVH +-- .BVH::Node
+
+
+.Image +-- .Image::BMPHeader
+
+
 
 
 @enduml
