@@ -38,20 +38,28 @@ class Cylinder : public IPrimitive {
             float b = 2 * ((Rl.dot(ray.direction())) - (directdotD * directdotR));
             float c = (Rl.dot(Rl)) - ((directdotR) * (directdotR)) - _radius * _radius;
 
+//alexandre flion
             //Vector3D r_minus_c = ray.origin() - _origin;
             //float a = _direction.dot(_direction) * 2;
             //float b = _direction.dot(r_minus_c) * 4;
             //float c = r_minus_c.dot(r_minus_c) * 2 - _radius * _radius;
 
+//xavier
+            //auto oc = ray.origin() - _origin;
+            //float a = std::pow(ray.direction()._x, 2) + std::pow(ray.direction()._y, 2);
+            //float b = 2 * (ray.direction()._x * oc._x + ray.direction()._y * oc._y);
+            //float c = std::pow(oc._x, 2) + std::pow(oc._y, 2) - _radius * _radius;
+
             float discriminant = b * b - 4 * a * c;
             if (discriminant < 0) {
                 return false;
             }
+
             float t = (-b + sqrt(discriminant)) / (2.0 * a);
             if (t < 0) {
-                //float t2 = (-b - sqrt(discriminant)) / (2.0 * a);
-                //t = t < t2 ? t : t2;
-                t = (-b - sqrt(discriminant)) / (2.0 * a);
+                //t = (-b - sqrt(discriminant)) / (2.0 * a);
+                float t2 = (-b - sqrt(discriminant)) / (2.0 * a);
+                t = t < t2 ? t : t2;
             }
             if (t < 0 || !ray_max.surrounds(t)) {
                 return false;

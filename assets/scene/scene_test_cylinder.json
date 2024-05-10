@@ -103,10 +103,10 @@
           "z": 0
         },
         "material": {
-          "material": "BaseMaterial",
+          "material": "LightMaterial",
           "color": {
-            "r": 0,
-            "g": 0,
+            "r": 4,
+            "g": 4,
             "b": 4
           }
         }
@@ -143,16 +143,16 @@
     ],
     "cylinders": [
       {
-        "radius": 1,
+        "radius": 3,
         "direction": {
           "x": 0,
           "y": 0,
-          "z": -12
+          "z": 1
         },
         "position": {
-          "x": 4,
-          "y": 2,
-          "z": 6
+          "x": 0,
+          "y": -7,
+          "z": 0
         },
         "material": {
           "material": "LightMaterial",
