@@ -59,7 +59,7 @@
           "z": 0
         },
         "material": {
-          "material": "BaseMaterial",
+          "material": "LightMaterial",
           "color": {
             "r": 4,
             "g": 4,
@@ -126,7 +126,29 @@
         "angle": 20,
         "tip": {
           "x": 2,
-          "y": 20,
+          "y": 2,
+          "z": -4
+        },
+        "direction": {
+          "x": 0,
+          "y": 1,
+          "z": 0
+        },
+        "height": 3,
+        "material": {
+          "material": "BaseMaterial",
+          "color": {
+            "r": 0.1,
+            "g": 0.8,
+            "b": 0.8
+          }
+        }
+      },
+      {
+        "angle": 50,
+        "tip": {
+          "x": -6,
+          "y": 4,
           "z": -4
         },
         "direction": {
@@ -134,17 +156,13 @@
           "y": -1,
           "z": 0
         },
-        "height": {
-          "x": 2,
-          "y": -1,
-          "z": -4
-        },
+        "height": 2,
         "material": {
-          "material": "LightMaterial",
+          "material": "BaseMaterial",
           "color": {
-            "r": 0.8,
-            "g": 0.8,
-            "b": 0.8
+            "r": 0.9,
+            "g": 0.1,
+            "b": 0.1
           }
         }
       }

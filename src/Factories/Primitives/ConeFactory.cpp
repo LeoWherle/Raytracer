@@ -21,7 +21,7 @@ std::unique_ptr<Cone> ConeFactory::createCone(const boost::property_tree::ptree 
 {
     auto tip = createPoint3D(cone.get_child("tip"));
     auto direction = createVector3D(cone.get_child("direction"));
-    auto height = createVector3D(cone.get_child("height"));
+    auto height = cone.get<float>("height");
     auto radius = cone.get<float>("angle");
 
     IMaterial *mat = createMaterial(cone.get_child("material"));

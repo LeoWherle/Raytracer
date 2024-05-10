@@ -9,7 +9,7 @@
 #include "Math/MathsUtils.hpp"
 #include <cmath>
 
-Cone::Cone(const Point3D &tip, const Vector3D &height, const Vector3D &direction, IMaterial *material, const float &angle)
+Cone::Cone(const Point3D &tip, const float &height, const Vector3D &direction, IMaterial *material, const float &angle)
 : _tip(tip), _height(height), _direction(direction), _material(material), _angle(mathsUtils::degrees_to_radians(angle))
 {
 }
@@ -20,69 +20,39 @@ Cone::~Cone()
 
 bool Cone::hits(const Ray &r, Interval ray_max, HitRecord &rec) const
 {
-    float half_angle = _angle / 2;
-    float cosa = powf(cosf(half_angle), 2);
+    Vector3D oc = r.origin() - _tip;
+    float a = r.direction()._x * r.direction()._x + r.direction()._z * r.direction()._z - powf(std::tan(_angle), 2) * r.direction()._y * r.direction()._y;
+    float b = 2 * (oc._x * r.direction()._x + oc._z * r.direction()._z - powf(std::tan(_angle), 2) * oc._y * r.direction()._y);
+    float c = oc._x * oc._x + oc._z * oc._z - powf(std::tan(_angle), 2) * oc._y * oc._y;
+    float discriminant = b * b - 4 * a * c;
 
-    float DD = r.direction().dot(_direction);
-    Vector3D CO = (r.origin() - _tip);
-    float DR = CO.dot(_direction);
-
-    float a = powf(DD, 2) - cosa;
-    float b = 2 * (DD * DR - r.direction().dot(CO) * cosa);
-    float c = powf(DR, 2) - CO.dot(CO) * cosa;
-
-    float det = powf(b, 2) - 4 * a * c;
-
-    if (det < 0) {
+    if (discriminant < 0)
         return false;
-    }
-
-    float sqrtd = std::sqrt(det);
-
-    float root = (b - sqrtd) / (2 * a);
-    if (!ray_max.surrounds(root)) {
-        root = (b + sqrtd) / (2 * a);
-        if (!ray_max.surrounds(root))
+    float root = (-b - std::sqrt(discriminant)) / (2 * a);
+    if (root < ray_max.min|| root > ray_max.max) {
+        root = (-b + std::sqrt(discriminant)) / (2 * a);
+        if (root < ray_max.min || root > ray_max.max)
             return false;
     }
-
-    Point3D P = r.at(root);        // intersection point equation P = O + d*t
-    Vector3D PC = (P - _tip);      // vector from cone apex to intersection point
-
-    if (PC.dot(_direction) > 0) {
+    if ((r.at(root) - _tip).dot(_direction) <= 0)
         return false;
-    }
 
-    rec.t = root;     // intersection point according to space
-    rec.p = P;        // intersection point translated
+    Point3D temp_p = r.at(root);
 
-    // P is the vertex of the cone
-    // I is the intersection point
-    // Сame up with simpler method:
-    // Find distance Dis from intersection point I to base P
-    // Make axis orientation vector of length
+    if (abs(temp_p._y) > abs(_tip._y) + _height || abs(temp_p._y) < abs(_tip._y) - _height)
+        return false;
 
-    // D = Dis * sqrt(1+k^2)
-    // and make point on axis at this distance
-
-    // A = P + Normalized(Orient) * D
-    // Now
-
-    // Normal = I - A
-    auto D = PC * sqrtf(1 + powf(tanf(half_angle), 2));
-    auto A = _tip + _direction.unit() * D;
-
-    auto outward_normal = rec.p - A;
-
-    rec.set_face_normal(r, outward_normal);
+    rec.t = root;
+    rec.p = r.at(rec.t);
+    rec.normal = (rec.p - _tip).unit();
     rec.material = _material;
+
     return true;
 }
 
 void Cone::translate(const Point3D &trans)
 {
     _tip += trans;
-    _height += Vector3D(trans._x, trans._y, trans._z);
 }
 
 void Cone::rotate(const Point3D &degrees)
