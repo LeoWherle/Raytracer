@@ -7,9 +7,9 @@
 
 #pragma once
 
-#include "Primitives/IPrimitive.hpp"
 #include "Math/Interval.hpp"
 #include "Point3D.hpp"
+#include "Primitives/IPrimitive.hpp"
 
 class AABB {
 public:
@@ -50,8 +50,17 @@ public:
         return tmax >= tmin && tmin < hitrec.t && tmax > 0;
     }
 
-    Point3D centroid() const
+    Point3D centroid() const { return (m_min + m_max) / 2; }
+
+    inline void grow(Point3D p)
     {
-        return (m_min + m_max) / 2;
+        m_min = Point3D(std::min(m_min._x, p._x), std::min(m_min._y, p._y), std::min(m_min._z, p._z));
+        m_max = Point3D(std::max(m_max._x, p._x), std::max(m_max._y, p._y), std::max(m_max._z, p._z));
+    }
+
+    inline float area()
+    {
+        Point3D e = m_max - m_min; // box extent
+        return e._x * e._y + e._y * e._z + e._z * e._x;
     }
 };
