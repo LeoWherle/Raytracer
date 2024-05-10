@@ -1,3 +1,10 @@
+/*
+** EPITECH PROJECT, 2024
+** RayTracer
+** File description:
+** Random
+*/
+
 #pragma once
 
 #include <cstdint>
