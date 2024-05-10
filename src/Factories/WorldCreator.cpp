@@ -21,4 +21,7 @@ void WorldCreator::createWorld(World &world, const boost::property_tree::ptree &
     for (const auto &obj : pt.get_child("objects")) {
         world.addPrimitive(createObj(obj.second));
     }
+    for (const auto &cylinder : pt.get_child("cylinders")) {
+        world.addPrimitive(createCylinder(cylinder.second));
+    }
 }

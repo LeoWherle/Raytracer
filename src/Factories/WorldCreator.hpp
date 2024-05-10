@@ -12,9 +12,10 @@
 #include "Primitives/TriangleFactory.hpp"
 #include "Primitives/ObjFactory.hpp"
 #include "Primitives/PlaneFactory.hpp"
+#include "Primitives/CylinderFactory.hpp"
 #include <boost/property_tree/ptree.hpp>
 
-class WorldCreator : public SphereFactory, public TriangleFactory, public PlaneFactory, public ObjFactory {
+class WorldCreator : public SphereFactory, public TriangleFactory, public PlaneFactory, public CylinderFactory, public ObjFactory {
 public:
     WorldCreator() = default;
     ~WorldCreator() = default;
