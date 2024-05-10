@@ -157,8 +157,8 @@
         "material": {
           "material": "LightMaterial",
           "color": {
-            "r": 4,
-            "g": 4,
+            "r": 0.2,
+            "g": 0.6,
             "b": 4
           }
         }
