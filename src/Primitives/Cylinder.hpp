@@ -38,6 +38,11 @@ class Cylinder : public IPrimitive {
             float b = 2 * ((Rl.dot(ray.direction())) - (directdotD * directdotR));
             float c = (Rl.dot(Rl)) - ((directdotR) * (directdotR)) - _radius * _radius;
 
+            //Vector3D r_minus_c = ray.origin() - _origin;
+            //float a = _direction.dot(_direction) * 2;
+            //float b = _direction.dot(r_minus_c) * 4;
+            //float c = r_minus_c.dot(r_minus_c) * 2 - _radius * _radius;
+
             float discriminant = b * b - 4 * a * c;
             if (discriminant < 0) {
                 return false;
