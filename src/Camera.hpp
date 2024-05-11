@@ -60,7 +60,7 @@ public:
 
     void move(const Vector3D &direction);
 
-    void rotate(const Vector3D &axis, float angle);
+    void rotate(const Vector3D &axis);
 
     inline Ray new_ray(float u, float v) const
     {

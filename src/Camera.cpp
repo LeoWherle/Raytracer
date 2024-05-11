@@ -46,11 +46,9 @@ void Camera::move(const Vector3D &direction)
     origin = origin + direction;
 }
 
-void Camera::rotate(const Vector3D &axis, float angle)
+void Camera::rotate(const Vector3D &axis)
 {
-    auto rotation = Matrix3D::rotation(axis, angle);
-    lookat = rotation * lookat;
-    vup = rotation * vup;
+    lookat = lookat + axis;
 }
 
 Color Camera::ray_color(const Ray &r, int depth, const World &world) const
