@@ -49,7 +49,7 @@ Vector3D Matrix3D::operator*(const Vector3D &other) const
 
     return result;
 }
-
+#ifdef USING_POINT3D
 Point3D Matrix3D::operator*(const Point3D &other) const
 {
     Point3D result;
@@ -58,3 +58,4 @@ Point3D Matrix3D::operator*(const Point3D &other) const
     result._z = _matrix[2][0] * other._x + _matrix[2][1] * other._y + _matrix[2][2] * other._z;
     return result;
 }
+#endif // USING_POINT3D

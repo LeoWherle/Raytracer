@@ -14,7 +14,7 @@
             "z": -2
         },
         "fieldOfView": 10,
-        "RayPerPixel": 3000,
+        "RayPerPixel": 100,
         "MaxBounces": 30,
         "DefocusAngle": 0,
         "BackgroundColor": {
@@ -23,6 +23,7 @@
             "b": 0
         }
     },
+    "scenes": [],
     "primitives": {
         "spheres": [
             {
@@ -30,11 +31,6 @@
                 "position": {
                     "x": 0,
                     "y": 8,
-                    "z": 0
-                },
-                "rotation": {
-                    "x": 0,
-                    "y": 0,
                     "z": 0
                 },
                 "material": {
@@ -88,7 +84,7 @@
             {
                 "filename": "assets/obj/monkey.obj",
                 "position": {
-                    "x": 0,
+                    "x": 2,
                     "y": 2,
                     "z": 0
                 },

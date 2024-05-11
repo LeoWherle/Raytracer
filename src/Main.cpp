@@ -207,7 +207,7 @@ auto Main::run() -> int
     WorldCreator god;
 
     loader.load(_params._scene_file);
-    god.createWorld(_world, loader.json.get_child("primitives"));
+    god.createWorld(_world, loader.json);
     _camera = camFactory.createCamera(loader.json.get_child("camera"));
 
 // Loop to apply Rotation on the scene's plane

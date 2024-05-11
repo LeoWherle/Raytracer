@@ -23,6 +23,7 @@
       "b": 0
     }
   },
+  "scenes": [],
   "primitives": {
     "spheres": [
       {
@@ -30,11 +31,6 @@
         "position": {
           "x": 0,
           "y": 2,
-          "z": 0
-        },
-        "rotation": {
-          "x": 0,
-          "y": 0,
           "z": 0
         },
         "material": {
@@ -53,11 +49,6 @@
           "y": 2,
           "z": -4
         },
-        "rotation": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
         "material": {
           "material": "MetalMaterial",
           "fuzz": 0.1,
@@ -73,11 +64,6 @@
         "position": {
           "x": 0,
           "y": 7,
-          "z": 0
-        },
-        "rotation": {
-          "x": 0,
-          "y": 0,
           "z": 0
         },
         "material": {
