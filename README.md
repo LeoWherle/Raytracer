@@ -30,6 +30,8 @@ You can read the documentation by navigating to the `gh-pages` branch and openin
 
 ![Result](assets/render/purple.png)
 
+![Result](assets/render/tree.png)
+
 
 ### Obj models
 ***4000 triangles monkey***
