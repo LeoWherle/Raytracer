@@ -1,0 +1,182 @@
+{
+  "camera": {
+    "resolution": {
+      "width": 800
+    },
+    "position": {
+      "x": 14,
+      "y": 3,
+      "z": 22
+    },
+    "rotation": {
+      "x": 1,
+      "y": 2,
+      "z": -2
+    },
+    "fieldOfView": 20,
+    "RayPerPixel": 1000,
+    "MaxBounces": 20,
+    "DefocusAngle": 0,
+    "BackgroundColor": {
+      "r": 0,
+      "g": 0,
+      "b": 0
+    }
+  },
+  "scenes": [],
+  "primitives": {
+    "spheres": [],
+    "planes": [
+      {
+        "normal": {
+          "x": 0,
+          "y": 1,
+          "z": 0
+        },
+        "position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "material": {
+          "material": "BaseMaterial",
+          "color": {
+            "r": 1,
+            "g": 1,
+            "b": 1
+          }
+        }
+      }
+    ],
+    "triangles": [],
+    "cylinders": [
+      {
+        "radius": 1,
+        "height": 4,
+        "direction": {
+          "x": 0,
+          "y": -1,
+          "z": 0
+        },
+        "position": {
+          "x": 5,
+          "y": 4,
+          "z": 0
+        },
+        "material": {
+          "material": "LightMaterial",
+          "color": {
+            "r": 0.1,
+            "g": 0,
+            "b": 0.8
+          }
+        }
+      },
+      {
+        "radius": 1,
+        "height": -1,
+        "direction": {
+          "x": 0,
+          "y": 1,
+          "z": 0
+        },
+        "position": {
+          "x": -5,
+          "y": 0,
+          "z": -1
+        },
+        "material": {
+          "material": "MetalMaterial",
+          "fuzz": 0.1,
+          "color": {
+            "r": 1,
+            "g": 1,
+            "b": 1
+          }
+        }
+      },
+      {
+        "radius": 1.5,
+        "height": -1,
+        "direction": {
+          "x": 1,
+          "y": 0,
+          "z": 0
+        },
+        "position": {
+          "x": -10,
+          "y": 1.5,
+          "z": -5
+        },
+        "material": {
+          "material": "BaseMaterial",
+          "texture": {
+              "type": "checker",
+              "oddTexture": {
+                  "color": {
+                      "r": 0.1,
+                      "g": 0.1,
+                      "b": 0.1
+                  }
+              },
+              "evenTexture": {
+                  "color": {
+                      "r": 0.9,
+                      "g": 0.9,
+                      "b": 0.9
+                  }
+              },
+              "scale": 2
+          }
+      }
+      }
+    ],
+    "objects": [],
+    "cones": [
+      {
+        "angle": 40,
+        "tip": {
+          "x": 0,
+          "y": 4,
+          "z": 0
+        },
+        "direction": {
+          "x": 0,
+          "y": 1,
+          "z": 0
+        },
+        "height": 2,
+        "material": {
+          "material": "LightMaterial",
+          "color": {
+            "r": 0.1,
+            "g": 0,
+            "b": 0.8
+          }
+        }
+      },
+      {
+        "angle": 40,
+        "tip": {
+          "x": -2,
+          "y": 2,
+          "z": -1
+        },
+        "direction": {
+          "x": 0,
+          "y": -1,
+          "z": 0
+        },
+        "height": 2,
+        "material": {
+          "material": "LightMaterial",
+          "color": {
+            "r": 0.1,
+            "g": 0,
+            "b": 0.8
+          }
+        }
+      }
+    ]
+  }
+}
