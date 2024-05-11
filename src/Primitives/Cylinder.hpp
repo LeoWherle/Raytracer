@@ -36,4 +36,15 @@ class Cylinder : public IPrimitive {
         void translate(const Point3D &trans);
 
         void rotate(const Point3D &degrees);
+
+        // Work in progress
+        AABB boundingBox() const override
+        {
+            return AABB();
+        }
+
+        Point3D centroid() const override
+        {
+            return _origin + _direction * _height;
+        }
 };
