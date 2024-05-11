@@ -159,7 +159,7 @@ auto Main::render_real_time(WorldCreator &god) -> void
             _camera.samples_per_pixel = 1;
             new_character_size = _camera.image_height / 40;
             text.setCharacterSize(new_character_size < 20 ? 20 : new_character_size);
-            window.setView(sf::View(sf::FloatRect(0, 0, _camera.image_width, _camera.image_height)));
+            window.setView(sf::View(sf::FloatRect(0, 0, float(_camera.image_width), float(_camera.image_height))));
         }
         if (_camera.samples_per_pixel > 10) {
             _camera.max_depth += 1;
