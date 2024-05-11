@@ -86,6 +86,6 @@ public:
 protected:
 private:
     std::vector<uint8_t> _pixels;
-    uint32_t _width;
-    uint32_t _height;
+    uint32_t _width = 0;
+    uint32_t _height = 0;
 };

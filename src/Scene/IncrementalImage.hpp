@@ -42,7 +42,7 @@ public:
 
 protected:
 private:
-    uint32_t _weight; // number of samples
+    uint32_t _weight = 1; // number of samples
     float _depth; // average number of depth per sample
     Image _image;
     std::vector<Color> _pixels;
