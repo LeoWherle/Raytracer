@@ -69,5 +69,5 @@ Color Camera::ray_color(const Ray &r, int depth, const World &world) const
     if (!rec.material->scatter(r, rec, attenuation, scattered))
         return color_from_emission;
     // Recurse with the new scattered ray, and multiply the result by the attenuation.
-    return color_from_emission + ray_color(scattered, depth - 1, world) * attenuation;
+    return color_from_emission + ray_color(scattered, depth - 1, world) * attenuation * brightness;
 }
