@@ -17,7 +17,6 @@ bool WorldObserver::update(const std::vector<std::string> &files)
 {
     bool modified = false;
 
-    std::cout << "Checking for file modifications" << std::endl;
     for (const auto &file : files) {
         if (!std::filesystem::exists(file)) {
             std::cerr << "File " << file << " does not exist anymore" << std::endl;
