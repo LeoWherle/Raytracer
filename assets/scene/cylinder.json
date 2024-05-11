@@ -23,53 +23,14 @@
       "b": 0
     }
   },
-  "scenes": [],
+  "scenes": [
+    {
+      "path": "assets/scene/light_and_ground.json"
+    }
+  ],
   "primitives": {
-    "spheres": [
-      {
-        "radius": 3,
-        "position": {
-          "x": 0,
-          "y": 7,
-          "z": 0
-        },
-        "rotation": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "material": {
-          "material": "LightMaterial",
-          "color": {
-            "r": 4,
-            "g": 4,
-            "b": 4
-          }
-        }
-      }
-    ],
-    "planes": [
-      {
-        "normal": {
-          "x": 0,
-          "y": 1,
-          "z": 0
-        },
-        "position": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "material": {
-          "material": "BaseMaterial",
-          "color": {
-            "r": 0.5,
-            "g": 0,
-            "b": 0.5
-          }
-        }
-      }
-    ],
+    "spheres": [],
+    "planes": [],
     "triangles": [],
     "cylinders": [
       {

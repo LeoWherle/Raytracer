@@ -42,8 +42,11 @@ bool Cone::hits(const Ray &r, Interval ray_max, HitRecord &rec) const
 
     Point3D temp_p = r.at(root);
 
-    if (temp_p._y > _tip._y + _height || temp_p._y < _tip._y - _height)
+    Point3D hitPoint = r.at(root);
+    float height = _direction.dot(hitPoint - _tip);
+    if (_height > 0 && (height < 0 || height > _height)) {
         return false;
+    }
 
     rec.t = root;
     rec.p = r.at(rec.t);
