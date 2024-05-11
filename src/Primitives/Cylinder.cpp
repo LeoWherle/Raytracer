@@ -15,7 +15,8 @@ bool Cylinder::hits(const Ray& ray, Interval ray_max, HitRecord &rec) const {
     float discriminant = b * b - 4 * a * c;
 
     if (discriminant > 0) {
-        float temp = (-b - sqrt(discriminant)) / (2 * a);
+        float disc_sqrt = sqrtf(discriminant);
+        float temp = (-b - disc_sqrt) / (2 * a);
         if (temp < ray_max.max && temp > ray_max.min) {
             Point3D hitPoint = ray.at(temp);
             float height = _direction.dot(hitPoint - _origin);
@@ -28,7 +29,7 @@ bool Cylinder::hits(const Ray& ray, Interval ray_max, HitRecord &rec) const {
             rec.material = _material;
             return true;
         }
-        temp = (-b + sqrt(discriminant)) / (2 * a);
+        temp = (-b + disc_sqrt) / (2 * a);
         if (temp < ray_max.max && temp > ray_max.min) {
             Point3D hitPoint = ray.at(temp);
             float height = _direction.dot(hitPoint - _origin);
