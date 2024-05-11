@@ -11,6 +11,7 @@
 #include "Factories/Math/Point3DFactory.hpp"
 #include "Factories/Math/Vector3DFactory.hpp"
 #include "Factories/MaterialFactory.hpp"
+#include <list>
 #include <boost/property_tree/ptree.hpp>
 
 class ConeFactory : public Point3DFactory, public Vector3DFactory, public MaterialFactory {
@@ -19,4 +20,11 @@ class ConeFactory : public Point3DFactory, public Vector3DFactory, public Materi
         ~ConeFactory() = default;
 
         std::unique_ptr<Cone> createCone(const boost::property_tree::ptree &cone) const;
+
+
+    private:
+        const std::list<std::string> valid_transformations = {
+            "translation",
+            "rotation"
+        };
 };
