@@ -32,4 +32,7 @@ void WorldCreator::createWorld(World &world, const boost::property_tree::ptree &
     for (const auto &obj : primitives.get_child("cones")) {
         world.addPrimitive(createCone(obj.second));
     }
+    for (const auto &cylinder : primitives.get_child("cylinders")) {
+        world.addPrimitive(createCylinder(cylinder.second));
+    }
 }
