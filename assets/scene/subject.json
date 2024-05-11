@@ -1,0 +1,105 @@
+{
+  "camera": {
+    "resolution": {
+      "width": 800
+    },
+    "position": {
+      "x": 14,
+      "y": 3,
+      "z": 25
+    },
+    "rotation": {
+      "x": 1,
+      "y": 2,
+      "z": -2
+    },
+    "fieldOfView": 40,
+    "RayPerPixel": 1000,
+    "MaxBounces": 20,
+    "DefocusAngle": 0,
+    "BackgroundColor": {
+      "r": 0,
+      "g": 0,
+      "b": 0
+    }
+  },
+  "scenes": [],
+  "primitives": {
+    "spheres": [
+      {
+        "radius": 40,
+        "position": {
+          "x": 50,
+          "y": 70,
+          "z": -40
+        },
+        "material": {
+          "material": "LightMaterial",
+          "color": {
+            "r": 4,
+            "g": 4,
+            "b": 4
+          }
+        }
+      },
+      {
+        "radius": 4,
+        "position": {
+          "x": 0,
+          "y": 1,
+          "z": 5
+        },
+        "material": {
+          "material": "BaseMaterial",
+          "color": {
+            "r": 0,
+            "g": 1,
+            "b": 0
+          }
+        }
+      },
+      {
+        "radius": 3,
+        "position": {
+          "x": 12,
+          "y": 5,
+          "z": 8
+        },
+        "material": {
+          "material": "BaseMaterial",
+          "color": {
+            "r": 1,
+            "g": 0,
+            "b": 0
+          }
+        }
+      }
+    ],
+    "planes": [
+      {
+        "normal": {
+          "x": 0,
+          "y": 1,
+          "z": 0
+        },
+        "position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "material": {
+          "material": "BaseMaterial",
+          "color": {
+            "r": 0,
+            "g": 0,
+            "b": 1
+          }
+        }
+      }
+    ],
+    "triangles": [],
+    "cylinders": [],
+    "objects": [],
+    "cones": []
+  }
+}
