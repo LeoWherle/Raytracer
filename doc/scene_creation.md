@@ -11,6 +11,10 @@
 - `DefocusAngle`: The defocus angle of the camera.
 - `BackgroundColor`: An object that contains the `r`, `g`, and `b` color values of the background.
 
+## Scenes
+
+The `scenes` array contains objects with a `path` variables that leads to another scene JSON file. The scenes are loaded in the order they appear in the array.
+
 ## Primitives
 
 ### Spheres

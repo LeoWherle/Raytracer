@@ -28,9 +28,12 @@ bool Cone::hits(const Ray &r, Interval ray_max, HitRecord &rec) const
 
     if (discriminant < 0)
         return false;
-    float root = (-b - std::sqrt(discriminant)) / (2 * a);
+
+    float sqrt_d = std::sqrt(discriminant);
+
+    float root = (-b - sqrt_d) / (2 * a);
     if (root < ray_max.min|| root > ray_max.max) {
-        root = (-b + std::sqrt(discriminant)) / (2 * a);
+        root = (-b + sqrt_d) / (2 * a);
         if (root < ray_max.min || root > ray_max.max)
             return false;
     }
@@ -39,8 +42,11 @@ bool Cone::hits(const Ray &r, Interval ray_max, HitRecord &rec) const
 
     Point3D temp_p = r.at(root);
 
-    if (temp_p._y > _tip._y + _height || temp_p._y < _tip._y - _height)
+    Point3D hitPoint = r.at(root);
+    float height = _direction.dot(hitPoint - _tip);
+    if (_height > 0 && (height < 0 || height > _height)) {
         return false;
+    }
 
     rec.t = root;
     rec.p = r.at(rec.t);

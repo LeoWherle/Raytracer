@@ -13,7 +13,7 @@
       "y": 2,
       "z": -2
     },
-    "fieldOfView": 20,
+    "fieldOfView": 25,
     "RayPerPixel": 1000,
     "MaxBounces": 20,
     "DefocusAngle": 0,
@@ -23,39 +23,14 @@
       "b": 0
     }
   },
+  "scenes": [],
   "primitives": {
     "spheres": [
       {
         "radius": 2,
         "position": {
           "x": 0,
-          "y": 2,
-          "z": 0
-        },
-        "rotation": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "material": {
-          "material": "BaseMaterial",
-          "color": {
-            "r": 0,
-            "g": 1,
-            "b": 0
-          }
-        }
-      },
-      {
-        "radius": 2,
-        "position": {
-          "x": 0,
           "y": 7,
-          "z": 0
-        },
-        "rotation": {
-          "x": 0,
-          "y": 0,
           "z": 0
         },
         "material": {
@@ -81,91 +56,104 @@
           "z": 0
         },
         "material": {
-          "material": "BaseMaterial",
+          "material": "MetalMaterial",
+          "fuzz": 0,
           "color": {
-            "r": 0.8,
-            "g": 0.1,
-            "b": 0.8
+            "r": 1,
+            "g": 1,
+            "b": 1
           }
         }
-      }
-    ],
-    "triangles": [
+      },
       {
-        "vertices": [
-          {
-            "x": 2,
-            "y": 4,
-            "z": 0
-          },
-          {
-            "x": 4,
-            "y": 4,
-            "z": 0
-          },
-          {
-            "x": 2,
-            "y": 8,
-            "z": 0
-          }
-        ],
-        "material": {
-          "material": "BaseMaterial",
-          "color": {
-            "r": 0.8,
-            "g": 0.8,
-            "b": 0.1
-          }
-        }
-      }
-    ],
-    "cylinders": [],
-    "objects": [],
-    "cones": [
-      {
-        "angle": 20,
-        "tip": {
-          "x": 2,
-          "y": 2,
-          "z": -4
-        },
-        "direction": {
-          "x": 0,
-          "y": 1,
+        "normal": {
+          "x": 1,
+          "y": 0,
           "z": 0
         },
-        "height": 3,
+        "position": {
+          "x": -4,
+          "y": 0,
+          "z": 0
+        },
         "material": {
           "material": "BaseMaterial",
           "color": {
-            "r": 0.1,
+            "r": 0.2,
             "g": 0.8,
             "b": 0.8
           }
         }
       },
       {
-        "angle": 50,
-        "tip": {
-          "x": -6,
-          "y": 4,
-          "z": -4
-        },
-        "direction": {
+        "normal": {
           "x": 0,
-          "y": -1,
-          "z": 0
+          "y": 0,
+          "z": 1
         },
-        "height": 2,
+        "position": {
+          "x": 0,
+          "y": 0,
+          "z": -10
+        },
         "material": {
           "material": "BaseMaterial",
           "color": {
-            "r": 0.9,
-            "g": 0.1,
-            "b": 0.1
+            "r": 0.8,
+            "g": 0,
+            "b": 0.8
           }
         }
       }
-    ]
+    ],
+    "triangles": [],
+    "cylinders": [
+      {
+        "radius": 1,
+        "height": -1,
+        "direction": {
+          "x": 1,
+          "y": 0,
+          "z": 0
+        },
+        "position": {
+          "x": -10,
+          "y": 1.5,
+          "z": -5
+        },
+        "material": {
+          "material": "BaseMaterial",
+          "color": {
+            "r": 0.2,
+            "g": 0.6,
+            "b": 0
+          }
+        }
+      },
+      {
+        "radius": 0.5,
+        "height": -1,
+        "direction": {
+          "x": 1,
+          "y": 0,
+          "z": 0
+        },
+        "position": {
+          "x": -10,
+          "y": 4.5,
+          "z": -5
+        },
+        "material": {
+          "material": "BaseMaterial",
+          "color": {
+            "r": 0.6,
+            "g": 0.6,
+            "b": 0
+          }
+        }
+      }
+    ],
+    "objects": [],
+    "cones": []
   }
 }

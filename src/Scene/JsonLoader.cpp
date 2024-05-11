@@ -13,9 +13,10 @@
 
 void JsonLoader::load(const std::string &filename)
 {
+    std::cout << "\e[1;35mLoading scene: " << filename << "\e[0m" << std::endl;
     std::ifstream file(filename);
     if (!file.is_open()) {
-        throw std::runtime_error("Could not open file");
+        throw std::runtime_error("\e[1;31mCould not open file\e[0m");
     }
     boost::property_tree::ptree pt;
     boost::property_tree::read_json(file, pt);

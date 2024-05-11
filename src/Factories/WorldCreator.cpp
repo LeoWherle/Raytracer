@@ -9,19 +9,30 @@
 
 void WorldCreator::createWorld(World &world, const boost::property_tree::ptree &pt) const
 {
-    for (const auto &sphere : pt.get_child("spheres")) {
+    boost::property_tree::ptree primitives = pt.get_child("primitives");
+    JsonLoader jsonLoader;
+
+    for (const auto &scene : pt.get_child("scenes")) {
+        jsonLoader.load(scene.second.get<std::string>("path"));
+        createWorld(world, jsonLoader.json);
+    }
+
+    for (const auto &sphere : primitives.get_child("spheres")) {
         world.addPrimitive(createSphere(sphere.second));
     }
-    for (const auto &triangle : pt.get_child("triangles")) {
+    for (const auto &triangle : primitives.get_child("triangles")) {
         world.addPrimitive(createTriangle(triangle.second));
     }
-    for (const auto &plane : pt.get_child("planes")) {
+    for (const auto &plane : primitives.get_child("planes")) {
         world.addPrimitive(createPlane(plane.second));
     }
-    for (const auto &obj : pt.get_child("objects")) {
+    for (const auto &obj : primitives.get_child("objects")) {
         world.addPrimitive(createObj(obj.second));
     }
-    for (const auto &obj : pt.get_child("cones")) {
+    for (const auto &obj : primitives.get_child("cones")) {
         world.addPrimitive(createCone(obj.second));
+    }
+    for (const auto &cylinder : primitives.get_child("cylinders")) {
+        world.addPrimitive(createCylinder(cylinder.second));
     }
 }
