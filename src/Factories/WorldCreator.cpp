@@ -61,14 +61,14 @@ bool WorldCreator::update_on_file_change(World &world, Camera &cam)
         JsonLoader jsonLoader;
         try {
             jsonLoader.load(_rootfile);
-        } catch (std::exception &e) {
+            destroyWorld(world);
+            createWorld(world, jsonLoader.json);
+            cam = CameraFactory::createCamera(jsonLoader.json.get_child("camera"));
+            cam.update();
+        } catch (const std::exception &e) {
             std::cerr << e.what() << std::endl;
             return false;
         }
-        destroyWorld(world);
-        createWorld(world, jsonLoader.json);
-        cam = CameraFactory::createCamera(jsonLoader.json.get_child("camera"));
-        cam.update();
     }
     return modified;
 }

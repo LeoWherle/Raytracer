@@ -7,10 +7,11 @@
 
 #pragma once
 
-#include "Math/Point3D.hpp"
+#include "Color.hpp"
 
 class ILight {
 public:
-    ILight() = default;
-    ~ILight() = default;
+    virtual ~ILight() = default;
+
+    virtual auto emitted(float u, float v, const Point3D &p) const -> Color = 0;
 };

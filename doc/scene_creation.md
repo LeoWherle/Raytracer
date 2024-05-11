@@ -10,6 +10,7 @@
 - `MaxBounces`: The maximum number of bounces.
 - `DefocusAngle`: The defocus angle of the camera.
 - `BackgroundColor`: An object that contains the `r`, `g`, and `b` color values of the background.
+- `Brightness`: The brightness of the received light. 1 is the default value. (optional)
 
 ## Scenes
 

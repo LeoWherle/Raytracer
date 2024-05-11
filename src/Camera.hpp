@@ -38,6 +38,7 @@ public:
     Point3D origin = Point3D(0, 0, 0);
     Point3D lookat = Point3D(0, 0, -1);
     Vector3D vup = Vector3D(0, 1, 0);
+    float brightness = 1.0f;
 
     float defocus_angle = 0; // Variation angle of rays through each pixel
     float focus_dist = 10; // Distance from camera lookfrom point to plane of perfect focus

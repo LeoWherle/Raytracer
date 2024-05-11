@@ -18,6 +18,8 @@
 ## Documentation
 You can read the documentation by navigating to the `gh-pages` branch and opening the `index.html` file in your browser.
 
+for more information about the scene creation, you can read the [scene creation documentation](doc/scene_creation.md)
+
 
 ## Usage
 ```bash

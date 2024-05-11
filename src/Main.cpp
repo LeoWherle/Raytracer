@@ -159,6 +159,7 @@ auto Main::render_real_time(WorldCreator &god) -> void
             _camera.samples_per_pixel = 1;
             new_character_size = _camera.image_height / 40;
             text.setCharacterSize(new_character_size < 20 ? 20 : new_character_size);
+            window.setView(sf::View(sf::FloatRect(0, 0, float(_camera.image_width), float(_camera.image_height))));
         }
         if (_camera.samples_per_pixel > 10) {
             _camera.max_depth += 1;
@@ -204,8 +205,7 @@ auto Main::run() -> int
     god.opened_files.push_back(_params._scene_file);
     god._rootfile = _params._scene_file;
     god.createWorld(_world, loader.json);
-    std::unique_ptr<WorldObserver> observer =
-        std::make_unique<WorldObserver>(god.opened_files);
+    std::unique_ptr<WorldObserver> observer = std::make_unique<WorldObserver>(god.opened_files);
     god.attach(observer.get());
     _camera = camFactory.createCamera(loader.json.get_child("camera"));
 

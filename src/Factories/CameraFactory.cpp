@@ -26,6 +26,7 @@ Camera CameraFactory::createCamera(const boost::property_tree::ptree &pt)
     camera.lookat._x = pt.get<float>("rotation.x");
     camera.lookat._y = pt.get<float>("rotation.y");
     camera.lookat._z = pt.get<float>("rotation.z");
+    camera.brightness = pt.get_optional<float>("brightness").value_or(1.0f);
     camera.vup = Vector3D(0, 1, 0);
 
     camera.defocus_angle = pt.get<float>("DefocusAngle");

@@ -1,5 +1,6 @@
 {
   "camera": {
+    "brightness": 1,
     "resolution": {
       "width": 800
     },
