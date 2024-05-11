@@ -94,6 +94,29 @@
         }
       },
       {
+        "radius": 1,
+        "height": -1,
+        "direction": {
+          "x": 0,
+          "y": 1,
+          "z": 0
+        },
+        "position": {
+          "x": -5,
+          "y": 0,
+          "z": -1
+        },
+        "material": {
+          "material": "MetalMaterial",
+          "fuzz": 0.1,
+          "color": {
+            "r": 1,
+            "g": 1,
+            "b": 1
+          }
+        }
+      },
+      {
         "radius": 1.5,
         "height": -1,
         "direction": {
