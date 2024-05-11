@@ -100,22 +100,16 @@ auto handle_events(sf::RenderWindow &window, Camera &cam) -> bool
                 cam.update();
                 break;
             case sf::Keyboard::Key::J:
-                cam.rotate(Vector3D(0, 1, 0), 0.1f);
-                break;
-            case sf::Keyboard::Key::K:
-                cam.rotate(Vector3D(1, 0, 0), 0.1f);
+                cam.rotate(Vector3D(-movespeed, 0, 0));
                 break;
             case sf::Keyboard::Key::L:
-                cam.rotate(Vector3D(0, 0, 1), 0.1f);
-                break;
-            case sf::Keyboard::Key::U:
-                cam.rotate(Vector3D(0, 1, 0), -0.1f);
+                cam.rotate(Vector3D(movespeed, 0, 0));
                 break;
             case sf::Keyboard::Key::I:
-                cam.rotate(Vector3D(1, 0, 0), -0.1f);
+                cam.rotate(Vector3D(0, movespeed, 0));
                 break;
-            case sf::Keyboard::Key::O:
-                cam.rotate(Vector3D(0, 0, 1), -0.1f);
+            case sf::Keyboard::Key::K:
+                cam.rotate(Vector3D(0, -movespeed, 0));
                 break;
             default:
                 moved = false;
@@ -184,7 +178,6 @@ auto Main::render_real_time() -> void
         stream << "Sample per pixel: " << _camera.samples_per_pixel << "\n";
         stream << "Camera Position: " << _camera.origin << "\n";
         stream << "Camera LookAt: " << _camera.lookat << "\n";
-        stream << "Character Size: " << text.getCharacterSize() << "\n";
         text.setString(stream.str());
 
         window.clear();
@@ -211,15 +204,6 @@ auto Main::run() -> int
     god.createWorld(_world, loader.json);
     _camera = camFactory.createCamera(loader.json.get_child("camera"));
 
-// Loop to apply Rotation on the scene's plane
-
-//    for (auto &priv : _world.primitives) {
-//        if (auto obj = dynamic_cast<Plane *>(priv.get())) {
-//            std::clog << "Current normal vector to Plane: " << obj->_normal << std::endl;
-//            obj->rotate(Point3D(0, 90, 0));
-//            std::clog << "Rotated normal vector to Plane: " << obj->_normal << std::endl;
-//        }
-//    }
     if (_params._gui) {
         render_real_time();
     }
