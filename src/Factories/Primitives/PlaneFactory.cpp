@@ -23,7 +23,7 @@ std::unique_ptr<Plane> PlaneFactory::createPlane(const boost::property_tree::ptr
     auto normal = createVector3D(plane.get_child("normal"));
     auto material = plane.get<std::string>("material.material");
     
-    IMaterial *mat = createMaterial(plane.get_child("material"));
+    const IMaterial *mat = createMaterial(plane.get_child("material"));
     auto obj = std::make_unique<Plane>(origin, normal, mat);
     
     try {

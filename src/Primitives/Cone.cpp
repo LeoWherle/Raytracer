@@ -9,7 +9,7 @@
 #include "Math/MathsUtils.hpp"
 #include <cmath>
 
-Cone::Cone(const Point3D &tip, const float &height, const Vector3D &direction, IMaterial *material, const float &angle)
+Cone::Cone(const Point3D &tip, const float &height, const Vector3D &direction, const IMaterial *material, const float &angle)
 : _tip(tip), _height(height), _direction(direction), _material(material), _angle(mathsUtils::degrees_to_radians(angle))
 {
 }

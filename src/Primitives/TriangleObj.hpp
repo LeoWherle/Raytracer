@@ -19,19 +19,19 @@
 class TriangleObj : public IPrimitive {
     std::array<Point3D, 3> _vertices;
     std::array<Vector3D, 3> _normals;
-    IMaterial *_material;
+    const IMaterial *_material;
 
 public:
     TriangleObj(
         const Point3D &v0, const Point3D &v1, const Point3D &v2, const Vector3D &n0, const Vector3D &n1,
-        const Vector3D &n2, IMaterial *mat
+        const Vector3D &n2, const IMaterial *mat
     ):
         _vertices({v0, v1, v2}),
         _normals({n0, n1, n2}),
         _material(mat)
     {
     }
-    TriangleObj(std::array<Point3D, 3> vertices, std::array<Vector3D, 3> normals, IMaterial *mat):
+    TriangleObj(std::array<Point3D, 3> vertices, std::array<Vector3D, 3> normals, const IMaterial *mat):
         _vertices(vertices),
         _normals(normals),
         _material(mat)

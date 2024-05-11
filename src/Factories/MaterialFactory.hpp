@@ -16,6 +16,6 @@ public:
     MaterialFactory() = default;
     ~MaterialFactory() = default;
 
-    IMaterial *createMaterial(const boost::property_tree::ptree &pt) const;
+    const IMaterial *createMaterial(const boost::property_tree::ptree &pt) const;
 
 };
