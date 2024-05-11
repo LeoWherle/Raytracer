@@ -7,7 +7,7 @@
 
 #include "CameraFactory.hpp"
 
-Camera CameraFactory::createCamera(const boost::property_tree::ptree &pt) const
+Camera CameraFactory::createCamera(const boost::property_tree::ptree &pt)
 {
     Camera camera;
 

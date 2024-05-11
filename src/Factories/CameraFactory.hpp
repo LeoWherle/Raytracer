@@ -15,5 +15,5 @@ public:
     CameraFactory() = default;
     ~CameraFactory() = default;
 
-    Camera createCamera(const boost::property_tree::ptree &pt) const;
+    static Camera createCamera(const boost::property_tree::ptree &pt);
 };

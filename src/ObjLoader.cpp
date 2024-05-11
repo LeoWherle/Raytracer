@@ -114,5 +114,6 @@ auto ObjLoader::load(const std::string &filename, const Point3D &origin, float s
         object->addTriangle(std::move(triangle));
     }
     object->build();
+    file.close();
     return object;
 }

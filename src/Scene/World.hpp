@@ -24,6 +24,11 @@ public:
 
     void addPrimitive(std::unique_ptr<IPrimitive> primitive);
 
+    void clearPrimitives()
+    {
+        primitives.clear();
+    }
+
     virtual bool hits(const Ray &r, Interval ray_d, HitRecord &rec) const override;
 
     AABB boundingBox() const override

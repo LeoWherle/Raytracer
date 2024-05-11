@@ -42,3 +42,10 @@ void WorldCreator::createWorld(World &world, const boost::property_tree::ptree &
         world.addPrimitive(createCylinder(cylinder.second));
     }
 }
+
+void WorldCreator::destroyWorld(World &world)
+{
+    world.clearPrimitives();
+    opened_files.clear();
+    opened_files.push_back(_rootfile);
+}
