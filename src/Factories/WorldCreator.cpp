@@ -49,3 +49,26 @@ void WorldCreator::destroyWorld(World &world)
     opened_files.clear();
     opened_files.push_back(_rootfile);
 }
+
+bool WorldCreator::update_on_file_change(World &world, Camera &cam)
+
+{
+    bool modified = false;
+    for (auto &obs : observers) {
+        modified |= obs->update(opened_files);
+    }
+    if (modified) {
+        JsonLoader jsonLoader;
+        try {
+            jsonLoader.load(_rootfile);
+        } catch (std::exception &e) {
+            std::cerr << e.what() << std::endl;
+            return false;
+        }
+        destroyWorld(world);
+        createWorld(world, jsonLoader.json);
+        cam = CameraFactory::createCamera(jsonLoader.json.get_child("camera"));
+        cam.update();
+    }
+    return modified;
+}
