@@ -207,6 +207,7 @@ auto Main::run() -> int
     WorldCreator god;
 
     loader.load(_params._scene_file);
+    god.opened_files.push_back(_params._scene_file);
     god.createWorld(_world, loader.json);
     _camera = camFactory.createCamera(loader.json.get_child("camera"));
 

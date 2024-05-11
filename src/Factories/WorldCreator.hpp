@@ -22,5 +22,7 @@ public:
     WorldCreator() = default;
     ~WorldCreator() = default;
 
-    void createWorld(World &world, const boost::property_tree::ptree &pt) const;
+    void createWorld(World &world, const boost::property_tree::ptree &pt);
+
+    std::vector<std::string> opened_files;
 };
