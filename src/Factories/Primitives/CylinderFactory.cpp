@@ -8,14 +8,6 @@
 #include "CylinderFactory.hpp"
 #include <string>
 #include <memory>
-#include <list>
-
-static std::list<std::string> valid_transformations = {
-    "translation",
-    "rotation"
-};
-
-using wrong_child = boost::property_tree::ptree_bad_path;
 
 std::unique_ptr<Cylinder> CylinderFactory::createCylinder(const boost::property_tree::ptree &cylinder) const
 {
@@ -28,20 +20,23 @@ std::unique_ptr<Cylinder> CylinderFactory::createCylinder(const boost::property_
     const IMaterial *mat = createMaterial(cylinder.get_child("material"));
     auto obj = std::make_unique<Cylinder>(origin, direction, radius, mat, height);
 
-    try {
-        auto transformations = cylinder.get_child("transformations");
+    auto transformations_opt = cylinder.get_child_optional("transformations");
+    if (transformations_opt) {
+        auto transformations = *transformations_opt;
 
         for (auto &choices : valid_transformations) {
-            try {
-                auto trans = transformations.get_child(choices);
+            auto trans_opt = transformations.get_child_optional(choices);
 
-                if (choices == "translation") {obj->translate(createPoint3D(trans));}
-                else if (choices == "rotation") {obj->rotate(createPoint3D(trans)); }
-                else {}
-            } catch(const wrong_child &e) {
-                continue;
+            if (trans_opt) {
+                auto trans = *trans_opt;
+
+                if (choices == "translation") {
+                    obj->translate(createPoint3D(trans));
+                } else if (choices == "rotation") {
+                    obj->rotate(createPoint3D(trans));
+                }
             }
         }
-    } catch(const wrong_child &e) {}
+    }
     return obj;
 }

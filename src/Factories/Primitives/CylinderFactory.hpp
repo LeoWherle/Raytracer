@@ -11,6 +11,7 @@
 #include "Factories/Math/Point3DFactory.hpp"
 #include "Factories/Math/Vector3DFactory.hpp"
 #include "Factories/MaterialFactory.hpp"
+#include <list>
 #include <boost/property_tree/ptree.hpp>
 
 class CylinderFactory : public Point3DFactory, public Vector3DFactory, public MaterialFactory {
@@ -19,4 +20,10 @@ class CylinderFactory : public Point3DFactory, public Vector3DFactory, public Ma
         ~CylinderFactory() = default;
 
         std::unique_ptr<Cylinder> createCylinder(const boost::property_tree::ptree &pt) const;
+
+    private:
+        const std::list<std::string> valid_transformations = {
+            "translation",
+            "rotation"
+        };
 };

@@ -7,15 +7,7 @@
 
 #include <string>
 #include <memory>
-#include <list>
 #include "ConeFactory.hpp"
-
-static std::list<std::string> valid_transformations = {
-    "translation",
-    "rotation"
-};
-
-using wrong_child = boost::property_tree::ptree_bad_path;
 
 std::unique_ptr<Cone> ConeFactory::createCone(const boost::property_tree::ptree &cone) const
 {
@@ -27,22 +19,24 @@ std::unique_ptr<Cone> ConeFactory::createCone(const boost::property_tree::ptree 
     const IMaterial *mat = createMaterial(cone.get_child("material"));
     auto obj = std::make_unique<Cone>(tip, height, direction, mat, radius);
 
-    try {
-        auto transformations = cone.get_child("transformations");
+    auto transformations_opt = cone.get_child_optional("transformations");
+    if (transformations_opt) {
+        auto transformations = *transformations_opt;
 
         for (auto &choices : valid_transformations) {
-            try {
-                auto trans = transformations.get_child(choices);
+            auto trans_opt = transformations.get_child_optional(choices);
+
+            if (trans_opt) {
+                auto trans = *trans_opt;
 
                 if (choices == "translation") {
                     obj->translate(createPoint3D(trans));
-                }
-                if (choices == "rotation") {
+                } else if (choices == "rotation") {
                     obj->rotate(createPoint3D(trans));
                 }
-            } catch(const wrong_child &e) {continue;}
+            }
         }
-    } catch(const wrong_child &e) {}
+    }
 
     return obj;
 }
