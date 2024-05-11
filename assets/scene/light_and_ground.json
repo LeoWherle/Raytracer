@@ -35,6 +35,7 @@
         },
         "material": {
           "material": "LightMaterial",
+          "intensity" : 1,
           "color": {
             "r": 4,
             "g": 4,
