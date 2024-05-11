@@ -13,6 +13,7 @@
 #include "Primitives/ObjFactory.hpp"
 #include "Primitives/PlaneFactory.hpp"
 #include "Primitives/ConeFactory.hpp"
+#include "Scene/JsonLoader.hpp"
 #include <boost/property_tree/ptree.hpp>
 
 class WorldCreator : public SphereFactory, public TriangleFactory, public PlaneFactory, public ObjFactory, public ConeFactory {
