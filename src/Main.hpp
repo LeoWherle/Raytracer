@@ -29,7 +29,7 @@ public:
     IncrementalImage _image;
 
     auto run() -> int;
-    auto render_real_time() -> void;
+    auto render_real_time(WorldCreator &creator) -> void;
     auto arg_parse() -> bool;
 
 protected:

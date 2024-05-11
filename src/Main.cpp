@@ -20,6 +20,7 @@
 #include "Scene/IncrementalImage.hpp"
 #include "Scene/JsonLoader.hpp"
 #include "Scene/World.hpp"
+#include "Scene/WorldObserver.hpp"
 #include <boost/property_tree/ptree.hpp>
 
 auto Main::arg_parse() -> bool
@@ -123,7 +124,7 @@ auto handle_events(sf::RenderWindow &window, Camera &cam) -> bool
     return moved;
 }
 
-auto Main::render_real_time() -> void
+auto Main::render_real_time(WorldCreator &god) -> void
 {
     _camera.update();
     sf::RenderWindow window(sf::VideoMode(_camera.image_width, _camera.image_height), "Raytracer");
@@ -150,7 +151,7 @@ auto Main::render_real_time() -> void
     auto elapsed_time = get_time() - start_time;
 
     while (window.isOpen()) {
-        if (handle_events(window, _camera)) {
+        if (handle_events(window, _camera) || god.update_on_file_change(_world, _camera)) {
             _image.clear();
             _camera.max_depth = 5;
             start_time = get_time();
@@ -169,7 +170,7 @@ auto Main::render_real_time() -> void
         elapsed_time = get_time() - start_time;
         total_time = static_cast<double>(elapsed_time - old_elapsed_time);
         total_time = total_time <= 2 ? 200 : total_time;
-        std::cout << "Frame Rendering time: " << total_time << "ms" << std::endl;
+        // std::cout << "Frame Rendering time: " << total_time << "ms" << std::endl;
         std::stringstream stream;
         stream << std::fixed << std::setprecision(2);
         stream << "TT Render Time: " << (static_cast<double>(elapsed_time) / 1000) << "s\n";
@@ -201,11 +202,15 @@ auto Main::run() -> int
 
     loader.load(_params._scene_file);
     god.opened_files.push_back(_params._scene_file);
+    god._rootfile = _params._scene_file;
     god.createWorld(_world, loader.json);
+    std::unique_ptr<WorldObserver> observer =
+        std::make_unique<WorldObserver>(god.opened_files);
+    god.attach(observer.get());
     _camera = camFactory.createCamera(loader.json.get_child("camera"));
 
     if (_params._gui) {
-        render_real_time();
+        render_real_time(god);
     }
     if (!_params._output_file.empty()) {
         if (!_params._gui) {
