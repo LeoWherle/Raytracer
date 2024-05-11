@@ -48,6 +48,7 @@ Each triangle object contains:
 Each cylinder object contains:
 
 - `radius`: The radius of the cylinder.
+- `height`: The height of the cylinder. (-1 for infinite cylinder)
 - `position`: An object that contains the `x`, `y`, and `z` coordinates of the cylinder's position.
 - `material`: An object that contains the `material` type and `color` or `texture` of the cylinder.
 - `transformations`: An object that contains the `rotation` and `translation` of the cylinder.
@@ -57,6 +58,7 @@ Each cylinder object contains:
 Each cone object contains:
 
 - `radius`: The radius of the cone.
+- `height`: The height of the cone. (-1 for infinite cone)
 - `position`: An object that contains the `x`, `y`, and `z` coordinates of the cone's position.
 - `material`: An object that contains the `material` type and `color` or `texture` of the cone.
 - `transformations`: An object that contains the `rotation` and `translation` of the cone.
