@@ -17,10 +17,10 @@ class Cylinder : public IPrimitive {
         Point3D _origin;
         Vector3D _direction;
         float _radius;
-        IMaterial *_material;
+        const IMaterial *_material;
         float _height;
 
-        Cylinder(const Point3D &origin, const Vector3D &direction, float radius, IMaterial *material, float height):
+        Cylinder(const Point3D &origin, const Vector3D &direction, float radius, const IMaterial *material, float height):
             _origin(origin),
             _direction(direction),
             _radius(radius),

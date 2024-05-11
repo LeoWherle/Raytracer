@@ -15,9 +15,9 @@ class Plane : public IPrimitive {
 public:
     Point3D _origin;
     Vector3D _normal;
-    IMaterial *_material;
+    const IMaterial *_material;
 
-    Plane(const Point3D &origin, const Vector3D &normal, IMaterial *material):
+    Plane(const Point3D &origin, const Vector3D &normal, const IMaterial *material):
         _origin(origin),
         _normal(normal),
         _material(material)

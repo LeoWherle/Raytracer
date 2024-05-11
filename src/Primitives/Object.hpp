@@ -25,7 +25,7 @@
  */
 class Object : public BVH, public IPrimitive {
 public:
-    Object(const Point3D &origin, float scale, IMaterial *mat):
+    Object(const Point3D &origin, float scale, const IMaterial *mat):
         _origin(origin),
         _scale(scale),
         _material(mat)
@@ -53,7 +53,7 @@ public:
 protected:
     Point3D _origin;
     float _scale;
-    IMaterial *_material;
+    const IMaterial *_material;
     std::vector<std::unique_ptr<IPrimitive>> triangles;
 
 private:

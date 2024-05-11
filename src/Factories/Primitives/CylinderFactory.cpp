@@ -25,7 +25,7 @@ std::unique_ptr<Cylinder> CylinderFactory::createCylinder(const boost::property_
     auto material = cylinder.get<std::string>("material.material");
     auto height = cylinder.get<float>("height");
 
-    IMaterial *mat = createMaterial(cylinder.get_child("material"));
+    const IMaterial *mat = createMaterial(cylinder.get_child("material"));
     auto obj = std::make_unique<Cylinder>(origin, direction, radius, mat, height);
 
     try {

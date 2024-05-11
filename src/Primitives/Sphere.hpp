@@ -17,10 +17,10 @@ class Sphere : public IPrimitive {
 private:
     Point3D origin;
     float _radius;
-    IMaterial *material;
+    const IMaterial *material;
 
 public:
-    Sphere(const Point3D &center, float radius, IMaterial* mat):
+    Sphere(const Point3D &center, float radius, const IMaterial *mat):
         origin(center),
         _radius((float)fmax(0, radius)),
         material(mat)
