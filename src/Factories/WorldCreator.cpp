@@ -7,13 +7,19 @@
 
 #include "WorldCreator.hpp"
 
-void WorldCreator::createWorld(World &world, const boost::property_tree::ptree &pt) const
+void WorldCreator::createWorld(World &world, const boost::property_tree::ptree &pt)
 {
     boost::property_tree::ptree primitives = pt.get_child("primitives");
     JsonLoader jsonLoader;
+    std::string file_name = "";
 
     for (const auto &scene : pt.get_child("scenes")) {
-        jsonLoader.load(scene.second.get<std::string>("path"));
+        file_name = scene.second.get<std::string>("path");
+        if (std::find(opened_files.begin(), opened_files.end(), file_name) != opened_files.end()) {
+            continue;
+        }
+        jsonLoader.load(file_name);
+        opened_files.push_back(file_name);
         createWorld(world, jsonLoader.json);
     }
 
