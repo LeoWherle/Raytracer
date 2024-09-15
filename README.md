@@ -2,12 +2,10 @@
 - **Contributors:**
   - [Léo Wehrle - Rentmeister](https://github.com/leoWherle)
   - [Théodore Magna](https://github.com/TheodoreEpitech)
-  - [Yanis Moyon](https://github.com/Kl0ups)
-  - [Alberic Flour De Saegher](https://github.com/Albe2)
 
 ## Description
 
-
+Raytracer is a rendering engine designed to generate high-quality images by simulating the way light interacts with objects in a scene. It supports loading and rendering complex 3D models, including OBJ files, and allows for detailed scene configuration. The project includes various features such as customizable materials, lighting, and camera settings. It is built using C++ and leverages libraries like Boost for property tree parsing. The project also provides comprehensive documentation and example scenes to help users get started.
 
 ## Install
 ```bash
